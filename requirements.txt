@@ -4,4 +4,5 @@ mypy_extensions==1.1.0
 pathspec==0.12.1
 SQLAlchemy==2.0.41
 toml==0.10.2
+types-toml==0.10.8.20240310
 typing_extensions==4.14.0

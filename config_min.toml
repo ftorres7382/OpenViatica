@@ -3,4 +3,5 @@
 
 # Not to be used by the general user.
 # For the general user configs go to the app folder
-app_config_path = "app/config/config.toml"
+
+app_config_path = "app/config/config.toml" # str

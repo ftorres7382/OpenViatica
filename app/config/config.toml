@@ -1,10 +1,13 @@
+# NOTE: The type hints can asolutely be out of date.
+#       If they are out of date, please notify it so it gets corrected.
+
 [app_database]
-engine = "sqlite"
+engine = "sqlite" # t.Literal["sqlite", "postgres"]
 
     [app_database.sqlite]
-    path = "./config/Data/internal.db"
+    # str
+    path = "./config/Data/internal.db" # str
 
     [app_database.postgres]
-    host = "localhost"
-    user = "admin"
-    password = "secret"
+    host = "localhost" # str
+    user = "admin" # str
