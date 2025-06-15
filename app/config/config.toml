@@ -1,0 +1,10 @@
+[app_database]
+engine = "sqlite"
+
+    [app_database.sqlite]
+    path = "./config/Data/internal.db"
+
+    [app_database.postgres]
+    host = "localhost"
+    user = "admin"
+    password = "secret"
