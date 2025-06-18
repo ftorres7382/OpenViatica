@@ -4,6 +4,10 @@
 app/secrets/*
 !app/secrets/README.md
 
+# Ignore Data Area
+app/Data/*
+!app/Data/README.md
+
 ## Ignore this one in case someone wants to test out new modules but they do not want to commit.
 requirements_test.txt 
 
