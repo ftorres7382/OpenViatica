@@ -28,6 +28,7 @@ APP_CONFIG_SQLITE_DICT = t.TypedDict("APP_CONFIG_SQLITE_DICT", {
 
 APP_CONFIG_APP_DATABASE_DICT = t.TypedDict("APP_CONFIG_APP_DATABASE_DICT", {
     "engine": E.ALLOWED_SQL_ENGINES,
+    "database_name": str,
     "postgres": APP_CONFIG_POSTGRES_DICT,
     "sqlite" : APP_CONFIG_SQLITE_DICT
 })
@@ -35,5 +36,17 @@ APP_CONFIG_APP_DATABASE_DICT = t.TypedDict("APP_CONFIG_APP_DATABASE_DICT", {
 APP_CONFIG_DICT = t.TypedDict("APP_CONFIG_DICT", {
     "app_database": APP_CONFIG_APP_DATABASE_DICT,
     
+})
+# endregion
+
+######################################
+# SQLA Types
+###################################### 
+# region
+
+SQLA_CONNECTION_INFO_DICT = t.TypedDict("SQLA_CONNECTION_INFO_DICT", {
+    "engine": E.ALLOWED_SQL_ENGINES,
+    "connection_configuration": t.Union[APP_CONFIG_SQLITE_DICT, APP_CONFIG_POSTGRES_DICT],
+    "connection_string": str
 })
 # endregion

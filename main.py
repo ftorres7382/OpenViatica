@@ -1,7 +1,7 @@
 import toml
 
 import app.globals as globals
-
+from app.Utilities import Setup
 
 
 
@@ -11,6 +11,8 @@ def main() -> None:
     '''
 
     # Database setup
+    Setup.database_setup()
+
     
     
 

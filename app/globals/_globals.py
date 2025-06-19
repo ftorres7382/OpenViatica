@@ -1,4 +1,6 @@
 import toml
+import platform
+
 
 import app.Utilities.Custom_Types as T
 import app.Utilities.Config as Config
@@ -12,3 +14,5 @@ CONFIG_MIN: T.CONFIG_MIN_DICT = {
 # Read the actual app config
 app_config_raw = toml.load(CONFIG_MIN["app_config_path"])
 APP_CONFIG: T.APP_CONFIG_DICT = Config.get_clean_app_config(app_config_raw)
+
+OS = platform.system()

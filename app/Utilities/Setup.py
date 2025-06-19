@@ -1,7 +1,9 @@
 '''
 This file will house all the functions needed to setup the application or space.
 '''
-from app.globals import APP_CONFIG
+from app.Utilities.Sqla_Helper import Sqla_Helper
+
+sqla_helper = Sqla_Helper()
 
 def sqlite_setup() -> None:
     pass
@@ -11,7 +13,13 @@ def postgres_setup() -> None:
 
 def database_setup() -> None:
     '''
-    This function sets up the database
+    This function sets up the database.
     '''
-    if APP_CONFIG["app_database"]["engine"] == "sqlite"
+    if not sqla_helper.database_exists():
+        sqla_helper.create_database()
+    
+        
+        
+    
+
     

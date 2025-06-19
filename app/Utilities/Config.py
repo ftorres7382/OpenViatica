@@ -1,6 +1,8 @@
 import typing as t
+import os
 
 import app.Utilities.Custom_Types as T
+
 
 
 def get_clean_app_config(app_config_raw: t.Dict[str, t.Any]) -> T.APP_CONFIG_DICT:
@@ -13,6 +15,7 @@ def get_clean_app_config(app_config_raw: t.Dict[str, t.Any]) -> T.APP_CONFIG_DIC
     app_config: T.APP_CONFIG_DICT = {
         "app_database": {
             "engine": app_config_raw["app_database"]["engine"],
+            "database_name": app_config_raw["app_database"]["database_name"],
             "sqlite": {
                 "path": app_config_raw["app_database"]["sqlite"]["path"]
             },
@@ -40,5 +43,8 @@ def get_clean_app_config(app_config_raw: t.Dict[str, t.Any]) -> T.APP_CONFIG_DIC
         pprint(diff)
         print("-"*30)
         raise ValueError(f"ERROR! There are values un 'app_config_raw' that were not set in 'app_config'!")
+    
+    # Standardize values
+    app_config["app_database"]["sqlite"]["path"] = os.path.abspath(app_config["app_database"]["sqlite"]["path"])
     return app_config
 
