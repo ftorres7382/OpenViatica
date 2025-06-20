@@ -1,5 +1,5 @@
 import typing as t
-import app.Utilities.Custom_Types.Enums as E
+from app.Custom_Types import Enums as E
 
 # If we need to organize, use regions, if we need more, use a folder and divide by files
 
@@ -48,5 +48,9 @@ SQLA_CONNECTION_INFO_DICT = t.TypedDict("SQLA_CONNECTION_INFO_DICT", {
     "engine": E.ALLOWED_SQL_ENGINES,
     "connection_configuration": t.Union[APP_CONFIG_SQLITE_DICT, APP_CONFIG_POSTGRES_DICT],
     "connection_string": str
+})
+
+SQLA_ENGINE_CONNECT_ARGS_DICT_TYPE = t.TypedDict("SQLA_ENGINE_CONNECT_ARGS_DICT_TYPE", {
+    "timeout": int
 })
 # endregion

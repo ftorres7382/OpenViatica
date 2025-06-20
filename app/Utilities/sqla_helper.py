@@ -1,12 +1,14 @@
 import sqlalchemy as sqla
+from sqlalchemy import event
 import os
+import typing as t
+import sqlite3
 
 from app.Database_Models import Base
 from app.Database_Models import Principals  # Import all models so they're registered with Base
 
 
-from app.globals import APP_CONFIG
-import app.Utilities.Custom_Types as T
+import app.Custom_Types as T
 
 
 class Sqla_Helper():
@@ -23,17 +25,19 @@ class Sqla_Helper():
             else:
                 # Automatically make the sqlite db
                 sqla.create_engine(self.connection_info["connection_string"])
-        print(self.connection_info)
+        
+        self.engine = self.get_engine()
 
 
     def get_connection_info(self) -> T.SQLA_CONNECTION_INFO_DICT:
         '''
         This function looks into the app config settings and returns only the relevant parts for a connection
         '''
-        engine = APP_CONFIG["app_database"]["engine"]
+        from app.globals import APP_CONFIG
+        engine_type = APP_CONFIG["app_database"]["engine"]
         connection_info_dict: T.SQLA_CONNECTION_INFO_DICT = {
-            "engine": engine,
-            "connection_configuration": APP_CONFIG["app_database"][engine],
+            "engine": engine_type,
+            "connection_configuration": APP_CONFIG["app_database"][engine_type],
             "connection_string": self.get_connection_string()
         }
         return connection_info_dict
@@ -42,6 +46,7 @@ class Sqla_Helper():
         '''
         This function returns the connection string for the application's database
         '''
+        from app.globals import APP_CONFIG
         if APP_CONFIG["app_database"]["engine"] == "sqlite":
             filepath = os.path.join(
                 APP_CONFIG['app_database']['sqlite']['path'], 
@@ -53,13 +58,19 @@ class Sqla_Helper():
         else:
             raise ValueError("ERROR! The only allowed values for app_database.engine are: 'sqlite' and 'postgres'")
 
-    def get_engine(self, echo: bool  = True) -> sqla.engine.Engine:
+    def get_engine(self, echo: bool  = True, connect_args: T.SQLA_ENGINE_CONNECT_ARGS_DICT_TYPE = {"timeout": 10}) -> sqla.engine.Engine:
         '''
         This function gets the sqlalchemy engine based on the app properties 
         '''
-        
+        from app.globals import APP_CONFIG
         if self.connection_info["engine"] == "sqlite":
-            return sqla.create_engine(self.get_connection_string(), echo=echo)
+            @event.listens_for(sqla.Engine, "connect")
+            def set_sqlite_pragma(dbapi_connection: sqlite3.Connection, connection_record: t.Any) -> None:
+                cursor = dbapi_connection.cursor()
+                cursor.execute("PRAGMA journal_mode=WAL;")
+                cursor.close()
+
+            return sqla.create_engine(self.get_connection_string(), echo=echo, connect_args=connect_args)
         elif APP_CONFIG["app_database"]["engine"] == "postgres":
             raise NotImplementedError("ERROR! Postgres support has not been implemented yet!")
         else:
@@ -69,7 +80,7 @@ class Sqla_Helper():
         '''
         This function checks if the database exists
         '''
-        
+        from app.globals import APP_CONFIG
         if APP_CONFIG["app_database"]["engine"] == "sqlite":
             # The filepath should be configured
             filepath = os.path.join(
@@ -88,9 +99,9 @@ class Sqla_Helper():
         This function will test that the app has connection with the database. 
         If it does not, it will raise an error.
         '''
-        engine = self.get_engine()
+        
         try:
-            with engine.connect() as conn:
+            with self.engine.connect() as conn:
                 conn.execute(sqla.text("SELECT 1"))
             return True
         except Exception as e:
@@ -101,9 +112,18 @@ class Sqla_Helper():
         This function will create the database
         '''
         self.print(f"Connecting to {self.connection_info['connection_string']} ...", verbose)
-        engine = self.get_engine()
-        Base.metadata.create_all(engine)
+        
+        Base.metadata.create_all(self.engine)
 
+    def get_table_names(self) -> t.List[str]:
+        '''
+        This function gets the list of table names
+        '''
+        engine = self.get_engine()
+        inspector = sqla.inspect(engine)
+
+        tables = inspector.get_table_names()
+        return tables
 
     def print(self, value:str, verbose:bool = True) -> None:
         if verbose:

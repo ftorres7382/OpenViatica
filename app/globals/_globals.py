@@ -2,8 +2,9 @@ import toml
 import platform
 
 
-import app.Utilities.Custom_Types as T
-import app.Utilities.Config as Config
+import app.Custom_Types as T
+from app.Utilities import Config
+
 
 config_min_raw = toml.load("config_min.toml")
 CONFIG_MIN: T.CONFIG_MIN_DICT = {
