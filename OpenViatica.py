@@ -11,7 +11,7 @@ def main() -> None:
     setup = Setup()
     setup.database_setup()
 
-    
+    # Setup the admin workspace if not already made
     
     
 

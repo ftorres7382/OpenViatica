@@ -12,4 +12,14 @@ database_name = "OpenViatica_App"
     host = "localhost" # str
     user = "admin" # str
 
-    
+# This is the admin workspace, hosted on the backend server
+# Setting up other workspaces can be done from this one
+[admin_workspace]
+# If hosted in another place, it could be mounted.
+# IDK what the options would be when we go enterprise and set this worksace up in another place, thats if we can or should...
+
+# Folder path for now, it should probably not be where the app is hosted for security and enterprise purposes
+# But for small use, it can make sense.
+
+# This could also be changed to some sort of podman that starts up and using vs code to connect to the folder stucture
+folder_path = "./Workspaces/Admin_Workspace/"

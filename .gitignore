@@ -1,5 +1,8 @@
 # Custom ignores
 
+Workspaces/*
+!Workspaces/README.md
+
 build/*
 !build/README.md
 
