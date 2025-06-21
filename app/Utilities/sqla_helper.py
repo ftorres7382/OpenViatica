@@ -4,8 +4,8 @@ import os
 import typing as t
 import sqlite3
 
-from app.Database_Models import Base
-from app.Database_Models import Principals  # Import all models so they're registered with Base
+from app.Database_Models.App_Models import Base
+from app.Database_Models.App_Models import Principals  # Import all models so they're registered with Base
 
 
 import app.Custom_Types as T

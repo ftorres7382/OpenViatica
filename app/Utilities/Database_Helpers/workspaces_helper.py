@@ -3,7 +3,7 @@ import sqlalchemy.orm as sqla_orm
 import uuid
 
 
-from app.Database_Models import Workspaces
+from app.Database_Models.App_Models import Workspaces
 from app.Utilities import Sqla_Helper
 from app import Custom_Types as T
 

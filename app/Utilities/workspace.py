@@ -52,6 +52,7 @@ class Workspace():
             # Storing workspace logs
             "Internal/Logs",
 
+            # For any temporary files
             "Internal/Temp",
 
             # Folder to store any data files
