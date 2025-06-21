@@ -58,7 +58,10 @@ class Sqla_Helper():
         else:
             raise ValueError("ERROR! The only allowed values for app_database.engine are: 'sqlite' and 'postgres'")
 
-    def get_engine(self, echo: bool  = True, connect_args: T.SQLA_ENGINE_CONNECT_ARGS_DICT_TYPE = {"timeout": 10}) -> sqla.engine.Engine:
+    def get_engine(self, 
+                   echo: bool  = False, 
+                   connect_args: T.SQLA_ENGINE_CONNECT_ARGS_DICT_TYPE = {"timeout": 10}
+                   ) -> sqla.engine.Engine:
         '''
         This function gets the sqlalchemy engine based on the app properties 
         '''

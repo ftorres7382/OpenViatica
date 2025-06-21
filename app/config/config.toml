@@ -11,4 +11,5 @@ database_name = "OpenViatica_App"
     [app_database.postgres]
     host = "localhost" # str
     user = "admin" # str
-    # Passwoer should probably be stored somewhere else, but idk where
+
+    
