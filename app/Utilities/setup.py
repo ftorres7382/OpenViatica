@@ -1,13 +1,16 @@
 '''
 This file will house all the functions needed to setup the application or space.
 '''
-from app.Utilities import Sqla_Helper
-from app.Utilities.Database_Helpers import Principals_Helper
+
 
 class Setup():
     def __init__(self) -> None:
+        from app.Utilities import Sqla_Helper, Workspace
+        from app.Utilities.Database_Helpers import Principals_Helper
+        
         self.sqla_helper = Sqla_Helper()
         self.principals_helper = Principals_Helper()
+        self.workspace = Workspace()
 
     def sqlite_setup(self) -> None:
         pass
@@ -36,10 +39,14 @@ class Setup():
         except Exception as e:
             pass
 
-    def workspace_setup(self, folder_path) -> None:
+    def workspace_setup(self, folder_path:str) -> None:
         '''
         This function sets up a new workspace 
         '''
+        self.workspace.create_workspace(workspace_name="App_Admin_Workspace", folderpath=folder_path)
+        
+        
+        
         
     
         

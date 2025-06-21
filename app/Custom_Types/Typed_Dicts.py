@@ -33,8 +33,13 @@ APP_CONFIG_APP_DATABASE_DICT = t.TypedDict("APP_CONFIG_APP_DATABASE_DICT", {
     "sqlite" : APP_CONFIG_SQLITE_DICT
 })
 
+APP_CONFIG_ADMIN_WORKSPACE_DICT = t.TypedDict("APP_CONFIG_ADMIN_WORKSPACE_DICT", {
+    "folder_path": str
+})
+
 APP_CONFIG_DICT = t.TypedDict("APP_CONFIG_DICT", {
     "app_database": APP_CONFIG_APP_DATABASE_DICT,
+    "admin_workspace": APP_CONFIG_ADMIN_WORKSPACE_DICT
     
 })
 # endregion

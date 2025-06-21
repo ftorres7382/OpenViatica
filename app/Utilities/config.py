@@ -27,7 +27,10 @@ class Config:
                     "host": app_config_raw["app_database"]["postgres"]["host"],
                     "user": app_config_raw["app_database"]["postgres"]["user"]
                 }
-            }         
+            },
+            "admin_workspace": {
+                "folder_path": app_config_raw["admin_workspace"]["folder_path"]
+            }
         }
 
         # Check if we did not miss anything
