@@ -1,0 +1,7 @@
+# This config file should contain the minimum needed for the app to get running.
+# If it is changed it is probably because the app itself has changed in development.
+
+# Not to be used by the general user.
+# For the general user configs go to the app folder
+
+app_config_path = "app/config/config.toml" # str

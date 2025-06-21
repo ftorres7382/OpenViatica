@@ -1,3 +1,22 @@
+# Custom ignores
+
+Workspaces/*
+!Workspaces/README.md
+
+build/*
+!build/README.md
+
+# Ignore the secret areas
+app/secrets/*
+!app/secrets/README.md
+
+# Ignore Data Area
+app/Data/*
+!app/Data/README.md
+
+## Ignore this one in case someone wants to test out new modules but they do not want to commit.
+requirements_test.txt 
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -8,7 +27,7 @@ __pycache__/
 
 # Distribution / packaging
 .Python
-build/
+# build/
 develop-eggs/
 dist/
 downloads/

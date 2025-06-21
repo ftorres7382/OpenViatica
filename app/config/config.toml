@@ -1,0 +1,25 @@
+# NOTE: The type hints can asolutely be out of date.
+#       If they are out of date, please notify it so it gets corrected.
+
+[app_database]
+engine = "sqlite" # t.Literal["sqlite", "postgres"]
+database_name = "OpenViatica_App"
+
+    [app_database.sqlite]
+    path = "./app/Data/" # str
+
+    [app_database.postgres]
+    host = "localhost" # str
+    user = "admin" # str
+
+# This is the admin workspace, hosted on the backend server
+# Setting up other workspaces can be done from this one
+[admin_workspace]
+# If hosted in another place, it could be mounted.
+# IDK what the options would be when we go enterprise and set this worksace up in another place, thats if we can or should...
+
+# Folder path for now, it should probably not be where the app is hosted for security and enterprise purposes
+# But for small use, it can make sense.
+
+# This could also be changed to some sort of podman that starts up and using vs code to connect to the folder stucture
+folder_path = "./Workspaces/Admin_Workspace/"
