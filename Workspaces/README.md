@@ -5,4 +5,5 @@ It should be used ONLY if the access to the data and/or the application iself is
 
 Otherwise, virtualization should be used for the workspaces.
 It could however, contain the Admin Workspaces, where they can collaborate on setting people's permissions and the like.
- 
+
+It can also RUN OUT OF STORAGE!

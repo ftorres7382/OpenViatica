@@ -36,7 +36,11 @@ class Setup():
         except Exception as e:
             pass
 
-
+    def workspace_setup(self, folder_path) -> None:
+        '''
+        This function sets up a new workspace 
+        '''
+        
     
         
         
