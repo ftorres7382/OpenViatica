@@ -1,0 +1,1 @@
+This folder is meant to store all files that are ingested from external sources

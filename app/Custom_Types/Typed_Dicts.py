@@ -34,8 +34,11 @@ APP_CONFIG_APP_DATABASE_DICT = t.TypedDict("APP_CONFIG_APP_DATABASE_DICT", {
 })
 
 APP_CONFIG_ADMIN_WORKSPACE_DICT = t.TypedDict("APP_CONFIG_ADMIN_WORKSPACE_DICT", {
+    "template_workspace_folder_path": str,
+    "template_user_workspace_relpath": str,
+    "template_venv_requirements_relpath": str,
+
     "base_folder_path": str,
-    "requirements_path": str,
     "admin_workspace_name": str
 })
 

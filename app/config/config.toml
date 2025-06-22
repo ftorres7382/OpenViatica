@@ -1,7 +1,7 @@
 # NOTE: The type hints can asolutely be out of date.
 #       If they are out of date, please notify it so it gets corrected.
 
-mode = "single_user"
+mode = ""
 
 [app_database]
 engine = "sqlite" # t.Literal["sqlite", "postgres"]
@@ -16,6 +16,9 @@ database_name = "OpenViatica_App"
 
 # This is the default settings for any workspace that is created
 [workspace_settings]
+template_workspace_folder_path = "app/Workspace_Files/Template_Workspace"
+template_user_workspace_relpath = "External"
+template_venv_requirements_relpath = "Internal/Config/workspace_base_pip_requirements.txt"
 # If hosted in another place, it could be mounted.
 # IDK what the options would be when we go enterprise and set this worksace up in another place, thats if we can or should...
 
@@ -24,5 +27,6 @@ database_name = "OpenViatica_App"
 
 # This could also be changed to some sort of podman that starts up and using vs code to connect to the folder stucture
 base_folder_path = "Workspaces/"
-requirements_path = "app/Workspace_Files/workspace_base_pip_requirements.txt"
 admin_workspace_name = "Admin_Workspace"
+
+

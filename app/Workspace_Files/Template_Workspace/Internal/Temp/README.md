@@ -1,0 +1,1 @@
+This folder will contain all the temporary files the workspace might need to make

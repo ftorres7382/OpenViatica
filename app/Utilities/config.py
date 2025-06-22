@@ -2,11 +2,13 @@ import typing as t
 import os
 
 from app import Custom_Types as T
+from app.Utilities import Type_Helper
 
 class Config:
     
     def init(self)->None:
-        pass
+        self.type_helper = Type_Helper()
+        
     
     @classmethod
     def get_clean_app_config(cls,app_config_raw: t.Dict[str, t.Any]) -> T.APP_CONFIG_DICT:
@@ -17,25 +19,8 @@ class Config:
         
         # Remind myself to automate having to do this...
         # The idea would be that by changing the type itself, it should change how this is set guess
-        app_config: T.APP_CONFIG_DICT = {
-            "mode": app_config_raw["mode"],
-            "app_database": {
-                "engine": app_config_raw["app_database"]["engine"],
-                "database_name": app_config_raw["app_database"]["database_name"],
-                "sqlite": {
-                    "path": app_config_raw["app_database"]["sqlite"]["path"]
-                },
-                "postgres": {
-                    "host": app_config_raw["app_database"]["postgres"]["host"],
-                    "user": app_config_raw["app_database"]["postgres"]["user"]
-                }
-            },
-            "workspace_settings": {
-                "base_folder_path": app_config_raw["workspace_settings"]["base_folder_path"],
-                "requirements_path": app_config_raw["workspace_settings"]["requirements_path"],
-                "admin_workspace_name": app_config_raw["workspace_settings"]["admin_workspace_name"]
-            }
-        }
+        import pdb; pdb.set_trace()
+        # app_config: T.APP_CONFIG_DICT = 
 
         # Check if we did not miss anything
         if app_config_raw != app_config:
