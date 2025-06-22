@@ -15,8 +15,10 @@ class Config:
         It will manaully set all the values so that mypy can check them
         '''
         
-
+        # Remind myself to automate having to do this...
+        # The idea would be that by changing the type itself, it should change how this is set guess
         app_config: T.APP_CONFIG_DICT = {
+            "mode": app_config_raw["mode"],
             "app_database": {
                 "engine": app_config_raw["app_database"]["engine"],
                 "database_name": app_config_raw["app_database"]["database_name"],
@@ -28,8 +30,10 @@ class Config:
                     "user": app_config_raw["app_database"]["postgres"]["user"]
                 }
             },
-            "admin_workspace": {
-                "folder_path": app_config_raw["admin_workspace"]["folder_path"]
+            "workspace_settings": {
+                "base_folder_path": app_config_raw["workspace_settings"]["base_folder_path"],
+                "requirements_path": app_config_raw["workspace_settings"]["requirements_path"],
+                "admin_workspace_name": app_config_raw["workspace_settings"]["admin_workspace_name"]
             }
         }
 

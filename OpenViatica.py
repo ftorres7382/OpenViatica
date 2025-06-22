@@ -1,5 +1,6 @@
 import typing as t
 import argparse
+import time
 
 from app.Utilities import Setup
 from app.globals import APP_CONFIG
@@ -11,14 +12,14 @@ def main(cli_args: t.Any) -> None:
     '''
     
 
-    # Database setup
+    # Database setup    
     setup = Setup()
     setup.database_setup()
 
     # Setup the admin workspace
-    setup.workspace_setup(APP_CONFIG["admin_workspace"]["folder_path"])
+    setup.workspace_setup(APP_CONFIG["workspace_settings"]["base_folder_path"])
 
-    print(f"\nSuccess! The Admin Workspace has been setup in: '{APP_CONFIG['admin_workspace']['folder_path']}'")
+    print(f"\nSuccess! The Admin Workspace has been setup in: '{APP_CONFIG['workspace_settings']['base_folder_path']}'")
     print(f"Feel free to open it in an IDE. VS Code is recommended, since it is natively supported.\n")
     
     

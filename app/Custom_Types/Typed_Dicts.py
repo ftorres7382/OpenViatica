@@ -34,12 +34,15 @@ APP_CONFIG_APP_DATABASE_DICT = t.TypedDict("APP_CONFIG_APP_DATABASE_DICT", {
 })
 
 APP_CONFIG_ADMIN_WORKSPACE_DICT = t.TypedDict("APP_CONFIG_ADMIN_WORKSPACE_DICT", {
-    "folder_path": str
+    "base_folder_path": str,
+    "requirements_path": str,
+    "admin_workspace_name": str
 })
 
 APP_CONFIG_DICT = t.TypedDict("APP_CONFIG_DICT", {
+    "mode": str,
     "app_database": APP_CONFIG_APP_DATABASE_DICT,
-    "admin_workspace": APP_CONFIG_ADMIN_WORKSPACE_DICT
+    "workspace_settings": APP_CONFIG_ADMIN_WORKSPACE_DICT
     
 })
 # endregion
