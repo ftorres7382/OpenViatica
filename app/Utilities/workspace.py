@@ -43,7 +43,7 @@ class Workspace():
         )
         workspace_path = Path(folderpath) / workspace_name 
         
-        user_workspace_path = workspace_path / APP_CONFIG["workspace_settings"]["template_user_workspace_path"]
+        user_workspace_path = workspace_path / APP_CONFIG["workspace_settings"]["template_user_workspace_relpath"]
         workspace_venv_path = user_workspace_path / Path(".venv")
 
 

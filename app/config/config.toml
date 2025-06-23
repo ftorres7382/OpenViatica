@@ -19,6 +19,7 @@ database_name = "OpenViatica_App"
 template_workspace_folder_path = "app/Workspace_Files/Template_Workspace"
 template_user_workspace_relpath = "External"
 template_venv_requirements_relpath = "Internal/Config/workspace_base_pip_requirements.txt"
+
 # If hosted in another place, it could be mounted.
 # IDK what the options would be when we go enterprise and set this worksace up in another place, thats if we can or should...
 

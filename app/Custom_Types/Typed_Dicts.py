@@ -1,5 +1,7 @@
 import typing as t
 from app.Custom_Types import Enums as E
+from typing import TypedDict, Union
+from pydantic import ConfigDict
 
 # If we need to organize, use regions, if we need more, use a folder and divide by files
 
@@ -7,9 +9,9 @@ from app.Custom_Types import Enums as E
 # Config min types
 ###################################### 
 # region
-CONFIG_MIN_DICT = t.TypedDict("CONFIG_MIN_DICT", {
-    "app_config_path": str
-})
+class CONFIG_MIN_DICT(TypedDict):
+    app_config_path: str
+setattr(CONFIG_MIN_DICT, "__pydantic_config__", ConfigDict(strict=True)) # Done this way so that pylance does not complain
 # endregion
 
 
@@ -18,50 +20,55 @@ CONFIG_MIN_DICT = t.TypedDict("CONFIG_MIN_DICT", {
 ###################################### 
 # region
 
-APP_CONFIG_POSTGRES_DICT = t.TypedDict("APP_CONFIG_POSTGRES_DICT", {
-    "host": str,
-    "user": str
-})
-APP_CONFIG_SQLITE_DICT = t.TypedDict("APP_CONFIG_SQLITE_DICT", {
-    "path": str,
-})
+class APP_CONFIG_POSTGRES_DICT(TypedDict):
+    host: str
+    user: str
+setattr(APP_CONFIG_POSTGRES_DICT, "__pydantic_config__", ConfigDict(strict=True))
 
-APP_CONFIG_APP_DATABASE_DICT = t.TypedDict("APP_CONFIG_APP_DATABASE_DICT", {
-    "engine": E.ALLOWED_SQL_ENGINES,
-    "database_name": str,
-    "postgres": APP_CONFIG_POSTGRES_DICT,
-    "sqlite" : APP_CONFIG_SQLITE_DICT
-})
 
-APP_CONFIG_ADMIN_WORKSPACE_DICT = t.TypedDict("APP_CONFIG_ADMIN_WORKSPACE_DICT", {
-    "template_workspace_folder_path": str,
-    "template_user_workspace_relpath": str,
-    "template_venv_requirements_relpath": str,
+class APP_CONFIG_SQLITE_DICT(TypedDict):
+    path: str
+setattr(APP_CONFIG_SQLITE_DICT, "__pydantic_config__", ConfigDict(strict=True))
 
-    "base_folder_path": str,
-    "admin_workspace_name": str
-})
+class APP_CONFIG_APP_DATABASE_DICT(TypedDict):
+    engine: E.ALLOWED_SQL_ENGINES
+    database_name: str
+    postgres: APP_CONFIG_POSTGRES_DICT
+    sqlite: APP_CONFIG_SQLITE_DICT
+setattr(APP_CONFIG_APP_DATABASE_DICT, "__pydantic_config__", ConfigDict(strict=True))
 
-APP_CONFIG_DICT = t.TypedDict("APP_CONFIG_DICT", {
-    "mode": str,
-    "app_database": APP_CONFIG_APP_DATABASE_DICT,
-    "workspace_settings": APP_CONFIG_ADMIN_WORKSPACE_DICT
-    
-})
+
+class APP_CONFIG_ADMIN_WORKSPACE_DICT(TypedDict):
+    template_workspace_folder_path: str
+    template_user_workspace_relpath: str
+    template_venv_requirements_relpath: str
+    base_folder_path: str
+    admin_workspace_name: str
+setattr(APP_CONFIG_ADMIN_WORKSPACE_DICT, "__pydantic_config__", ConfigDict(strict=True))
+
+
+class APP_CONFIG_DICT(TypedDict):
+    mode: str
+    app_database: APP_CONFIG_APP_DATABASE_DICT
+    workspace_settings: APP_CONFIG_ADMIN_WORKSPACE_DICT
+setattr(APP_CONFIG_DICT, "__pydantic_config__", ConfigDict(strict=True))
+
 # endregion
+
 
 ######################################
 # SQLA Types
 ###################################### 
 # region
 
-SQLA_CONNECTION_INFO_DICT = t.TypedDict("SQLA_CONNECTION_INFO_DICT", {
-    "engine": E.ALLOWED_SQL_ENGINES,
-    "connection_configuration": t.Union[APP_CONFIG_SQLITE_DICT, APP_CONFIG_POSTGRES_DICT],
-    "connection_string": str
-})
+class SQLA_CONNECTION_INFO_DICT(TypedDict):
+    engine: E.ALLOWED_SQL_ENGINES
+    connection_configuration: Union[APP_CONFIG_SQLITE_DICT, APP_CONFIG_POSTGRES_DICT]
+    connection_string: str
+setattr(SQLA_CONNECTION_INFO_DICT, "__pydantic_config__", ConfigDict(strict=True))
 
-SQLA_ENGINE_CONNECT_ARGS_DICT_TYPE = t.TypedDict("SQLA_ENGINE_CONNECT_ARGS_DICT_TYPE", {
-    "timeout": int
-})
+
+class SQLA_ENGINE_CONNECT_ARGS_DICT_TYPE(TypedDict):
+    timeout: int
+setattr(SQLA_ENGINE_CONNECT_ARGS_DICT_TYPE, "__pydantic_config__", ConfigDict(strict=True))
 # endregion
