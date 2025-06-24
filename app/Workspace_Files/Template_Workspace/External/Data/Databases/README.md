@@ -8,4 +8,4 @@ The organization can be flexible per team, but the recommended organization is:
 
 2. For file partitioned databases like parquet partitioned databasesL
    
-   Databases/{database_name/{table_name}/{partitioned_files}
+   Databases/{database_name}/{table_name}/{partitioned_files}
