@@ -43,10 +43,11 @@ class Workspace():
         )
         workspace_path = Path(folderpath) / workspace_name 
         
-        user_workspace_path = workspace_path / APP_CONFIG["workspace_settings"]["template_user_workspace_relpath"]
+        user_workspace_path = workspace_path / APP_CONFIG["workspace_settings"]["user_workspace_relpath"]
+        internal_system_path = workspace_path / APP_CONFIG["workspace_settings"]["internal_system_relpath"]
         workspace_venv_path = user_workspace_path / Path(".venv")
         
-        base_requirements_workspace_path = workspace_path / Path(APP_CONFIG["workspace_settings"]["template_venv_requirements_relpath"])
+        base_requirements_workspace_path = internal_system_path / APP_CONFIG["workspace_settings"]["venv_requirements_relpath"]
 
 
         # Add entry to the database

@@ -42,8 +42,9 @@ setattr(APP_CONFIG_APP_DATABASE_DICT, "__pydantic_config__", ConfigDict(strict=T
 
 class APP_CONFIG_ADMIN_WORKSPACE_DICT(TypedDict):
     template_workspace_folder_path: str
-    template_user_workspace_relpath: str
-    template_venv_requirements_relpath: str
+    user_workspace_relpath: str
+    internal_system_relpath: str
+    venv_requirements_relpath: str
     base_folder_path: str
     admin_workspace_name: str
 setattr(APP_CONFIG_ADMIN_WORKSPACE_DICT, "__pydantic_config__", ConfigDict(strict=True, extra="forbid"))
