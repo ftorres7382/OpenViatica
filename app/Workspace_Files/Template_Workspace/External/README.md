@@ -1,1 +1,0 @@
-This folder is where the workspace users will interact and connect to.
