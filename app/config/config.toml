@@ -17,18 +17,15 @@ database_name = "OpenViatica_App"
 # This is the default settings for any workspace that is created
 [workspace_settings]
 template_workspace_folder_path = "app/Workspace_Files/Template_Workspace"
-user_workspace_relpath = "Work"
-internal_system_relpath = "System"
-venv_requirements_relpath = "Config/workspace_base_pip_requirements.txt"
 
-# If hosted in another place, it could be mounted.
-# IDK what the options would be when we go enterprise and set this worksace up in another place, thats if we can or should...
+# Paths that would be relevant to the workspace itself
+user_workspace_foldername = "Work"
+internal_system_foldername = "System"
+sytem_config_foldername = "Config"
+setup_script_relpath = "setup_workspace/setup.py"
 
-# Folder path for now, it should probably not be where the app is hosted for security and enterprise purposes
-# But for small use, it can make sense.
 
-# This could also be changed to some sort of podman that starts up and using vs code to connect to the folder stucture
+# Settings for where the workspaces should be hosted
 base_folder_path = "Workspaces/"
 admin_workspace_name = "Admin_Workspace"
-
 

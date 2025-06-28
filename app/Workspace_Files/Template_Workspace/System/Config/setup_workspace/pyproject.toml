@@ -1,0 +1,11 @@
+[tool.poetry]
+package-mode = false  # 👈 disables packaging behavior
+
+
+[tool.poetry.dependencies]
+python = ">=3.12"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

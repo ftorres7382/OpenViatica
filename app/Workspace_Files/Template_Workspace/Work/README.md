@@ -25,6 +25,8 @@ This workspace comes pre-installed with the following python modules, through th
    1. Jupyter
    
    2. sqlalchemy
+   
+   3. ipython
 
 4. Custom Utilities:
    

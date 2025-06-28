@@ -1,0 +1,1 @@
+This directory is for all temporary files that should be deleted sooner or later
