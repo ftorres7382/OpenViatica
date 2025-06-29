@@ -19,7 +19,7 @@ def main(cli_args: t.Any) -> None:
     # Setup the admin workspace
     setup.workspace_setup(APP_CONFIG["workspace_settings"]["base_folder_path"])
 
-    print(f"\nSuccess! The Admin Workspace has been setup in: '{APP_CONFIG['workspace_settings']['base_folder_path']}'")
+    print(f"\nSuccess! The Admin Workspace has been setup in the folder: '{APP_CONFIG['workspace_settings']['base_folder_path']}'")
     print(f"Feel free to open it in an IDE. VS Code is recommended, since it is natively supported.\n")
     
     
