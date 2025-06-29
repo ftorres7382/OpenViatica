@@ -5,28 +5,52 @@ This workspace comes pre-installed with the following python modules, through th
 1. Data Analysis:
    
    1. pandas
+      
+      1. Small to medium size Dataframes
    
    2. polars
+      
+      1. Medium to large DataFrames
    
-   3. duckdb
+   3. duckDB
+      
+      1. Large to XL DataFrames
    
    4. ibis
+      
+      1. For a single API to handle pandas or duckDB
 
 2. Data Visualization
    
    1. matplotlib
+      
+      1. Static visualization plots
    
    2. plotly
+      
+      1. Interactive visualization plots
    
    3. seaborn
+      
+      1. For easy and fast visualizations
+   
+   4. dash
+      
+      1. For serving Data Visualizations
 
 3. Extras:
    
-   1. Jupyter
+   1. openpyxl
+      
+      1. For workign with excel files
    
-   2. sqlalchemy
+   2. notebook
+      
+      1. For jupyter notebooks
    
-   3. ipython
+   3. sqlalchemy
+   
+   4. ipython
 
 4. Custom Utilities:
    
