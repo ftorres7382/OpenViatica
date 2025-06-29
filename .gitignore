@@ -1,6 +1,6 @@
 # Custom ignores
 
-# poetry.lock
+poetry.lock
 
 Workspaces/*
 !Workspaces/README.md
