@@ -49,6 +49,8 @@ This workspace comes pre-installed with the following python modules, through th
       1. For jupyter notebooks
    
    3. sqlalchemy
+      
+      1. For interacting with databases
    
    4. ipython
 

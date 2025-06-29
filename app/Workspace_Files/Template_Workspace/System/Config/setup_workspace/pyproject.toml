@@ -1,3 +1,4 @@
+# This pyproject is meant to live in the user directory, but a copy will always be retained in this folder
 [tool.poetry]
 package-mode = false  # 👈 disables packaging behavior
 
@@ -17,6 +18,7 @@ openpyxl = "^3.1.5"
 notebook = "^7.4.3"
 sqlalchemy = "^2.0.41"
 ipython = "^9.3.0"
+# Dependency to the via_utils will be added when it is posted to PyPi
 
 
 [build-system]

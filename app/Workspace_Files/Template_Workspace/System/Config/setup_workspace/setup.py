@@ -8,6 +8,7 @@ import custom_types as T # type: ignore
 import subprocess
 import sys
 import shutil
+from pydantic import TypeAdapter
 
 def run() -> None:
     script_filepath = Path(__file__)
@@ -16,6 +17,10 @@ def run() -> None:
 
     with open(config_filepath) as f:
         config: T.WORKSPACE_SETUP_CONFIG_DICT = json.load(f)
+    
+    # Check the dictionary
+    adapter = TypeAdapter(T.WORKSPACE_SETUP_CONFIG_DICT)
+    config = adapter.validate_python(config)
 
 
     # Change the working directory
@@ -47,8 +52,10 @@ def run() -> None:
     destination_pyproject_relpath = Path(config["user_workspace_foldername"])/"pyproject.toml"
     shutil.copy(source_pyproject_relpath, destination_pyproject_relpath)
 
+    # Changing the path because idk how poetry will like me being in another dir
+    os.chdir(Path(config["user_workspace_foldername"])) 
+
     # Now just install the dependencies
-    os.chdir(Path(config["user_workspace_foldername"])) # Changing the path because idk how poetry will like me being in another dir
     new_venv_relpath = venv_python_path.relative_to(config["user_workspace_foldername"])
     
     subprocess.run([str(new_venv_relpath), "-m", "poetry", "install"])

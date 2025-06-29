@@ -1,5 +1,5 @@
 import typing as t
-from pydantic import ConfigDict, TypeAdapter
+from pydantic import TypeAdapter
 
 from app import Custom_Types as T
 

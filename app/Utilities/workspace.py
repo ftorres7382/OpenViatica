@@ -77,7 +77,8 @@ class Workspace():
             "user_workspace_foldername": APP_CONFIG["workspace_settings"] ["user_workspace_foldername"],
             "setup_script_relpath": str(relative_setup_script_path),
             "internal_system_foldername": APP_CONFIG["workspace_settings"]["internal_system_foldername"],
-            "sytem_config_foldername": APP_CONFIG["workspace_settings"]["sytem_config_foldername"],            
+            "sytem_config_foldername": APP_CONFIG["workspace_settings"]["sytem_config_foldername"],       
+            "system_utilities_foldername" : APP_CONFIG["workspace_settings"]["system_utilities_foldername"]    
         }
         # Write the type of the config to the template and workspace directory
         # This centralizes the expectations

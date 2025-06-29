@@ -12,6 +12,8 @@ class WORKSPACE_SETUP_CONFIG_DICT(TypedDict):
 
     setup_script_relpath: str
 
+    system_utilities_foldername: str
+
 
 
 

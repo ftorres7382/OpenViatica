@@ -20,8 +20,12 @@ template_workspace_folder_path = "app/Workspace_Files/Template_Workspace"
 
 # Paths that would be relevant to the workspace itself
 user_workspace_foldername = "Work"
+
+
+# All sytem paths
 internal_system_foldername = "System"
 sytem_config_foldername = "Config"
+system_utilities_foldername = "Utilities"
 setup_script_relpath = "setup_workspace/setup.py"
 
 
