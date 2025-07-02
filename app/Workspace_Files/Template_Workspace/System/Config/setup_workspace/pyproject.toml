@@ -4,6 +4,9 @@ package-mode = false  # 👈 disables packaging behavior
 
 
 [tool.poetry.dependencies]
+# Custom dependencies
+via_utils = {path="../System/Utilities/via_utils/", develop=true}
+
 python = ">=3.12"
 pandas = "^2.3.0"
 numpy = "^2.3.1"
@@ -21,9 +24,8 @@ ipython = "^9.3.0"
 fastapi = "^0.115.14"
 flask = "^3.1.1"
 ipykernel = "^6.29.5"
+jupytext = "^1.17.2"
 
-# Custom dependencies
-via_utils = {path="../System/Utilities/via_utils/", develop=true}
 
 
 [build-system]

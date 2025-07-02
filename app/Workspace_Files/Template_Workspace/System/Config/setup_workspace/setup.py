@@ -77,7 +77,7 @@ def run() -> None:
     
     ## Create the file in the site packages that will import via_utils an
     with open(Path(site_packages_relpath) / "python_startup_OpenViatica.pth", "w") as f:
-        f.write(f"import os; os.chdir('{os.getcwd()}')")
+        f.write(f"import os; os.chdir('{Path(os.getcwd()).as_posix()}')")
 
 
     # change dir back to root as a default
