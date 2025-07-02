@@ -4,45 +4,35 @@ This workspace comes pre-installed with the following python modules, through th
 
 1. Data Analysis:
    
-   1. pandas
-      
-      1. Small to medium size Dataframes
+   1. pandas: Small to medium size Dataframes
    
-   2. polars
-      
-      1. Medium to large DataFrames
+   2. polars: Medium to large DataFrames
    
-   3. duckDB
-      
-      1. Large to XL DataFrames
+   3. duckDB: Large to XL DataFrames
    
-   4. ibis
-      
-      1. For a single API to handle pandas or duckDB
+   4. ibis: For a single API to handle pandas, polars or duckDB
 
 2. Data Visualization
    
-   1. matplotlib
-      
-      1. Static visualization plots
+   1. matplotlib: Static visualization plots
    
-   2. plotly
-      
-      1. Interactive visualization plots
+   2. plotly: Interactive visualization plots
    
-   3. seaborn
-      
-      1. For easy and fast visualizations
+   3. seaborn: For easy and fast visualizations
    
-   4. dash
-      
-      1. For serving Data Visualizations
+   4. dash: For serving Data Visualizations
 
-3. Extras:
+3. Applications (NOT YET INTEGRATED)
+   
+   1. fastAPI: Quick apis to make data accessible to other users
+   
+   2. flask: To create a webpage or server using the data 
+
+4. Extras:
    
    1. openpyxl
       
-      1. For workign with excel files
+      1. For working with excel files
    
    2. notebook
       
@@ -54,6 +44,24 @@ This workspace comes pre-installed with the following python modules, through th
    
    4. ipython
 
-4. Custom Utilities:
+5. Custom Utilities:
    
-   1. TBA
+   1. via_utils
+6. **<u>Future</u>** Integrations:
+   1. pyspark
+
+The recommended Tech Stack is the following:
+
+1. For Data Processing:
+   
+   1. Pandas
+   
+   2. Polars
+   
+   3. duck_db
+   
+   4. ibis: To standardize all the codes API through ibis. Instead of coding directly in the  package itself, all codes can be made using ibis, thu standardizing the codes. This is less confusing for developers and therefore the resulting code is easier to read and mantain.
+
+2. For visualizations:
+   
+   1. 
