@@ -18,7 +18,12 @@ openpyxl = "^3.1.5"
 notebook = "^7.4.3"
 sqlalchemy = "^2.0.41"
 ipython = "^9.3.0"
-# Dependency to the via_utils will be added when it is posted to PyPi
+fastapi = "^0.115.14"
+flask = "^3.1.1"
+ipykernel = "^6.29.5"
+
+# Custom dependencies
+via_utils = {path="../System/Utilities/via_utils/", develop=true}
 
 
 [build-system]

@@ -1,5 +1,7 @@
 '''
 This script assumes that it is already in the workspace, so when setting up a new workspace, you need to copy this into it
+
+Maybe this should be integrated into via_utils? idk
 '''
 from pathlib import Path
 import json
@@ -22,6 +24,8 @@ def run() -> None:
     adapter = TypeAdapter(T.WORKSPACE_SETUP_CONFIG_DICT)
     config = adapter.validate_python(config)
 
+    
+
 
     # Change the working directory
     os.chdir(script_folderpath)
@@ -43,8 +47,10 @@ def run() -> None:
     if not venv_python_path.exists():
         raise Exception("ERROR! Cannot find the python venv!")
     
+    venv_python_path = venv_python_path.as_posix()
+    
     # Install poetry in this venv
-    subprocess.run([str(venv_python_path), "-m", "pip", "install", "poetry"])
+    subprocess.run([venv_python_path, "-m", "pip", "install", "poetry"])
 
     # Copy the pyproject.toml file to the work area
     script_folder_relpath = script_folderpath.relative_to(root_workspace_path)
@@ -55,10 +61,24 @@ def run() -> None:
     # Changing the path because idk how poetry will like me being in another dir
     os.chdir(Path(config["user_workspace_foldername"])) 
 
-    # Now just install the dependencies
-    new_venv_relpath = venv_python_path.relative_to(config["user_workspace_foldername"])
+    # Now just install the dependencies using poetry in the venv
+    venv_python_relpath = Path(venv_python_path).relative_to(config["user_workspace_foldername"]).as_posix()
+    subprocess.run([venv_python_relpath, "-m", "poetry", "install"], env={})
+
+    # Add autoloading of the via_utils module
+    ## get the location of the site packages
+    result = subprocess.run(
+        [venv_python_relpath, "-c", "import site; print(site.getsitepackages()[0])"],
+        capture_output=True, text=True, check=True
+    )
+    site_packages_path = Path(result.stdout.strip())
+    site_packages_relpath = site_packages_path.relative_to(os.getcwd())
+
     
-    subprocess.run([str(new_venv_relpath), "-m", "poetry", "install"])
+    ## Create the file in the site packages that will import via_utils an
+    with open(Path(site_packages_relpath) / "python_startup_OpenViatica.pth", "w") as f:
+        f.write(f"import os; os.chdir('{os.getcwd()}')")
+
 
     # change dir back to root as a default
     os.chdir(root_workspace_path)  
