@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "via_utils"
+version = "0.0.1"
+description = "A python, CLI and API integrated module for handling anything having to do with Viatica workspace configurations"
+authors = ["Francsico Torres <ftorres7382@gmail.com>"]
+packages = [{ include = "via_utils" }]
+
+[tool.poetry.dependencies]
+python = ">=3.12"
+
+[tool.poetry.scripts]
+via_utils = "via_utils.cli:main"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

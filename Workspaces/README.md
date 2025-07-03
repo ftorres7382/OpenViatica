@@ -1,4 +1,5 @@
 # Workspaces
+
 This area is for creating and managing workspaces
 
 It should be used ONLY if the access to the data and/or the application iself is not a big deal.

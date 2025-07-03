@@ -1,6 +1,8 @@
 # NOTE: The type hints can asolutely be out of date.
 #       If they are out of date, please notify it so it gets corrected.
 
+mode = ""
+
 [app_database]
 engine = "sqlite" # t.Literal["sqlite", "postgres"]
 database_name = "OpenViatica_App"
@@ -12,14 +14,22 @@ database_name = "OpenViatica_App"
     host = "localhost" # str
     user = "admin" # str
 
-# This is the admin workspace, hosted on the backend server
-# Setting up other workspaces can be done from this one
-[admin_workspace]
-# If hosted in another place, it could be mounted.
-# IDK what the options would be when we go enterprise and set this worksace up in another place, thats if we can or should...
+# This is the default settings for any workspace that is created
+[workspace_settings]
+template_workspace_folder_path = "app/Workspace_Files/Template_Workspace"
 
-# Folder path for now, it should probably not be where the app is hosted for security and enterprise purposes
-# But for small use, it can make sense.
+# Paths that would be relevant to the workspace itself
+user_workspace_foldername = "Work"
 
-# This could also be changed to some sort of podman that starts up and using vs code to connect to the folder stucture
-folder_path = "./Workspaces/Admin_Workspace/"
+
+# All sytem paths
+internal_system_foldername = "System"
+sytem_config_foldername = "Config"
+system_utilities_foldername = "Utilities"
+setup_script_relpath = "setup_workspace/setup.py"
+
+
+# Settings for where the workspaces should be hosted
+base_folder_path = "Workspaces/"
+admin_workspace_name = "Admin_Workspace"
+

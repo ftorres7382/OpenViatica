@@ -1,0 +1,1 @@
+This folder is to store all the configurations for the workspace.

@@ -1,0 +1,1 @@
+This folder will contain all user workspace activity, data and files.

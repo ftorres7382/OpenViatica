@@ -4,7 +4,7 @@ import uuid
 from email_validator import validate_email, EmailNotValidError
 
 
-from app.Database_Models import Principals
+from app.Database_Models.App_Models import Principals
 from app.Utilities import Sqla_Helper
 from app import Custom_Types as T
 
