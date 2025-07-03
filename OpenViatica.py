@@ -11,6 +11,7 @@ def main(cli_args: t.Any) -> None:
     This function will coordinate all of the apps functions
     '''
     
+    
 
     # Database setup    
     setup = Setup()
