@@ -47,10 +47,10 @@ def run() -> None:
     if not venv_python_path.exists():
         raise Exception("ERROR! Cannot find the python venv!")
     
-    venv_python_path = venv_python_path.as_posix()
+    str_venv_python_path = venv_python_path.as_posix()
     
     # Install poetry in this venv
-    subprocess.run([venv_python_path, "-m", "pip", "install", "poetry"])
+    subprocess.run([str_venv_python_path, "-m", "pip", "install", "poetry"])
 
     # Copy the pyproject.toml file to the work area
     script_folder_relpath = script_folderpath.relative_to(root_workspace_path)
@@ -62,8 +62,8 @@ def run() -> None:
     os.chdir(Path(config["user_workspace_foldername"])) 
 
     # Now just install the dependencies using poetry in the venv
-    venv_python_relpath = Path(venv_python_path).relative_to(config["user_workspace_foldername"]).as_posix()
-    subprocess.run([venv_python_relpath, "-m", "poetry", "install"], env={})
+    venv_python_relpath = Path(str_venv_python_path).relative_to(config["user_workspace_foldername"]).as_posix()
+    subprocess.run([venv_python_relpath, "-m", "poetry", "install"], env=get_clean_env())
 
     # Add autoloading of the via_utils module
     ## get the location of the site packages
@@ -83,6 +83,19 @@ def run() -> None:
     # change dir back to root as a default
     os.chdir(root_workspace_path)  
 
+def get_clean_env():
+    env = os.environ.copy()
+
+    # Remove venv-specific env vars that point to the active venv
+    env.pop("VIRTUAL_ENV", None)
+    env.pop("PYTHONHOME", None)
+
+    # Remove venv from PATH, if present
+    path_parts = env.get("PATH", "").split(os.pathsep)
+    clean_path_parts = [p for p in path_parts if ".venv" not in p and "env" not in p]
+    env["PATH"] = os.pathsep.join(clean_path_parts)
+
+    return env
 
 
 if __name__ == "__main__":

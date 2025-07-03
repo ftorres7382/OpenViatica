@@ -25,6 +25,7 @@ fastapi = "^0.115.14"
 flask = "^3.1.1"
 ipykernel = "^6.29.5"
 jupytext = "^1.17.2"
+pyarrow = "^20.0.0"
 
 
 
