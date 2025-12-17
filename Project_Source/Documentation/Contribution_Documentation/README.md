@@ -6,13 +6,16 @@ If it is a little empty it is because I am the only one contributing right now.
 
 # Coding Standards (WARNING! Other standards could be added as the project matures!)
 
-1. Only python can be used for this project
+1. This project is python first and Rust whenever it is needed for performance or other reasons. 
+    - To choosing rust for an implementation of a function or a feature needs to be justified by performance or other reasons. 
+    - It needs also be integrated with the larger python codebase
+    - As it stands right now, for any rust code, we would also need an integration strategy and testing before integrating out first rust code into the project.
 2. lower_case_snake style by default for variables and functions
 3. CamelCase for class names
 4. Upper_Case_Snake for modules
 5. Upper_Case_Snake for folder names
 6. Project MUST pass "mypy --strict" check
-7. YOU ARE RESPONSIBLE FOR THE CODE BEING SUBMITTED.
+7. AI is allowed, but: **YOU ARE RESPONSIBLE FOR THE CODE BEING SUBMITTED**.
     - The code submitted MUST conform to the coding standard and the scope of the project.
     - Using AI is allowed, but YOU will always be responsible for the code submitted.
 
@@ -20,12 +23,12 @@ If it is a little empty it is because I am the only one contributing right now.
 
 - Bugfixes and documentation typo fixes are always a foor icebreaker
 - How to do contributions on new functionalities
-    1. Read the documentation on the Code [here](../Code_Documentation/README.md)
-    2. Decide on a module/function/section that you want to work on
+    1. Read the documentation on the code [here](../Code_Documentation/README.md)
+    2. Decide on an issue for a module/function/section in the that you want to work on
         - Maybe a section does not have all the functionality that it should have
         - Maybe there is an in progress section that no one is working on.
         - Maybe there could be an improvement to the current arquitecture.
-            - In that case I´d accept proposals through email first to add it to the Code Documentation as something that has been approved or is in progress
+            - In that case I´d accept proposals through email with a proposal or if its something more casual, use the github discussions. (I could add a proposal section to the GitHub discussions, but idk)
     3. Fork this repo
     4. You can work on it as you see in your own fork, but I would recommend following the process that the main repo will do so that there is better parity
     5. When you are done with the changes, these are the steps to start incorporating the work into the main branch.
@@ -46,9 +49,11 @@ If it is a little empty it is because I am the only one contributing right now.
         8. If it fails, then the the final reviewer must make an itemized list of all the things wrong and send it back to step 4.
         9. If they pass, we should be able to merge the changes
 
-# Coding Standards Suggestions
+# Coding/Standards Suggestions
 I want to reserve this area for any coding standard suggestions I am considering but have not 100% decided on yet.
 
+
+# Coding Standards Justifications
 1. **ONLY RUST allowed for performance compiled programming needs**
     - The idea here is that I recognize that python might not be the only language we implement and that we might need the speed of another language
     - I am not a primarily Rust developer, but the strict enforcements of type and memory management standards makes sense to me
