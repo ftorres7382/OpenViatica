@@ -67,12 +67,8 @@ flowchart LR
 
 ```
 
-<svg width="200" height="100" xmlns="http://www.w3.org/2000/svg">
-  <a href="https://example.com" target="_blank">
-    <rect x="10" y="10" width="180" height="80" fill="lightblue" stroke="black"/>
-    <text x="20" y="50" font-size="16">Click me!</text>
-  </a>
-</svg>
+<h2>asdf
+</h2>
 
 
 Workspace ==> |Preferred IDE| VSCode
