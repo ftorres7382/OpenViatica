@@ -17,8 +17,7 @@ dependencies = [
 
     # Documentation dependencies
     "mkdocs-material",
-    "watchdog",
-    "mkdocs-build-plantuml-plugin"
+    "mkdoces-drawio"
 ]
 installer = "uv"
 uv-compile = true
