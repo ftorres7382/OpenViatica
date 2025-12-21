@@ -1,0 +1,33 @@
+# NOTE: This will be running in project root
+site_name: OpenViatica Documentation
+docs_dir: ../../
+theme:
+  name: material
+  palette:
+    scheme: slate
+plugins:
+  - search
+  - same-dir
+  - drawio:
+      toolbar: true      # Shows the zoom/fullscreen toolbar on hover
+      viewer_js: "https://viewer.diagrams.net/js/viewer-static.min.js"
+      darkmode: true
+      edit: false
+  - exclude:
+      glob:
+        - ".venv/*"
+        - ".venv-dev/*"
+        - ".vscode/*"
+        - "OpenViatica.egg-info/*"
+        - "Project_Source/Code/*"
+        - "Project_Source/Dev_Tools/*"
+        - "Project_Source/Validation_Code/*"
+        - "Project_Source/README.md"
+
+nav:
+  - Home: README.md 
+  - Documentation: Project_Source/Documentation/
+
+# Add this section at the bottom (root level)
+extra_css:
+  - Project_Source/mkdocs/extra.css

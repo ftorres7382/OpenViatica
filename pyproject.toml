@@ -17,11 +17,16 @@ dependencies = [
 
     # Documentation dependencies
     "mkdocs-material",
-    "mkdoces-drawio"
+    "mkdocs-drawio",
+    "mkdocs-same-dir",
+    "mkdocs-exclude"
 ]
 installer = "uv"
 uv-compile = true
 path = ".venv-dev"  # dev environment inside project folder
+
+# Shorten Bash path
+env-vars = { PROMPT_DIRTRIM = "1" }
 
 
 
