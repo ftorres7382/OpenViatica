@@ -1,10 +1,12 @@
 # Contribution_Documentation
 This is the directory for all the documentation on how someone can contribute to this project. 
-<br>
-If it is a little empty it is because I am the only one contributing right now.
-<br>
 
-# Coding Standards (WARNING! Other standards could be added as the project matures!)
+
+If it is a little empty it is because I am the only one contributing right now.
+
+
+# Coding Standards 
+## (WARNING! Other standards could be added as the project matures!)
 
 1. This project is python first and Rust whenever it is needed for performance or other reasons. 
     - To choosing rust for an implementation of a function or a feature needs to be justified by performance or other reasons. 
@@ -14,8 +16,22 @@ If it is a little empty it is because I am the only one contributing right now.
 3. CamelCase for class names
 4. Upper_Case_Snake for modules
 5. Upper_Case_Snake for folder names
-6. Project MUST pass "mypy --strict" check
-7. AI is allowed, but: **YOU ARE RESPONSIBLE FOR THE CODE BEING SUBMITTED**.
+6. Type Check Standards: To mainatin the project correctly, we will need to enforce certain type safety standards even in python.
+    1. Project MUST pass "mypy --strict" check
+    2. ALL dynamic variables MUST use ```typeguard.check_type``` to validate their expected schema
+        - This way, when the data mutates to a value we do not expect, the program just blows up and we know where to fix things.
+    3. ALL functions MUST have the  ```typeguard.typechecked``` decorator to validate arguments on runtime
+    4. Exceptions:
+        - Scripts that require the minimum amount of packages installed for user experience.
+    5. Notes:
+        - This could be used to enforce type safety on the project as a whole but would still need some testing
+        ```python
+        from typeguard import install_import_hook
+
+        # Call this at the very top of your entry point (e.g., main.py)
+        install_import_hook('my_project_package')
+        ```
+9. AI is allowed, but: **YOU ARE RESPONSIBLE FOR THE CODE BEING SUBMITTED**.
     - The code submitted MUST conform to the coding standard and the scope of the project.
     - Using AI is allowed, but YOU will always be responsible for the code submitted.
 

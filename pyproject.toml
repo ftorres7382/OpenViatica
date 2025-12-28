@@ -19,7 +19,7 @@ dependencies = [
     "mkdocs-material",
     "mkdocs-drawio",
     "mkdocs-same-dir",
-    "mkdocs-exclude"
+    "mkdocs-exclude",
 ]
 installer = "uv"
 uv-compile = true
