@@ -1,28 +1,41 @@
-[build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
-
 [project]
-name = "OpenViatica"
-version = "0.0.1"
-description = "A data analysis framework from personal use to enterprise level"
-authors = [
-    { name = "Francisco J. Torres Cardona", email = "ftorres7382@gmail.com" }
-]
-readme = "README.md"
-license = { text = "MIT" }
-requires-python = ">=3.12"
-dependencies = [
-    "mypy>=1.16.1",
-    # "poetry>=2.1.3",
-    "SQLAlchemy>=2.0.41",
-    "pydantic>=2.11.7",
-    "toml>=0.10.2",
-    "email_validator>=2.2.0",
+name="OpenViatica"
+version="0.0.1"
+dependencies = []
 
-    # mypy specific dependencies
-    "types-toml >= 0.10.8.20240310",
+# ----------------------------
+# Developer Environment
+# ----------------------------
+[tool.hatch.envs.dev]
+dependencies = [
+    # Hatch and uv are assumed as part of the setup.py
+
+    # Type checkers
+    "mypy", # Static Typechecker, will be using mypy --strict
+    "pydantic", # For data typechecker
+    "typeguard", # For function parameters typechecker
+
+    # Documentation dependencies
+    "mkdocs-material",
+    "mkdocs-drawio",
+    "mkdocs-same-dir",
+    "mkdocs-exclude",
 ]
-[tool.poetry]
-package-mode = false
+installer = "uv"
+uv-compile = true
+path = ".venv-dev"  # dev environment inside project folder
+
+# Shorten Bash path
+env-vars = { PROMPT_DIRTRIM = "1" }
+
+
+
+# ----------------------------
+# Default Environment (runtime)
+# ----------------------------
+[tool.hatch.envs.default]
+type = "virtual"
+path = ".venv"  
+installer = "uv"
+uv-compile = true
 
