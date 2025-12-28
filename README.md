@@ -1,29 +1,39 @@
 # OpenViatica
+OpenViatica is an open source CLI, API and code-based data analytics platform builder and maintainer. It should come with tools & examples to handle common data analytics problems with a python centered approach.  
 
-This repository contains the  code for the OpenViatica software. It is intended to be a fully local hosting of a data analysis environment.
+# Setup
 
-# OS Level Rquirements
+## Requirements:
+1. Windows, macOS or Linux
+    - Linux ONLY for features needed for a server setup, install or configuration
+2. **Python Version:** python3.12
+3. Git
 
-1. Windows is supported for simple personal use or moderate collaborative use
-2. Linux is supported for more complex or server implementations
-3. python 3.12 is recommended
+## Setup And Usage Steps
+For setup setup
+1. python min_setup.py
+2. Activate environment using the command printed out by the last step
 
-# Generic setup instructions
+## Contributor Steps
+For the developers contributing to the project, there are other packages that need to be installed
+1. Follow all steps in [Setup & Usage Steps](#setup-and-usage-steps) 
 
-1. Clone repo
-2. Create & activate .venv
-   1. python -m venv .vev
-   2. or:
-   3. python3 -m venv .venv
-3. Activate .venv environment
-   1. pip install poetry
-4. Install requirements.txt
-   1. poetry install
-5. python OpenViatica.py
-   - This will set all the settings for the local use of the tool. Enterprise configurations to come later...
-     5- Enterprise recommendations:
-     1- Use linux...
-     2- Create a OpenViatica App Admin group
-     3- Add the accounts necessary to the group
-     4- Change the permissions to 700 but only to the OpenViatica App Admin group
-     5- Make sure to limit and monitor these access, access to the app files compromises everything in the app itself
+
+2. Activate developer shell environment using hatch 
+
+    ```bash
+    hatch shell dev
+    ```
+
+    * That command will have to be run every time you want to activate the developer virtual environment
+    * NOTE: If you want to escape the hatch dev environment, use CTRL+d
+3. Drawio VSCode (Or Codium) Extension is recommended
+4. The project documentation is found [here](Project_Source/Documentation/README.md)
+
+## New Idea Submissions
+- For any proposals/ideas or arquitecture changes send them to ftorres7382@gmail.com (at some point I would like to do the whole mailing list thing and keep track of community discussions that way or in any other way that does not depend on other companies)
+    - I will give every idea a fair shot, but taking into account the project's vision while prioritizing a simple-first approach
+    - Ideas are a good starting point, but after that, a proposal would have to be made on how that would be implemented, pros, cons and value
+    - In general I consider the impact of the idea on the implementationt that are already there, the value of the idea, the complexity and the timeframe.
+- If any of the documentation is not correct or contains typos, feel free to open a PR fixing only that.
+

@@ -1,1 +1,0 @@
-This folder is for all the configuration of the clusters being set up, probably to be used more into the future than right now

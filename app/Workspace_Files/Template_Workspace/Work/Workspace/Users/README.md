@@ -1,1 +1,0 @@
-This folder is so that users can make their own codes and notebooks

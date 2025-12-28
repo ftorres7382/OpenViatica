@@ -1,1 +1,0 @@
-This folder will store all the logs kept of the running workspace
