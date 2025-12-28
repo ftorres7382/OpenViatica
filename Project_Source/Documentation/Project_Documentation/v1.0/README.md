@@ -3,7 +3,7 @@ This is the documentation of the features and of the several steps to get to a v
 
 # Definitions
 1. Datasets: 
-    - FYI: I know that different groups consider small and medium datasets to be completely different. This is just the definition this documentation provides from the perspective of the user being defined. 
+    - NOTE: I know that different groups consider small and medium datasets to be completely different. This is just the definition this documentation provides from the perspective of the user being defined. 
     1. small dataset = < 1GB 
     2. medium dataset = >= 1GB and < 25GB
 
@@ -28,9 +28,9 @@ This is the documentation of the features and of the several steps to get to a v
 
 # Planned Features (PL)
 1. **Python Based Environment:** Since python is one of the leading standards for flexible data analytics platforms, this is what will be used as the base of the environment.
-2. **Windows & Linux Support:** Since the user is just normal person trying to do reports and data analysis and since most of the corporate worls uses Linux right now, the features listed below should be supported on both Windows and Linux.
+2. **Windows & Linux Support:** Since the user is a normal corporate office worker person trying to do reports and data analysis and since most of the corporate world uses Windows right now, the features listed below should be supported on both Windows and Linux.
     - To accomplish this, python will be used as the main method of execution since it is cross-platform
-3. **Workspace Creation:** Allows the user to create a new workspace and define the configuration settings using CLI, .config files or Python code
+3. **Workspace Creation:** Allows the user to create a new workspace and define the configuration settings using CLI, config files or Python code
 4. **Workspace Python Environment Configuration:** The program has a system to define the python virtual environment of the workspace. 
     1. The program is capable of creating the workspace with no virtual environment setup.
     2. The program has a minimal preset for virtual environment modules.
@@ -39,11 +39,11 @@ This is the documentation of the features and of the several steps to get to a v
     5. The program allows the user to add requirements on top of the presets chosen by the user. These should be installed right after workspace initialization
 5. **Workspace Lifecycle Methods:** The workspace will have a lifecycle system so that the user can execute the functions they need when starting their work.
     1. It will come with the most basic of lifecycle steps:
-        1. init: Creates a new workspace
-        2. activate: Activates the python virtual environment and whatever the workspace needs "activated"
+        1. **init**: Creates a new workspace
+        2. **activate**: Activates the python virtual environment and whatever the workspace needs "activated"
             - Will use the same python activation methods
-        3. start: A hook for starting up any types of services or actions to do whenever work starts on the workspace
-        4. stop: A hook for stopping any services or actions to do whenever the workspace stops.
+        3. **start**: A hook for starting up any types of services or actions to do whenever work starts on the workspace
+        4. **stop**: A hook for stopping any services or actions to do whenever the workspace stops.
     2. It will let the user add any steps in between the basic lifecycle steps
     3. By default, the lifecycle steps will need to be run manually by the user
     4. The program should let the user define which stages should be run automatically after which stage has been called
@@ -72,7 +72,7 @@ This is the documentation of the features and of the several steps to get to a v
     8. The workspace folder structure MUST be configurable on or after initialization
     
 # Out of Scope Features
-1. **Access/permission Control:** This is because of item 2 in the user profile
+1. **Access/permission Control:** This is because of item 1 in the user profile
     - Since this user is envisioning only themselves using it, we will not support this feature for this version. 
     - We should still think about how we want to make the v1.0 still compatible with whenever we do want permission control
     - I am thinking just leveraging file permissions on linux for all permission controls in the first implementation. But still needs to be determined
@@ -84,10 +84,11 @@ I much prefer diagrams to represent the fulfillment of the requirements, even th
 PS: Some of these diagrams could look hard to read. To read them, just try to focus on one thing that might be of interest to you and see what connections that box has with others.
 <br>
 
-[Diagram link](Interactions_Diagram.drawio)
+![Diagram link](Interactions_Diagram.drawio)
 
 # Features Version Plan
-In this section, the versioning plan is defined. Only the currently in development and the next version will be defined.
+In this section, the versioning plan is defined. Only the current development and the next version will be defined.
+
 1. v1.0
     1. v0.1 - Integration version
         - Created a simple fibonacci calculating python that can calculate fibonacci numbers manually.

@@ -20,9 +20,9 @@ To see the MkDocs documentation you will have to clone the repo and follow the s
 - Serve using mkdocs:
     - **In the project root**:
         ```bash
-        mkdocs serve -f Project_Source/mkdocs/mkdocs.yml
+        mkdocs serve
         ```
-    - (Optionally) Add the --livereload for automatic reloads after edits
+    - (Optional) Add the --livereload for automatic reloads after edits
         ```bash
-        mkdocs serve -f Project_Source/mkdocs/mkdocs.yml --livereload
+        mkdocs serve --livereload
         ```

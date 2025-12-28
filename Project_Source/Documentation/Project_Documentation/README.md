@@ -20,8 +20,8 @@ The purpose of this folder is to contain all the relevant documentation about th
         5. Implementation language (ie. Python or Rust)
 
 # Version System
-1. The project's versions will be denoted by the following template: v{major_version}.{minor_version}.{patched_version}{optional:"-lts"}. 
-    1. For versions with "-lts" are so they can be tagged as a long term support version
+1. The project's versions will be denoted by the following template: **v{major_version}.{minor_version}.{patched_version}{optional:"-lts"}**. 
+    1. The versions with "-lts" in the version name are considered to be long term support versions
         1. For this project. Long Term Support means no breaking changes to user-space for the duration of the LTS period.
         2. It also means that it will receive patches for the next 2 years for any bugs on it.
     2. Major versions may introduce significant internal architectural changes or large feature additions, while preserving user-space compatibility.
