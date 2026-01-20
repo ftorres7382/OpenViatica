@@ -11,7 +11,7 @@ OpenViatica is an open source CLI, API and code-based data analytics platform bu
 
 ## Setup And Usage Steps
 For setup setup
-1. python min_setup.py
+1. python setup_min.py
 2. Activate environment using the command printed out by the last step
 
 ## Contributor Steps
