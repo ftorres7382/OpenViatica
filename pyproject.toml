@@ -2,6 +2,8 @@
 name="OpenViatica"
 version="0.1"
 dependencies = []
+authors = [{name = "ftorres7382"}]
+maintainers = [{name = "ftorres7382"}]
 
 # ----------------------------
 # Developer Environment
