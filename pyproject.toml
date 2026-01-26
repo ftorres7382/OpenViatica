@@ -21,6 +21,8 @@ type = "virtual"
 dependencies = [
     # Hatch and uv are assumed as part of the setup.py
 
+    "maturin[zig]", # includes cross-compilation support
+
     # Type checkers
     "mypy", # Static Typechecker, will be using mypy --strict
     "pydantic", # For data typechecker
