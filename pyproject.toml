@@ -5,6 +5,14 @@ dependencies = []
 authors = [{name = "ftorres7382"}]
 maintainers = [{name = "ftorres7382"}]
 
+[tool.setuptools.packages.find]
+where = ["Project_Source/Code"]
+# Ensure py.typed is included
+[tool.hatch.build.targets.sdist]
+include = [
+  "Project_Source/Code/OpenViatica/py.typed",
+]
+
 # ----------------------------
 # Developer Environment
 # ----------------------------
@@ -27,9 +35,6 @@ dependencies = [
 installer = "uv"
 uv-compile = true
 path = ".venv-dev"  # dev environment inside project folder
-
-# Shorten Bash path
-env-vars = { PROMPT_DIRTRIM = "1" }
 
 
 
