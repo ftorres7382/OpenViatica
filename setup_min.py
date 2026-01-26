@@ -7,7 +7,7 @@ import time
 
 venv_relpath = ".venv"
 dependencies = [
-    "hatch",
+    "hatch==1.9.4",
     "uv"
 ]
 
@@ -37,14 +37,15 @@ def main() -> None:
     # Check which version of the pip path is found in the venv
     results = os.listdir(venv_fullpath)
     if "bin" in results:
-        pip_path = os.path.join(venv_fullpath, "bin/pip")
+        python_path = os.path.join(venv_fullpath, "bin/python")
     elif "Scripts" in results:
-        pip_path = os.path.join(venv_fullpath, "Scripts/pip.exe")
+        python_path = os.path.join(venv_fullpath, "Scripts/python.exe")
     else:
         raise ValueError(f"ERROR! There is another unknown name for the venv folder! Results obtained: {results}")
     
     # Install dependencies
-    _ = subprocess.check_call([pip_path, "install"] + dependencies)
+    for dependency in dependencies:
+        _ = subprocess.check_call([python_path, "-m", "pip", "install", "--force-reinstall"] + [dependency])
 
     # Print further instructions
     print("-"*20)
@@ -53,7 +54,7 @@ def main() -> None:
     
     # Print instructions based on the shell
     shell = detect_shell()
-    venv_modules_path = os.path.dirname(pip_path)
+    venv_modules_path = os.path.dirname(python_path)
 
     if shell == "bash" or shell == "zsh":
         activate_command = f"source '{os.path.join(venv_modules_path, 'activate')}'"

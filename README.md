@@ -22,7 +22,7 @@ For the developers contributing to the project, there are other packages that ne
 2. Activate developer shell environment using hatch 
 
     ```bash
-    hatch shell dev
+    hatch -e dev shell
     ```
 
     * That command will have to be run every time you want to activate the developer virtual environment

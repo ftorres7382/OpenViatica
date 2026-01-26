@@ -18,10 +18,13 @@ NOTE: ALL clickable diagrams has to be flowchart unless someone can show me a wa
 ## Philosophy & Design
 This section will contain all high level the information of the OpenViatica project and it will also contain the Philosophy and design of what the OpenViatica tool is supposed to help with.
 
-1. OpenViatica should be considered something like an engine for data analysis workspace creation & management. 
+1. OpenViatica should be considered something like an engine for the cration and management of a data analysis workspace.
+
 2. The features it implements should directly tie to the creation of a new workspace or the management of an existin one.
-3. Whenever there are thirs party tools that can fulfill the requirements, we will always use that tool. If not, then we will make our own or build on top of it to fulfill the requirements.
-4. OpenViatica should be designed to be usable from the smallest data analyst to the largest data analysis companies.
+
+3. Whenever there are third party tools that can fulfill the requirements needed to do data analysis work, we will always use that tool. If not, then we will make our own or build on top of it to fulfill the requirements.
+
+4. OpenViatica should be designed to be usable from the smallest data analyst to the largest data analysis companies. This means the tool should easy for begginners but deep for masters.
     1. It will accomplish this goal by being a local-first, but cloud integrated solution for data analytics
 5. To accomplish this the features needed for a solo developer analyst to use the tools will be supported on the Windows platform, the other features would be supported in linux only.
 <br><br>
@@ -31,65 +34,3 @@ OpenViatica is designed to be a local-first but cloud-integrated workspace manag
 
 The purpose of this diagram is to show what the OpenViatica Software does and what interactions are with things that are externally to itself
 
-```mermaid
-%%{init: {'flowchart': {'curve': 'basis'}}}%%
-flowchart LR
-    subgraph Host_Comp["Host Computer/Server"]
-        Host
-        Linux
-        Windows
-        Folders_Host["Folders"] 
-
-        Host --> |Can Be| Linux
-        Host --> |Can Be| Windows
-
-        Linux --> |Has| Files
-        Windows --> |Has| Files
-        
-        Linux --> |Has| Folders_Host        
-        Windows --> |Has| Folders_Host
-
-        %% OpenViatica inside the host
-        subgraph OpenViaticaSoftware
-            direction TB
-            OpenViatica --> |Creates| Workspace
-            Workspace --> |Target IDE| VSCode
-            Workspace --> |Has| P_Env["Python Environment"]
-
-            Workspace --> |Lives In| Folders_Host 
-        end
-    end
-
-
-
-    
-    
-
-```
-
-<h2>asdf
-</h2>
-
-
-Workspace ==> |Preferred IDE| VSCode
-    Workspace ==> |Has| P_Env["Python Environment"]
-    Workspace --> |Has| Folders
-    
-    Workspace --> |Has| Files
-        Files --> |Can Be| Code
-        Files --> |Can Be| Data
-        Files --> |Can Be| Configurations
-    
-    
-    
-      
-    Linux --> |Has| Access_Control
-    Linux --> |Has| User_Groups
-    Access_Control --> |Controls Access| Folders
-    Access_Control --> |Controls Access| Files
-    
-    Workspace --> |Has| Code
-OpenViatica --> OpenViaticaMap 
-    OpenViatica --> OpenViaticaCodeFlow
-    OpenViatica --> OpenViaticaAI
-Project_Source/Documentation/Code_Documentation/OpenViatica/README.md

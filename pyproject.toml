@@ -9,6 +9,7 @@ maintainers = [{name = "ftorres7382"}]
 # Developer Environment
 # ----------------------------
 [tool.hatch.envs.dev]
+type = "virtual"
 dependencies = [
     # Hatch and uv are assumed as part of the setup.py
 
@@ -40,4 +41,5 @@ type = "virtual"
 path = ".venv"  
 installer = "uv"
 uv-compile = true
+
 
