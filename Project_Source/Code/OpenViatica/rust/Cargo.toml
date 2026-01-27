@@ -1,0 +1,12 @@
+[package]
+name = "openviatica_rust"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "openviatica_rust"
+# "cdylib" is necessary for Python to load the library
+crate-type = ["cdylib"]
+
+[dependencies]
+pyo3 = { version = "0.20", features = ["extension-module"] }
