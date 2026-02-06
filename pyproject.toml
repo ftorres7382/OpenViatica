@@ -4,49 +4,46 @@ version="0.1"
 dependencies = []
 authors = [{name = "ftorres7382"}]
 maintainers = [{name = "ftorres7382"}]
+requires-python = ">=3.12"
 
-[tool.setuptools.packages.find]
-where = ["Project_Source/Code"]
-# Ensure py.typed is included
-[tool.hatch.build.targets.sdist]
-include = [
-  "Project_Source/Code/OpenViatica/py.typed",
-]
-
-# ----------------------------
-# Developer Environment
-# ----------------------------
-[tool.hatch.envs.dev]
-type = "virtual"
-dependencies = [
-    # Hatch and uv are assumed as part of the setup.py
-
-    "maturin[zig]", # includes cross-compilation support
-
+[dependency-groups]
+dev = [
     # Type checkers
+    "pytest",
     "mypy", # Static Typechecker, will be using mypy --strict
     "pydantic", # For data typechecker
     "typeguard", # For function parameters typechecker
-
-    # Documentation dependencies
-    "mkdocs-material",
-    "mkdocs-drawio",
-    "mkdocs-same-dir",
-    "mkdocs-exclude",
 ]
-installer = "uv"
-uv-compile = true
-path = ".venv-dev"  # dev environment inside project folder
+
+docs = [
+  "mkdocs-material",
+  "mkdocs-drawio",
+  "mkdocs-same-dir",
+  "mkdocs-exclude",
+]
+
+# Set both dev and docs as the default
+[tool.uv]
+package = true
+default-groups = ["dev", "docs"]
+# Rebuild the package if any of these files change
+cache-keys = [
+    { file = "pyproject.toml" },
+    { file = "Cargo.toml" },
+    { file = "src/**/*.rs" }
+]
 
 
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
-# ----------------------------
-# Default Environment (runtime)
-# ----------------------------
-[tool.hatch.envs.default]
-type = "virtual"
-path = ".venv"  
-installer = "uv"
-uv-compile = true
+[tool.pytest.ini_options]
+# Always look in the tests directory
+testpaths = ["tests"]
+# Add helpful flags (v = verbose, ra = show extra summary info)
+addopts = "-v -ra"
+# Ensure the src folder is in the path for testing
+pythonpath = ["src"]
 
 
