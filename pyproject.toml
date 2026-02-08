@@ -13,6 +13,9 @@ dev = [
     "mypy", # Static Typechecker, will be using mypy --strict
     "pydantic", # For data typechecker
     "typeguard", # For function parameters typechecker
+
+    # Rust dependencies
+    "maturin"
 ]
 
 docs = [
@@ -22,15 +25,18 @@ docs = [
   "mkdocs-exclude",
 ]
 
+# DO THE LICENSE HEADERS
+extra = [
+    "licenseheaders"
+]
+
 # Set both dev and docs as the default
 [tool.uv]
 package = true
-default-groups = ["dev", "docs"]
+default-groups = ["dev", "docs", "extra"]
 # Rebuild the package if any of these files change
 cache-keys = [
     { file = "pyproject.toml" },
-    { file = "Cargo.toml" },
-    { file = "src/**/*.rs" }
 ]
 
 
