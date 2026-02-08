@@ -27,11 +27,12 @@ The purpose of this area is to contain all the relevant documentation about the 
     2. Major versions may introduce significant internal architectural changes or large feature additions, while preserving user-space compatibility.
         1. The major versions will always increment by 1 number
     4. Minor versions introduce new, backward-compatible user-facing features within the same major version.
-    5. The patched version would indicate that the specific major and minor version needed patching so that is what was released.
+    5. The patched version would indicate that the specific major and minor version needed patching.
     6. Examples: 
-        1. v1.0 is released but bugs are found, this would mean that v1.0.1 will be created to fix it.
-        2. v1.0 is out, but now we want to add some list of functionalities under the same system it would be v1.1
-        3. Any other commits that do not have a tag are just incremental versions of the code
+        1. v1.0.0 is released but bugs are found, this would mean that v1.0.1 will be created to fix it.
+        2. v1.0.0 is out, but now we want to add some list of functionalities under the same system it would be v1.1
+        3. v1.0.1 is out but we want to release more distributions to make the installation easier, so v1.0.2 is created so we can publish the extra distributions to pypi 
+        4. Any other commits that do not have a tag are just incremental versions of the code
 2. Deprecation Policy
     1. User-space features may be deprecated but will not be removed.
     2. Deprecated features will continue to function and may emit warnings indicating preferred alternatives.

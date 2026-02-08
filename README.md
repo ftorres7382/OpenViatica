@@ -4,8 +4,8 @@ OpenViatica is an open source CLI, API and code-based data analytics platform bu
 # Setup
 
 ## Requirements:
-1. Windows, macOS or Linux
-    - Linux ONLY for features needed for a server setup, install or configuration
+1. Windows, macOS or Linux for some basic features
+    - For a server setup, ONLY Linux is supported
 2. **Python Version:** python3.12
 
 ## Contributor Steps
