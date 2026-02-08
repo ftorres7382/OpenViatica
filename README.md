@@ -15,6 +15,9 @@ For the developers contributing to the project, there are other steps that need 
 2. Run this command at the root directory: ```uv sync```
 3. To run any file use the ```uv run python {filepath}``` standard
 4. To run tests use ```uv run pytest```
+5. NOTE: A license header will be added to all files using the command:
+
+    ```uv tool run licenseheaders -t ./docs/apache2.tmpl -o ftorres7382 -y 2026 -E py -E rs```
 
 
 # New Idea Submissions
