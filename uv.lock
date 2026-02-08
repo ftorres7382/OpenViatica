@@ -574,14 +574,16 @@ wheels = [
 name = "openviatica"
 version = "0.1"
 source = { editable = "." }
+dependencies = [
+    { name = "pydantic" },
+    { name = "typeguard" },
+]
 
 [package.dev-dependencies]
 dev = [
     { name = "maturin" },
     { name = "mypy" },
-    { name = "pydantic" },
     { name = "pytest" },
-    { name = "typeguard" },
 ]
 docs = [
     { name = "mkdocs-drawio" },
@@ -594,14 +596,16 @@ extra = [
 ]
 
 [package.metadata]
+requires-dist = [
+    { name = "pydantic" },
+    { name = "typeguard" },
+]
 
 [package.metadata.requires-dev]
 dev = [
     { name = "maturin" },
     { name = "mypy" },
-    { name = "pydantic" },
     { name = "pytest" },
-    { name = "typeguard" },
 ]
 docs = [
     { name = "mkdocs-drawio" },

@@ -12,7 +12,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.#
-from tokenize import OP
 import pytest
 def test_OpenViatica_import() -> None:
     '''Tests that OpenViatica is importable'''
@@ -21,7 +20,12 @@ def test_OpenViatica_import() -> None:
         # using is to make the linter happy
         _ = OpenViatica.__doc__
     except ImportError:
-        pytest.fail("FAILED OpenViatica import!")
+        pytest.fail("FAILED import of OpenViatica!")
     
 def test_ovutils_import() -> None:
     '''Tests that the ovutils is importable'''
+    try:
+        from OpenViatica import ovutils
+        _ = ovutils.__doc__
+    except ImportError:
+        pytest.fail("FAILED import of ovutils!")
