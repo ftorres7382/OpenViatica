@@ -14,7 +14,7 @@
 # limitations under the License.#
 
 
-from . import _OpenViatica_rs
+from . import _openviatica_rs
 
 class ovutils:
     '''
@@ -31,7 +31,7 @@ class ovutils:
 
     @staticmethod
     def fibonacci_rust(n:int) -> int:
-        result = _OpenViatica_rs.fibonacci(n)
+        result = _openviatica_rs.fibonacci(n)
         result = int(result)
         return result
     

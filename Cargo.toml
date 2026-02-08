@@ -10,4 +10,4 @@ crate-type = ["cdylib"]
 
 [dependencies]
 # PyO3 provides the Python bindings
-pyo3 = { version = "0.21", features = ["extension-module"] }
+pyo3 = { version = "0.21", features = ["abi3-py38", "extension-module"] }

@@ -17,7 +17,7 @@ dev = [
     "mypy", # Static Typechecker, will be using mypy --strict
 
     # Rust dependencies
-    "maturin"
+    "maturin[zig]"
 ]
 
 docs = [
@@ -51,7 +51,7 @@ build-backend = "maturin"
 # and finds the 'OpenViatica' folder automatically.
 python-source = "python"
 # The Rust module will be accessible as OpenViatica._rust
-module-name = "OpenViatica._OpenViatica_rs"
+module-name = "OpenViatica._openviatica_rs"
 
 
 [tool.pytest.ini_options]
