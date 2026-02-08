@@ -31,7 +31,7 @@ A workspace is defined as a folder that is fully configured to do data analytics
         ```
 '''
 # The documentation above will show up if the user runs help() on this module
-from ._ovutils import ovutils
+from ._core import ovutils
 
 __all__ = [
     "ovutils"

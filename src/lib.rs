@@ -16,7 +16,7 @@ fn fibonacci(n: u32) -> u128 {
 
 /// The OpenViatica Rust module
 #[pymodule]
-fn _openviatica_rs(m: &Bound<'_, PyModule>) -> PyResult<()> {
+fn _rs_core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(fibonacci, m)?)?;
     Ok(())
 }

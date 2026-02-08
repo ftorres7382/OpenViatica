@@ -51,7 +51,7 @@ build-backend = "maturin"
 # and finds the 'OpenViatica' folder automatically.
 python-source = "python"
 # The Rust module will be accessible as OpenViatica._rust
-module-name = "OpenViatica._openviatica_rs"
+module-name = "OpenViatica._rs_core"
 
 
 [tool.pytest.ini_options]

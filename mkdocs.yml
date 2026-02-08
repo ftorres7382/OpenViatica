@@ -28,10 +28,4 @@ nav:
   - Home: README.md 
   
   - Documentation: 
-    - Overview: Project_Source/Documentation/README.md
-    - Code_Documentation: Project_Source/Documentation/Code_Documentation/README.md
-    - Contribution_Documentation: Project_Source/Documentation/Contribution_Documentation/README.md
-    - Project_Documentation: 
-      - Overview: Project_Source/Documentation/Project_Documentation/README.md
-      - v1.0: Project_Source/Documentation/Project_Documentation/v1.0/README.md
-    - Usage_Documentation: Project_Source/Documentation/Usage_Documentation/README.md
+    - 
