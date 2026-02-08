@@ -1,5 +1,5 @@
 [project]
-name="OpenViatica"
+name="openviatica"
 version="0.1"
 dependencies = [
     "pydantic", # For data typechecker
