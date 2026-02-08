@@ -17,3 +17,7 @@ from OpenViatica import ovutils
 def test_fibonacci_call() -> None:
     '''This function tests that the fibonacci is callable'''
     _ = ovutils.fibonacci(100)
+
+def test_fibonacci_rust_call() -> None:
+    '''This function tests that the fibonacci_rust is callable'''
+    _ = ovutils.fibonacci_rust(100)

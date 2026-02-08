@@ -1,0 +1,13 @@
+[package]
+name = "open-viatica" # Rust crate name
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+
+[lib]
+name = "open_viatica_rs" # The name you'll import in Python
+crate-type = ["cdylib"]
+
+[dependencies]
+# PyO3 provides the Python bindings
+pyo3 = { version = "0.21", features = ["extension-module"] }

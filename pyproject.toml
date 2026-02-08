@@ -43,15 +43,16 @@ cache-keys = [
 
 
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["maturin>=1.0,<2.0"]
+build-backend = "maturin"
 
-[tool.hatch.build.targets.wheel]
-# This tells Hatch that the "python" folder acts like a "src" folder
-packages = ["python/OpenViatica"]
+[tool.maturin]
+# This handles what Hatch used to do. It looks in 'python/' 
+# and finds the 'OpenViatica' folder automatically.
+python-source = "python"
+# The Rust module will be accessible as OpenViatica._rust
+module-name = "OpenViatica._OpenViatica_rs"
 
-[tool.hatch.build.targets.sdist]
-include = ["/python"]
 
 [tool.pytest.ini_options]
 # Always look in the tests directory
@@ -59,7 +60,7 @@ testpaths = ["tests"]
 # Add helpful flags (v = verbose, ra = show extra summary info)
 addopts = "-v -ra"
 # Ensure the src folder is in the path for testing
-pythonpath = ["/python"]
+pythonpath = ["python"]
 
 [tool.mypy]
 strict = true

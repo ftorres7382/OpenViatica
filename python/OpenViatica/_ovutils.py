@@ -12,6 +12,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.#
+
+
+from . import _OpenViatica_rs
+
 class ovutils:
     '''
     # ovutils
@@ -23,4 +27,11 @@ class ovutils:
         for _ in range(n):
             a, b = b, a + b
         return a
+    
+
+    @staticmethod
+    def fibonacci_rust(n:int) -> int:
+        result = _OpenViatica_rs.fibonacci(n)
+        result = int(result)
+        return result
     
