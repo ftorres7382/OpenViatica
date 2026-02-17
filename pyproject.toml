@@ -1,21 +1,26 @@
 [project]
 name="openviatica"
-version="0.1.3"
+version="0.1.4"
 description = "OpenViatica is a data analysis workspace creation, management and maintnenace tool"
 dependencies = [
     "pydantic", # For data typechecker
     "typeguard", # For function parameters typechecker
+    "typer",
 ]
 authors = [{name = "ftorres7382"}]
 maintainers = [{name = "ftorres7382"}]
 requires-python = ">=3.12"
 license = {file = "LICENSE"}
 
+[project.scripts]
+ovutils = "OpenViatica._cli_interface_core:app"
+
 [dependency-groups]
 dev = [
-    # Type checkers
     "pytest",
+    # Type checkers
     "mypy", # Static Typechecker, will be using mypy --strict
+    
 
     # Rust dependencies
     "maturin[zig]"
