@@ -1,6 +1,6 @@
 [project]
 name="openviatica"
-version="0.1.4"
+version="0.1.5"
 description = "OpenViatica is a data analysis workspace creation, management and maintnenace tool"
 dependencies = [
     "pydantic", # For data typechecker
