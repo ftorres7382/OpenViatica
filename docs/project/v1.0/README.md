@@ -84,7 +84,7 @@ I much prefer diagrams to represent the fulfillment of the requirements, even th
 PS: Some of these diagrams could look hard to read. To read them, just try to focus on one thing that might be of interest to you and see what connections that box has with others.
 <br>
 
-![Diagram link](Interactions_Diagram.drawio)
+![Diagram link](./Interactions_Diagram.drawio)
 
 # Features Version Plan
 In this section, the versioning plan is defined. Only the current development and the next version will be defined.
@@ -96,15 +96,16 @@ In this section, the versioning plan is defined. Only the current development an
         - Posted the ovutils to Pypi
         - Installable using pip as ovutils
         - Useable in Windows and Linux
+        - Callable in python code or CLI
     2. v0.2 - Complete workspace initialization feature
-            - Workspace name & ID
-                - Ability to modify after initialization through CLI or config files
-            - venv config
-                - Ability to modify after initialization (use hatch, uv or pip with pyproject.toml)
-            - Defined folder structure
-                - Ability to add the optional folders
-            - Testing
+        - Workspace name & ID
+            - Ability to modify after initialization through CLI or config files
+        - venv config
+            - Ability to modify after initialization (use hatch, uv or pip with pyproject.toml)
+        - Defined folder structure
+            - Ability to add the optional folders
+        - Testing
     3. v0.3 - Workspace Lifecycle Feature
     4. v0.4 - v1.0 Workflow tool integration
-    5. v0.5 - v1.0 Concept Map too integration
+    5. v0.5 - v1.0 Concept Map tool integration
     6. Validation for v1.0 release

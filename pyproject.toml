@@ -1,41 +1,74 @@
 [project]
-name="OpenViatica"
-version="0.0.1"
-dependencies = []
-
-# ----------------------------
-# Developer Environment
-# ----------------------------
-[tool.hatch.envs.dev]
+name="openviatica"
+version="0.1.5"
+description = "OpenViatica is a data analysis workspace creation, management and maintnenace tool"
 dependencies = [
-    # Hatch and uv are assumed as part of the setup.py
-
-    # Type checkers
-    "mypy", # Static Typechecker, will be using mypy --strict
     "pydantic", # For data typechecker
     "typeguard", # For function parameters typechecker
-
-    # Documentation dependencies
-    "mkdocs-material",
-    "mkdocs-drawio",
-    "mkdocs-same-dir",
-    "mkdocs-exclude",
+    "typer",
 ]
-installer = "uv"
-uv-compile = true
-path = ".venv-dev"  # dev environment inside project folder
+authors = [{name = "ftorres7382"}]
+maintainers = [{name = "ftorres7382"}]
+requires-python = ">=3.12"
+license = {file = "LICENSE"}
 
-# Shorten Bash path
-env-vars = { PROMPT_DIRTRIM = "1" }
+[project.scripts]
+ovutils = "OpenViatica._cli_interface_core:app"
+
+[dependency-groups]
+dev = [
+    "pytest",
+    # Type checkers
+    "mypy", # Static Typechecker, will be using mypy --strict
+    
+
+    # Rust dependencies
+    "maturin[zig]"
+]
+
+docs = [
+  "mkdocs-material",
+  "mkdocs-drawio",
+  "mkdocs-same-dir",
+  "mkdocs-exclude",
+]
+
+# DO THE LICENSE HEADERS
+extra = [
+    "licenseheaders"
+]
+
+# Set both dev and docs as the default
+[tool.uv]
+package = true
+default-groups = ["dev", "docs", "extra"]
+# Rebuild the package if any of these files change
+cache-keys = [
+    { file = "pyproject.toml" },
+]
 
 
+[build-system]
+requires = ["maturin>=1.0,<2.0"]
+build-backend = "maturin"
 
-# ----------------------------
-# Default Environment (runtime)
-# ----------------------------
-[tool.hatch.envs.default]
-type = "virtual"
-path = ".venv"  
-installer = "uv"
-uv-compile = true
+[tool.maturin]
+# This handles what Hatch used to do. It looks in 'python/' 
+# and finds the 'OpenViatica' folder automatically.
+python-source = "python"
+# The Rust module will be accessible as OpenViatica._rust
+module-name = "OpenViatica._rs_core"
 
+
+[tool.pytest.ini_options]
+# Always look in the tests directory
+testpaths = ["tests"]
+# Add helpful flags (v = verbose, ra = show extra summary info)
+addopts = "-v -ra"
+# Ensure the src folder is in the path for testing
+pythonpath = ["python"]
+
+[tool.mypy]
+strict = true
+# Mypy also needs to know where to look
+mypy_path = "python"
