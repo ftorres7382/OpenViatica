@@ -18,16 +18,20 @@ The purpose of this module is to provide a CLI, Python importable OR API based w
 
 A workspace is defined as a folder that is fully configured to do data analytics
 
+ALL modules, methods & functions are made so that the help() is the primary way to get the documentation on how to use the tools
+
 # Methods
     1. ovutils
         The main tool in which the workspace objects will be managed.
         
-        This includes creation & editing of workspace conmfiguration 
+        This includes creation & editing of workspace configuration 
         
         Example: 
         ```python
         from OpenViatica import ovutils
         ovutils.fibonacci()
+
+        help(ovutils)
         ```
 '''
 # The documentation above will show up if the user runs help() on this module

@@ -1,2 +1,0 @@
-# OpenViatica
-This is a 
