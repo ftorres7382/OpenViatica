@@ -19,6 +19,8 @@ For the developers contributing to the project, there are other steps that need 
 
     ```uv tool run licenseheaders -t ./docs/apache2.tmpl -o ftorres7382 -y 2026 -E py -E rs```
 
+# Documentation
+All of the documentation for the project can be found [here](docs/README.md)
 
 # New Idea Submissions
 - For any proposals/ideas or arquitecture changes send them to ftorres7382@gmail.com (at some point I would like to do the whole mailing list thing and keep track of community discussions that way or in any other way that does not depend on other companies)
