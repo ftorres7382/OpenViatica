@@ -77,15 +77,6 @@ This is the documentation of the features and of the several steps to get to a v
     - We should still think about how we want to make the v1.0 still compatible with whenever we do want permission control
     - I am thinking just leveraging file permissions on linux for all permission controls in the first implementation. But still needs to be determined
 
-# Requirement Fulfillment
-I much prefer diagrams to represent the fulfillment of the requirements, even though this can make it a little harder to track. Right now I want to understand and make sure that the requirements are sound.
-
-<br>
-PS: Some of these diagrams could look hard to read. To read them, just try to focus on one thing that might be of interest to you and see what connections that box has with others.
-<br>
-
-![Diagram link](./Interactions_Diagram.drawio)
-
 # Features Version Plan
 In this section, the versioning plan is defined. Only the current development and the next version will be defined.
 
@@ -106,6 +97,24 @@ In this section, the versioning plan is defined. Only the current development an
             - Ability to add the optional folders
         - Testing
     3. v0.3 - Workspace Lifecycle Feature
+        - Ability to run things before & after each workspace lifecycle 
+            - "init"
+            - AFTER Terminal entry to workspace folder
+            - AFTER venv activation
+            - AFTER running custom "activate" command
+            - "start"
+            - "stop"
+        - uv could be used as the standard for running these things
+        - We should assume that there could be multiple .venvs for the same workspace and that each one sets up different things. Thus we can say that different workflows can be run depending on the venv activation and the start and stop can be venv dependent (we can make this mandatory)
     4. v0.4 - v1.0 Workflow tool integration
     5. v0.5 - v1.0 Concept Map tool integration
     6. Validation for v1.0 release
+
+# Requirement Fulfillment
+I much prefer diagrams to represent the fulfillment of the requirements, even though this can make it a little harder to track. Right now I want to understand and make sure that the requirements are sound.
+
+
+PS: Some of these diagrams could look hard to read. To read them, just try to focus on one thing that might be of interest to you and see what connections that box has with others.
+
+
+![Diagram link](./Interactions_Diagram.drawio)
