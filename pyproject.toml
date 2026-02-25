@@ -6,6 +6,8 @@ dependencies = [
     "pydantic", # For data typechecker
     "typeguard", # For function parameters typechecker
     "typer",
+    "toml",
+    "uv"
 ]
 authors = [{name = "ftorres7382"}]
 maintainers = [{name = "ftorres7382"}]
@@ -58,6 +60,8 @@ build-backend = "maturin"
 python-source = "python"
 # The Rust module will be accessible as OpenViatica._rust
 module-name = "OpenViatica._rs_core"
+# Make sure that tempalte files are included in the source distribution
+include = ["python/OpenViatica/templates/**/*"]
 
 
 [tool.pytest.ini_options]
