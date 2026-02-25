@@ -13,8 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.#
 
-
-from . import _rs_core
+# Commented in case we need rust some day
+# from . import _rs_core
 from typeguard import typechecked
 class ovutils:
     '''
@@ -28,21 +28,13 @@ class ovutils:
     1. fibonacci(n: int) -> int
     2. fibonacci_rust(n:int) -> int
     '''
-    @staticmethod
-    @typechecked
-    def fibonacci(n: int) -> int:
-        '''Calculates fibonacci numbers without recursion'''
-        a, b = 0, 1
-        for _ in range(n):
-            a, b = b, a + b
-        return a
     
-
-    @staticmethod
-    @typechecked
-    def fibonacci_rust(n:int) -> int:
-        '''Calculates fibonacci numbers without recursion using rust'''
-        result = _rs_core.fibonacci(n)
-        result = int(result)
-        return result
-    
+    class ws:
+        '''
+        # ovutils.ws
+        Used for any workspace creation or management operation
+        '''
+        @staticmethod
+        @typechecked
+        def init() -> None:
+            print("Hello")

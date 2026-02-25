@@ -29,7 +29,6 @@ ALL modules, methods & functions are made so that the help() is the primary way 
         Example: 
         ```python
         from OpenViatica import ovutils
-        ovutils.fibonacci()
 
         help(ovutils)
         ```

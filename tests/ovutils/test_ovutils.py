@@ -15,16 +15,12 @@
 from OpenViatica import ovutils
 import subprocess
 
-def test_fibonacci_call() -> None:
-    '''This function tests that the fibonacci is callable'''
-    _ = ovutils.fibonacci(100)
-    # Call it in the CLI too
-    _ = subprocess.run(["ovutils", "fibonacci", "100"], check=True)
+def test_ws_init() -> None:
+    '''
+    Tests the init operation of the ovutils function in python
+    '''
+    ovutils.ws.init()
 
-def test_fibonacci_rust_call() -> None:
-    '''This function tests that the fibonacci_rust is callable'''
-    _ = ovutils.fibonacci_rust(100)
-    # Call in the CLI too
-    _ = subprocess.run(["ovutils", "fibonacci-rust", "100"], check=True)
+# After that test the cli call, to make sure it works the same as well
 
 
