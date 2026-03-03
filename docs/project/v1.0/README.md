@@ -67,8 +67,9 @@ This is the documentation of the features and of the several steps to get to a v
     3. Home: For a scratch area to play around in
     4. Code_Flows: For workflows. These would be defined using code
     5. Concept_Map: For defining a data concept map
-    6. (optional) Services: For defining anything like docker or other services that could need to be tarted up by the user. Could also be ued for docker files that setup and deploy applications in the Apps folder.
-    7. (optional) Apps: For creating data applications like APIs, webpages, etc.
+    6. Services: For defining anything like docker or other services that could need to be tarted up by the user. 
+        - Could also be ued for docker files that setup and deploy applications in the Apps folder.
+    7. Apps: For creating data applications like APIs, webpages, etc.
     8. The workspace folder structure MUST be configurable on or after initialization
     
 # Out of Scope Features

@@ -1,0 +1,16 @@
+dependencies = [
+    "openviatica",
+    "ipykernel",
+    "pandas",
+    "openpyxl",
+    "polars",
+    "duckdb",
+    "matplotlib",
+    "plotly",
+    "dash",
+    "seaborn",
+    "mkdocs",
+    "mkdocs-material",
+    "flask",
+    "fastapi"
+]

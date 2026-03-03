@@ -1,0 +1,11 @@
+dependencies = [
+    "openviatica",
+    "ipykernel",
+    "pandas",
+    "openpyxl",
+    "polars",
+    "matplotlib",
+    "plotly",
+    "mkdocs"
+    
+]

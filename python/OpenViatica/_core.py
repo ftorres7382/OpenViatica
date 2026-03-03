@@ -16,13 +16,19 @@
 # Commented in case we need rust some day
 # from . import _rs_core
 from importlib import resources
-from importlib.abc import Traversable
 from typeguard import typechecked
 import typing as t
 from ._general_core import General as G
 import os
 import uuid
 import toml
+from pathlib import Path
+
+_package_path: Path = resources.files("OpenViatica")
+_templates_path: Path = _package_path.joinpath("templates")
+_venv_templates_path:Path = _templates_path.joinpath("venv_templates")
+_dir_templates_path: Path = _templates_path.joinpath("directory_templates")
+
 class ovutils:
     '''
     # ovutils
@@ -35,15 +41,16 @@ class ovutils:
     1. fibonacci(n: int) -> int
     2. fibonacci_rust(n:int) -> int
     '''
-    _templates_path: Traversable = resources.files("OpenViatica")
     
     class ws:
         '''
         # ovutils.ws
         Used for any workspace creation or management operation
         '''
-        _workspace_metadata_dirname: str = ".ov-workspace"
-        _workspace_base_metadata_filename = "workspace-metadata.toml"
+        _workspace_metadata_dirname: str = ".openviatica"
+        _workspace_base_metadata_filename:str = "workspace-metadata.toml"
+
+
 
         @staticmethod
         @typechecked
@@ -51,21 +58,19 @@ class ovutils:
             workspace_id:str | None = None, 
             workspace_name: str | None = None, 
             workspace_dirname:str | None = None,
-            dirpath:str | None = None, 
-            verbose:bool = True
-            
+            dirpath:str | None = None
             ) -> None:
             '''Initializes a new workspace'''
             # Standardize the path of the dirpath
             if dirpath is None:
-                print("No dirpath detected! Defaulting to current wprking dirpath for initialization...")
+                print("Defaulting to current working directory for initialization...")
                 dirpath = os.getcwd()
             
             if workspace_id is None:
                 workspace_id = str(uuid.uuid4())
 
             if workspace_name is None:
-                workspace_name = "Data_Workspace"
+                workspace_name = "ov-workspace"
             
             if workspace_dirname is None:
                 # Create a new directory in the dirpath
@@ -90,8 +95,42 @@ class ovutils:
             }
             with open(base_metadata_filepath, "w") as f:
                 _ = toml.dump(base_workspace_metadata, f)
+            
+            # Copy the venv & directory templates in the folder
+            workspace_venv_templates_dirpath = os.path.join(metadata_dirpath, os.path.basename(str(_venv_templates_path)))
+            workspace_dir_templates_dirpath = os.path.join(metadata_dirpath, os.path.basename(str(_dir_templates_path)))
 
-            print(f"\nSUCCESS! '{workspace_dirname}' has been created in: '{dirpath}'")
+
+            work_zip = zip(
+                [_venv_templates_path, _dir_templates_path],
+                [workspace_venv_templates_dirpath, workspace_dir_templates_dirpath]
+                
+                )
+
+            for src_templates_obj, dest_templates_dirpath in work_zip:
+                G.copy_template_dir(src_templates_obj, dest_templates_dirpath)
+
+
+
+            # Use uv to install 
+            # breakpoint()
+
+            
+            # # Setup venv based on preset
+            # python_path = G.get_python_interpreter_path()
+            # og_cwd = os.getcwd()
+
+            # # Change current working environment to set up the workspace
+            # os.chdir(workspace_dirpath)
+
+            # # Run uv commands to setup the workspace
+
+            # # Reset current working environment
+            # os.chdir(og_cwd)
+            # breakpoint()
+            
+            out_dirpath = os.path.join(dirpath, workspace_dirname)
+            print(f"\nSUCCESS! '{out_dirpath}' has been created!")
 
 
             

@@ -4,7 +4,17 @@ to the appropriate user facing module and function.
 
 The main function will be invokeable through the ovutils keyword  
 '''
-
+# TODO:
+# Ask user to install directly or create a new folder
+    # Option to turn this off
+# Folder names default should be ov-workspace-##
+    # Option to add id to folder
+# README.md not intuitive enough, find another filename that screams click and read me please
+    # SECTION_PURPOSE.md
+    # HOW_TO_GET_STARTED.md
+# Make the purpose of the Docs folder more apparent
+# Home
+# make purpose of each folder more clear, especially repos
 import typer
 from ._core import ovutils
 
@@ -17,7 +27,7 @@ app = typer.Typer(
 ovutils_app = app
 
 ovutils_ws_app = typer.Typer(
-    help="'ovutils ws' is a workspace creation and management CLI tool."
+    help="'ovutils ws' is a CLI tool for workspace creation and management."
     )
 
 ovutils_app.add_typer(ovutils_ws_app, name="ws")
