@@ -1,12 +1,17 @@
 # OpenViatica
 OpenViatica is an open source CLI, API and code-based data analytics platform builder and maintainer. It comes with tools & examples to handle common data analytics problems with a local first and python centered approach.  
 
-# Setup
-
 ## Requirements:
 1. Windows, macOS or Linux for some basic features
     - For a server setup, ONLY Linux is supported
-2. **Python Version:** python3.12
+2. **Python Version:** >=python3.12
+
+# Setup
+1. Install the python package called: ```uv```
+2. Open a folder where you want to create the new workspace in VSCode
+3. Open a terminal
+4. Run: ``` uvx --no-cache --from openviatica ovutils ws init ```
+
 
 ## Contributor Steps
 For the developers contributing to the project, there are other steps that need to be followed

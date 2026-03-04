@@ -34,9 +34,23 @@ ovutils_app.add_typer(ovutils_ws_app, name="ws")
 
 # Routiung
 @ovutils_ws_app.command("init")
-def ovutils_ws_init() -> None:
+def ovutils_ws_init(
+    workspace_id:str | None = None, 
+    workspace_name: str | None = None,
+    create_new_directory:bool = False, 
+    ask_dir_cleanup: bool = True,
+    dirpath:str | None = None,
+    workspace_dirname:str | None = None, 
+) -> None:
     '''Initializes a new workspace'''
-    ovutils.ws.init()
+    ovutils.ws.init(
+            workspace_id, 
+            workspace_name,
+            create_new_directory,
+            ask_dir_cleanup, 
+            dirpath,
+            workspace_dirname,
+    )
 
 
 

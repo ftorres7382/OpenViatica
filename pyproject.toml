@@ -22,6 +22,7 @@ dev = [
     "pytest",
     # Type checkers
     "mypy", # Static Typechecker, will be using mypy --strict
+    "types-toml", # Makes type hinting happy
     
 
     # Rust dependencies
@@ -35,7 +36,7 @@ docs = [
   "mkdocs-exclude",
 ]
 
-# DO THE LICENSE HEADERS
+# Extra packages
 extra = [
     "licenseheaders"
 ]
