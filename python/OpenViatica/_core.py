@@ -17,7 +17,6 @@
 # from . import _rs_core
 
 from importlib import resources
-from ntpath import isdir, isfile
 from typeguard import typechecked
 from ._general_core import General as G
 import os
@@ -62,6 +61,7 @@ class ovutils:
             workspace_id:str | None = None, 
             workspace_name: str | None = None,
             create_new_directory:bool = False, # Controls whether a new directory will be created or if the current one will be reused 
+            uuid_dirname:bool = False,
             ask_dir_cleanup: bool = True, # When new_dir is False, it will ask for confirmation on directory cleanup
             dirpath:str | None = None,
             workspace_dirname:str | None = None, # Only used if the 
@@ -70,15 +70,18 @@ class ovutils:
             # init
             Initializes a new OpenViatica Workspace
 
-            # Arguments
-            1. 
-
             When new_dir is True, it will create a new directory in "dir_path" with the same name as "workspace_dirname"
 
             When new_dir is False, it will try to create a fresh workspace in "dir_path"
             It will ask the user to confirm the cleanup actions twice unless "ask_dir_cleanup" is False
             
             '''
+
+            #################################
+            # Standardize values
+            #################################
+            # region
+
             # Standardize the path of the dirpath
             if dirpath is None:
                 print("Defaulting to current working directory for initialization...")
@@ -90,24 +93,59 @@ class ovutils:
             if workspace_name is None:
                 workspace_name = "ov-workspace"
             
+            # If the user did not provide a dirname value, we must define one
             if workspace_dirname is None:
-                # Create a new directory in the dirpath
-                workspace_dirname = workspace_name + "-" + workspace_id
-            
+                workspace_dirname = workspace_name
+                if uuid_dirname:
+                    workspace_dirname += "-" + str(uuid.uuid4())
+
+            # If the dirname has been sent but we are not going to use it, print a warning
+            else:
+                if not create_new_directory:
+                    print("WARNING! 'workspace_dirname' detected, but 'create_new_directory' is turned off.")
+                    print("'workspace_dirname' will not be used...\n")
+                    time.sleep(2.5)
+
             # If create_new_dir is False, then the workspace directory is the dirpath, 
             # if not, it is the dirpath and workspace_dirname            
             if not create_new_directory:
                 workspace_dirpath = dirpath
             else:
+                # Set the workspace dirpath 
                 workspace_dirpath = os.path.join(dirpath, workspace_dirname)
-                # Since we ARE supposed to create a new directory, one cannot already exist
-                if os.path.exists(workspace_dirpath):
-                    raise FileExistsError(f"ERROR! The workspace '{workspace_dirpath}' already exists! Please set a new workspace id, name or change the existing workspace")
-            breakpoint()
+
+                # Take away slash if present
+                if workspace_dirpath[-1] == "/":
+                    workspace_dirpath = workspace_dirpath[:-1]
+                
+                # If it already exists keep adding numbers until a good path is found
+                i = 0
+                while os.path.exists(workspace_dirpath):
+                    old_i = i
+                    i+=1
+                    if i == 1:
+                        # Add a dash since the number will be separated by the dash
+                        workspace_dirpath += f"-{i}"
+                        continue
+
+                    # If here then we still need to find a good workspace names
+                    temp_dirname = os.path.dirname(workspace_dirpath)
+                    temp_basename = os.path.basename(workspace_dirpath)
+                    temp_basename = temp_basename.replace(str(old_i), str(i))
+
+                    workspace_dirpath = os.path.join(temp_dirname, temp_basename)
+                    
+            # endregion
+
+            #################################
+            # Initialize workspace directory
+            #################################
+            # region
+
             print(f"Initializing workspace in '{workspace_dirpath}'...")
             if not create_new_directory:
                 # Go through whole confirmation process & clean directory
-                deletion_listing = glob.glob(os.path.join(workspace_dirpath, "*"))
+                deletion_listing = glob.glob(os.path.join(workspace_dirpath, "*"), include_hidden=True)
                 if ask_dir_cleanup and len(deletion_listing) != 0:
                     print(f"\nDeleting ALL Files and Folders in '{workspace_dirpath}'")
                     print("To initialize on a NEW directory instead, set 'create_new_directory' to True")
@@ -118,7 +156,7 @@ class ovutils:
                     if answer == "" or answer == "n":
                         print("Aborting initialization...")
                         time.sleep(2.5)
-                        exit(0)
+                        return
                     
                     # If the answer was yes we ask again to confrim
                     answer = G.get_valid_input(
@@ -128,35 +166,49 @@ class ovutils:
                     if answer != "DELETE":
                         print("Aborting initialization...")
                         time.sleep(2.5)
-                        exit(0)
+                        return
                     
-                    # We are clear to delete all the folders and files
-                    first_iteration = True
-                    for delete_path in deletion_listing:
-                        print(f"Deleting '{delete_path}'...")
-                        
-                        if first_iteration:
-                            # give the user time to back out
-                            time.sleep(3)
-                            first_iteration = False
-                        
-                        if os.path.isfile(delete_path):
-                            os.remove(delete_path)
-                        elif os.path.isdir(delete_path):
-                            shutil.rmtree(delete_path)
-                        else:
-                            raise NotImplementedError(f"ERROR! The deletion of a path with the same type as '{delete_path}' has NOT been implemented yet!")
+                # We are clear to delete all the folders and files
+                first_iteration = True
+                for delete_path in deletion_listing:
+                    print(f"Deleting '{delete_path}'...")
+                    
+                    if first_iteration:
+                        # give the user time to back out
+                        time.sleep(3)
+                        first_iteration = False
+                    
+                    if os.path.isfile(delete_path):
+                        os.remove(delete_path)
+                    elif os.path.isdir(delete_path):
+                        shutil.rmtree(delete_path)
+                    else:
+                        raise NotImplementedError(f"ERROR! The deletion of a path with the same type as '{delete_path}' has NOT been implemented yet!")
             else:
                 # Create the directory
                 os.mkdir(workspace_dirpath)
-            breakpoint()
+
+            # endregion
+
+            #################################
+            # Copy out all templates to the workspace
+            #   This way the have one place where new templates could be configured by the user later on, but they already com equipped with the minimum amount necessary
+            #################################
+            # region
 
             metadata_dirpath = os.path.join(workspace_dirpath,ovutils.ws._workspace_metadata_dirname)
             base_metadata_filepath = os.path.join(metadata_dirpath,ovutils.ws._workspace_base_metadata_filename)
             
 
             # Create a workspace metadata folder
-            # It will automatically raise an error if the directory already exists
+            # if it already exists, it should abort
+            if os.path.exists(metadata_dirpath):
+                print(f"\nERROR! The directory '{metadata_dirpath}' already exists!")
+                time.sleep(1)
+                print("ABORTING Initialization ...")
+                time.sleep(2.5)
+                return
+
             os.mkdir(metadata_dirpath)
 
             # Create a metadata file in the folder
@@ -181,27 +233,19 @@ class ovutils:
             for src_templates_obj, dest_templates_dirpath in work_zip:
                 G.copy_template_dir(src_templates_obj, dest_templates_dirpath)
 
+            # endregion
 
-
-            # Use uv to install 
-            # breakpoint()
+            #################################
+            # Use the existing ws tools to implement directories and files configuration
+            #################################
+            # region
 
             
-            # # Setup venv based on preset
-            # python_path = G.get_python_interpreter_path()
-            # og_cwd = os.getcwd()
 
-            # # Change current working environment to set up the workspace
-            # os.chdir(workspace_dirpath)
-
-            # # Run uv commands to setup the workspace
-
-            # # Reset current working environment
-            # os.chdir(og_cwd)
-            # breakpoint()
+            # endregion
             
-            out_dirpath = os.path.join(dirpath, workspace_dirname)
-            print(f"\nSUCCESS! '{out_dirpath}' has been created!")
+            
+            print(f"\nSUCCESS! The OpenViatica workspace has been created in '{workspace_dirpath}'!")
 
 
             

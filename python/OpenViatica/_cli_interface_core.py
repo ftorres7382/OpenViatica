@@ -5,10 +5,7 @@ to the appropriate user facing module and function.
 The main function will be invokeable through the ovutils keyword  
 '''
 # TODO:
-# Ask user to install directly or create a new folder
-    # Option to turn this off
-# Folder names default should be ov-workspace-##
-    # Option to add id to folder
+
 # README.md not intuitive enough, find another filename that screams click and read me please
     # SECTION_PURPOSE.md
     # HOW_TO_GET_STARTED.md
@@ -38,6 +35,7 @@ def ovutils_ws_init(
     workspace_id:str | None = None, 
     workspace_name: str | None = None,
     create_new_directory:bool = False, 
+    uuid_dirname:bool = False,
     ask_dir_cleanup: bool = True,
     dirpath:str | None = None,
     workspace_dirname:str | None = None, 
@@ -47,6 +45,7 @@ def ovutils_ws_init(
             workspace_id, 
             workspace_name,
             create_new_directory,
+            uuid_dirname,
             ask_dir_cleanup, 
             dirpath,
             workspace_dirname,

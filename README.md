@@ -7,7 +7,7 @@ OpenViatica is an open source CLI, API and code-based data analytics platform bu
 2. **Python Version:** >=python3.12
 
 # Setup
-1. Install the python package called: ```uv```
+1. Install the ``` uv ``` package: ``` pip install uv ```
 2. Open a folder where you want to create the new workspace in VSCode
 3. Open a terminal
 4. Run: ``` uvx --no-cache --from openviatica ovutils ws init ```
