@@ -256,7 +256,7 @@ class ovutils:
         def clone_template(rel_template_path:str) -> None:
             '''
             # clone_template
-            This function will look 
+            This function will look in the workspace template
             '''
 
 
