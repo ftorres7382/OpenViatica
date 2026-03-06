@@ -53,7 +53,7 @@ class ovutils:
         _workspace_metadata_dirname: str = ".openviatica"
         _workspace_base_metadata_filename:str = "workspace-metadata.toml"
 
-
+        
 
         @staticmethod
         @typechecked
@@ -235,6 +235,10 @@ class ovutils:
 
             # endregion
 
+            # Change cwd to the workspace directory
+            og_cwd = os.getcwd()
+            os.chdir(workspace_dirpath)
+
             #################################
             # Use the existing ws tools to implement directories and files configuration
             #################################
@@ -246,6 +250,14 @@ class ovutils:
             
             
             print(f"\nSUCCESS! The OpenViatica workspace has been created in '{workspace_dirpath}'!")
+
+        @staticmethod
+        @typechecked
+        def clone_template(rel_template_path:str) -> None:
+            '''
+            # clone_template
+            This function will look 
+            '''
 
 
             

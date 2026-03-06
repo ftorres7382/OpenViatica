@@ -1,4 +1,3 @@
-from turtle import Turtle
 from typing import Callable
 from typeguard import typechecked
 import sys
