@@ -13,7 +13,7 @@ The main function will be invokeable through the ovutils keyword
 # Home
 # make purpose of each folder more clear, especially repos
 import typer
-from ._core import ovutils
+from ._core_ovutils import ovutils
 
 app = typer.Typer(
     help="'ovutils' is a python based data analytics workspace creation and management engine",

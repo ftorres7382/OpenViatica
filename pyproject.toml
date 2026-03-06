@@ -15,7 +15,7 @@ requires-python = ">=3.12"
 license = {file = "LICENSE"}
 
 [project.scripts]
-ovutils = "OpenViatica._cli_interface_core:app"
+ovutils = "OpenViatica._core_cli_interface:app"
 
 [dependency-groups]
 dev = [

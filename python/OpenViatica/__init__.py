@@ -34,7 +34,7 @@ ALL modules, methods & functions are made so that the help() is the primary way 
         ```
 '''
 # The documentation above will show up if the user runs help() on this module
-from ._core import ovutils
+from ._core_ovutils import ovutils
 
 __all__ = [
     "ovutils"

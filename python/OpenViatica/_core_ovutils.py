@@ -52,7 +52,7 @@ class ovutils:
         '''
         _workspace_metadata_dirname: str = ".openviatica"
         _workspace_base_metadata_filename:str = "workspace-metadata.toml"
-
+        _ws_templates_library_relpath = os.path.join(_workspace_metadata_dirname, "workspace_template_library")
         
 
         @staticmethod
@@ -256,7 +256,13 @@ class ovutils:
         def clone_template(rel_template_path:str) -> None:
             '''
             # clone_template
-            This function will look in the workspace template
+            This function will look in the workspace template library and clone a template
+            
+            It has several configurations
+            Single directory, no .ov-tmpl.toml file: A default .ov-tmpl.toml file will be created in the directory
+            Single Directory, does have .ov-tmpl.toml: Uses the config to determine contents of the folder
+
+            Single Directory where the payload is a single file
             '''
 
 
