@@ -1,0 +1,84 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+# We define 'is' and 'has' as our own relationship types
+@prefix is:   <http://openviatica.org/rel/is#> .
+@prefix has:  <http://openviatica.org/rel/has#> .
+@prefix can: <http://openviatica.org/rel/can#> .
+@prefix type: <http://openviatica.org/types#> .
+
+# OpenViatica relationships
+type:OpenViatica 
+    is:a        type:NameSpace ;
+    has:a      type:DataWorkspace ;
+    has:a  type:TemplatesWorkspace ;
+    has:a  type:WorkflowsWorkspace 
+    .
+
+type:DataWorkspace 
+    is:a    type:Workspace 
+    .
+
+type:TemplatesWorkspace 
+    is:a      type:Workspace ;
+    has:a       type:TemplateObject 
+    . 
+
+type:TemplateObject
+    is:a  type:IDFolder ;
+    has:a   type:TemplatesConfigToml ;
+    has:a type:TemplatesPayload ;
+    has:a type:gitignore
+    .
+
+type:TemplatesPayload
+    is:a type:File ;
+    is:a type:Folder 
+    .
+
+# DEFINE SETTINGS!!!!
+type:TemplatesConfigToml
+    is:a    type:File ;
+    is:a    type:Toml ;
+    can:have type:ID ;# Defaults to the folder name being the ID
+    can:have type:Name ;# defaults to the folder name
+    can:change type:TemplatesPayload
+    
+    .
+
+
+
+
+type:WorkflowsWorkspace 
+    is:a      type:Workspace 
+    .
+
+type:Workspace
+    is:a    type:Folder ;
+    has:a   type:MetadataFolder;
+    has:a   type:WorkspaceID ;
+    has:a   type:WorkspaceName 
+    .
+
+type:MetadataFolder  
+    is:a        type:IDFolder ;
+    is:inside   type:OVFolder 
+    .
+
+type:NameSpace
+    is:a    type:SetOfWorkspaces 
+    .
+
+type:IDFolder
+    # The folder name IS the ID
+    is:a type:Folder 
+    .
+
+# Add the human-friendly labels for the graph renderer
+type:DataWorkspace rdfs:label "Data Workspace" .
+type:TemplatesWorkspace     rdfs:label "Templates Workspace" .
+type:WorkflowsWorkspace      rdfs:label "Workflows Workspace" .
+type:Workspace           rdfs:label "Workspace" .
+type:MetadataFolder           rdfs:label "MetaData Folder" .
+type:Folder           rdfs:label "Folder" .
+type:Folder           rdfs:label "File" .
+type:OVFolder       rdfs:label "OV Folder" .
+type:NameSpace      rdfs:label "Name Space" .
