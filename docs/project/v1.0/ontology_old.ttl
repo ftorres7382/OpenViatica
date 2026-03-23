@@ -1,0 +1,186 @@
+# @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+# # We define 'is' and 'has' as our own relationship types
+# @prefix is:   <http://openviatica.org/rel/is#> .
+# @prefix has:  <http://openviatica.org/rel/has#> .
+# @prefix can: <http://openviatica.org/rel/can#> .
+# @prefix ov: <http://openviatica.org/types#> .
+
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix ov:   <http://openviatica.org/schema#> .
+
+
+# OpenViatica relationships
+# type:OpenViatica 
+#     is:a        type:NameSpace ;
+#     has:a      type:DataWorkspace ;
+#     has:a  type:TemplatesWorkspace ;
+#     has:a  type:WorkflowsWorkspace ;
+#     has:    type:OpenViaticaTool
+#     .
+
+# type:DataWorkspace 
+#     is:a    type:Workspace 
+#     .
+
+##############################
+# Templates Definition
+##############################
+# region
+
+# import typing as t
+# class OV_TEMPLATE_CONFIG_TYPE(t.TypedDict):
+#     name: str
+#     id: str
+#     # List of filepaths
+#     payload: t.List[str]
+
+# class OV_Template(OV_Folder):
+#     config: OV_TEMPLATE_CONFIG_TYPE = {}
+
+# Define what a OpenViatica Template IS
+ov:Template
+    a owl:Class ;
+
+    rdfs:label "TemplateObject" ;
+    rdfs:comment "A Template Object. Encapsulates all the properties needed to integrate with the TemplateEngine" ;
+    
+    # Every template IS a type of folder
+    rdfs:subClassOf ov:Folder ;
+
+    # Start a new property definition
+    rdfs:subClassOf  ov:OneTemplateConfigObjRequired
+    .
+# Tempalate restrictions
+
+# We can read the whole retriction definition as:
+    # The ov:OneConfigObjRequired is a 
+    # formal description on the property
+    # ov:OneTemplateConfigObjRequired where we require 
+    # one and only on present
+ov:OneTemplateConfigObjRequired
+    # Formal Restriction 
+    a owl:Restriction ;
+
+    # The type of property that is in discussion
+    owl:onProperty ov:TemplateConfigObj ;
+
+    # Restriction of the property
+    # One value for this one AND it is a required value
+    owl:cardinality 1
+    .
+# Template attributes
+ov:TemplateConfigObj
+    a owl:ObjectProperty;
+    rdfs:label "Template Configuration Object" ;
+    rdfs:comment "Links a Template to its specific configuration metadata."
+    .
+
+    # is:a  type:IDFolder ;
+    # can:have   type:TemplateObjectToml ;
+    # has:a type:TemplatesPayload ;
+    # has:a type:gitignore
+    
+# type:TemplatesWorkspace 
+#     is:a      type:Workspace ;
+#     has:a       type:TemplateObject 
+#     . 
+
+# type:TemplateObject
+#     is:a  type:IDFolder ;
+#     can:have   type:TemplateObjectToml ;
+#     has:a type:TemplatesPayload ;
+#     has:a type:gitignore
+#     .
+
+# type:TemplateObjectsSet:
+#     has:hasMemberType   type:TemplateObject
+
+# type:TemplatesPayload
+#     is:a type:File ;
+#     is:a type:Folder 
+#     .
+
+# type:TemplateObjectToml
+#     is:a    type:File ;
+#     is:a    type:Toml ;
+#     can:have type:ID ;# Defaults to the folder name being the ID
+#     can:have type:Name ;# defaults to the folder name
+#     can:modify type:TemplatesPayload
+    
+#     .
+
+# type:TemplatesEngine
+#     is:a type:OpenViaticaTool ;
+    
+#     # What actions can the Templates Engine do to the workspace itself, no just the template objects in it
+#     can:initialize  type:TemplatesWorkspace ;
+
+
+#     # Operations for the Templates Engine 
+#     can:add     type:TemplateObject ;
+#     can:clone   type:TemplateObject ;
+#     can:list    type:TemplateObjectsSet ;
+#     can:
+    
+#     # Gets the default config file for the uesr to fill out
+#     can:get     type:TemplateObjectToml
+#     # WHAT OTHER OPERATIONS COULD BE DONE!? WE MIMIC GITHUB WHEN WE CAN EXCEPT FOR THE REMOTE THING
+#     .
+
+# endregion
+##############################
+
+##############################
+# Classes that are NOT managed by  OpenViatica
+##############################
+# region
+
+ov:Folder
+    # It is a class in of itself
+    a owl:Class ;
+    rdfs:label "Folder" ;
+    rdfs:comment "A directory in file system"
+    .
+# type:WorkflowsWorkspace 
+#     is:a      type:Workspace 
+#     .
+
+
+# type:Workspace
+#     is:a    type:Folder ;
+#     has:a   type:MetadataFolder;
+#     has:a   type:WorkspaceID ;
+#     has:a   type:WorkspaceName 
+#     .
+
+# type:MetadataFolder  
+#     is:a        type:IDFolder ;
+#     is:inside   type:OVFolder 
+#     .
+
+# type:NameSpace
+#     is:a    type:SetOfWorkspaces 
+#     .
+
+# type:IDFolder
+#     # The folder name IS the ID
+#     is:a type:Folder 
+    # .
+
+
+
+# type:OpenViatica 
+#     is:a        type:NameSpace ;
+#     has:a      type:DataWorkspace ;
+#     has:a  type:TemplatesWorkspace ;
+#     has:a  type:WorkflowsWorkspace ;
+#     has:    type:OpenViaticaTool
+#     .
+
+# type:DataWorkspace 
+#     is:a    type:Workspace 
+#     .
+
+# endregion

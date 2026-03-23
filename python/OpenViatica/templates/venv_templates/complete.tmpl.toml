@@ -1,6 +1,7 @@
 dependencies = [
     "openviatica",
     "ipykernel",
+    "numpy",
     "pandas",
     "openpyxl",
     "polars",

@@ -16,21 +16,18 @@
 # Commented in case we need rust some day
 # from . import _rs_core
 
-from importlib import resources
+
 from typeguard import typechecked
+from pydantic import TypeAdapter
 from ._general_core import General as G
+from ._types import ovutils_types
 import os
 import uuid
 import toml
 from importlib.resources.abc import Traversable
-import glob
 import time
-import shutil
 
-_package_path: Traversable = resources.files("OpenViatica")
-_templates_path: Traversable = _package_path.joinpath("templates")
-_venv_templates_path:Traversable = _templates_path.joinpath("venv_templates")
-_dir_templates_path: Traversable = _templates_path.joinpath("directory_templates")
+
 
 class ovutils:
     '''
@@ -44,20 +41,26 @@ class ovutils:
     1. fibonacci(n: int) -> int
     2. fibonacci_rust(n:int) -> int
     '''
+    _base_metadata_filename:str = "workspace-metadata.toml"
     
-    class ws:
+    class workspace:
         '''
-        # ovutils.ws
-        Used for any workspace creation or management operation
+        # ovutils.workspace
+        Used for the creation or management of any OpenViatica workspace
         '''
-        _workspace_metadata_dirname: str = ".openviatica"
-        _workspace_base_metadata_filename:str = "workspace-metadata.toml"
-        _ws_templates_library_relpath = os.path.join(_workspace_metadata_dirname, "workspace_template_library")
+        _pkg_venv_templates_path:Traversable = G.pkg_templates_path.joinpath("venv_templates")
+        _pkg_ws_templates_library_path: Traversable = G.pkg_templates_path.joinpath("workspace_template_library")
         
-
-        @staticmethod
+        _ws_metadata_dirname: str = ".ov-workspace"
+        
+        _ws_templates_library_relpath = os.path.join(_ws_metadata_dirname, "workspace_template_library")
+        
+        # CHANGE THE ws SO THAT IT IS A HELPER CLASS
+        # IT SHOULD HAVE AN INTERNAL DIRPATH!
+        @classmethod
         @typechecked
         def init(
+            cls,
             workspace_id:str | None = None, 
             workspace_name: str | None = None,
             create_new_directory:bool = False, # Controls whether a new directory will be created or if the current one will be reused 
@@ -144,46 +147,7 @@ class ovutils:
 
             print(f"Initializing workspace in '{workspace_dirpath}'...")
             if not create_new_directory:
-                # Go through whole confirmation process & clean directory
-                deletion_listing = glob.glob(os.path.join(workspace_dirpath, "*"), include_hidden=True)
-                if ask_dir_cleanup and len(deletion_listing) != 0:
-                    print(f"\nDeleting ALL Files and Folders in '{workspace_dirpath}'")
-                    print("To initialize on a NEW directory instead, set 'create_new_directory' to True")
-                    answer = G.get_valid_input(
-                        f"\nDELETING {len(deletion_listing)} files or folders in '{workspace_dirpath}'. Confirm action? (y/N)",
-                        G.y_n_valdiator_function
-                    ).lower()
-                    if answer == "" or answer == "n":
-                        print("Aborting initialization...")
-                        time.sleep(2.5)
-                        return
-                    
-                    # If the answer was yes we ask again to confrim
-                    answer = G.get_valid_input(
-                        "This action is IRREVERSIBLE. Type 'DELETE' to continue: ",
-                        lambda x: True
-                    )
-                    if answer != "DELETE":
-                        print("Aborting initialization...")
-                        time.sleep(2.5)
-                        return
-                    
-                # We are clear to delete all the folders and files
-                first_iteration = True
-                for delete_path in deletion_listing:
-                    print(f"Deleting '{delete_path}'...")
-                    
-                    if first_iteration:
-                        # give the user time to back out
-                        time.sleep(3)
-                        first_iteration = False
-                    
-                    if os.path.isfile(delete_path):
-                        os.remove(delete_path)
-                    elif os.path.isdir(delete_path):
-                        shutil.rmtree(delete_path)
-                    else:
-                        raise NotImplementedError(f"ERROR! The deletion of a path with the same type as '{delete_path}' has NOT been implemented yet!")
+                G.reset_dir(dirpath=workspace_dirpath, ask_dir_cleanup=ask_dir_cleanup)
             else:
                 # Create the directory
                 os.mkdir(workspace_dirpath)
@@ -191,13 +155,12 @@ class ovutils:
             # endregion
 
             #################################
-            # Copy out all templates to the workspace
-            #   This way the have one place where new templates could be configured by the user later on, but they already com equipped with the minimum amount necessary
+            # Create workspace metadata
             #################################
             # region
 
-            metadata_dirpath = os.path.join(workspace_dirpath,ovutils.ws._workspace_metadata_dirname)
-            base_metadata_filepath = os.path.join(metadata_dirpath,ovutils.ws._workspace_base_metadata_filename)
+            metadata_dirpath = os.path.join(workspace_dirpath,cls._ws_metadata_dirname)
+            base_metadata_filepath = os.path.join(metadata_dirpath,cls._ws_base_metadata_filename)
             
 
             # Create a workspace metadata folder
@@ -218,20 +181,26 @@ class ovutils:
             }
             with open(base_metadata_filepath, "w") as f:
                 _ = toml.dump(base_workspace_metadata, f)
+
+            # Initialize a templates workspace
+            ws_templates_dirpath = os.path.join(metadata_dirpath, os.path.basename(str(cls._pkg_ws_templates_library_path)))
+            os.mkdir(ws_templates_dirpath)
+            ovutils.templates.init(ws_templates_dirpath)
             
-            # Copy the venv & directory templates in the folder
-            workspace_venv_templates_dirpath = os.path.join(metadata_dirpath, os.path.basename(str(_venv_templates_path)))
-            workspace_dir_templates_dirpath = os.path.join(metadata_dirpath, os.path.basename(str(_dir_templates_path)))
+            # # Copy the venv & directory templates in the folder
+            
+            # workspace_venv_templates_dirpath = os.path.join(workspace_dir_templates_dirpath, os.path.basename(str(cls._pkg_venv_templates_path)))
+            
 
 
-            work_zip = zip(
-                [_venv_templates_path, _dir_templates_path],
-                [workspace_venv_templates_dirpath, workspace_dir_templates_dirpath]
+            # work_zip = zip(
+            #     [cls._pkg_venv_templates_path, cls._pkg_ws_templates_library_path],
+            #     [workspace_venv_templates_dirpath, workspace_dir_templates_dirpath]
                 
-                )
+            #     )
 
-            for src_templates_obj, dest_templates_dirpath in work_zip:
-                G.copy_template_dir(src_templates_obj, dest_templates_dirpath)
+            # for src_templates_obj, dest_templates_dirpath in work_zip:
+            #     G.copy_template_dir(src_templates_obj, dest_templates_dirpath)
 
             # endregion
 
@@ -251,19 +220,188 @@ class ovutils:
             
             print(f"\nSUCCESS! The OpenViatica workspace has been created in '{workspace_dirpath}'!")
 
-        @staticmethod
+
+
+
+    class templates:
+        '''
+        # ovutils templates
+        The purpose of this module is ton manage create & manage a templates workspace.
+        
+        Templates are are a file, a set of files or a folder.
+        
+        This class helps add, remove & clone templates  
+        '''
+        config_filename = ".ov-templates.toml"
+
+        rel_dirpath: str = os.path.join(G.workpsace_landing_dirname, ".ov-templates")
+
+        def __init__(self, dirpath:str = "./") -> None:
+            '''
+            Initializes a configured template transformer object
+            '''
+            # Declare all the self variables at the start as a best practice
+            ## dirpath will be the root directory, not counting where all the hidden files will be
+            self.dirpath:str
+            self.templates
+
+            #NEXT STEPS:
+                # Setup the whole .openviatica/templates thing
+                    # This means that a single directory can only be home to a single templates workspace
+                    # This also means there need to be workarounds for the internal modules to create 
+
+            self.dirpath = dirpath
+
+            # Read necessary metadata
+            self.base_metadata_filepath = os.path.join(
+                self.metadata_dirpath,
+                self.default_template_config_filename
+            )
+            if not os.path.exists(self.base_metadata_filepath):
+                base_metadata_dict = None
+            else:
+                with open(self.base_metadata_filepath, 'r') as f:
+                    raw_base_metadata_dict = toml.load(f) 
+                    base_metadata_adapter = TypeAdapter(
+                        ovutils_types.templates_types.BASE_METADATA_DICT
+                    )
+                    base_metadata_dict = base_metadata_adapter.validate_python(
+                        raw_base_metadata_dict
+                    )
+            self.base_metadata_dict = base_metadata_dict 
+
         @typechecked
-        def clone_template(rel_template_path:str) -> None:
+        def init_workspace(self, 
+        workspace_id:str | None = None, 
+        workspace_name: str | None = default_metadata_dirpath
+        ) -> None:
             '''
-            # clone_template
-            This function will look in the workspace template library and clone a template
+            Initializes a new OpenViatica template directory
+            '''
+
+            G.check_workpsace_landing_dir()
+            if workspace_id is None:
+                workspace_id = str(uuid.uuid4())
             
-            It has several configurations
-            Single directory, no .ov-tmpl.toml file: A default .ov-tmpl.toml file will be created in the directory
-            Single Directory, does have .ov-tmpl.toml: Uses the config to determine contents of the folder
+            if workspace_name is None:
+                workspace_name = os.path.basename(self.default_metadata_dirpath) + "-" + workspace_id
+            # Check if one already exists in the directory
+            if os.path.exists(self.metadata_dirpath):
+                raise FileExistsError(
+                    "ERROR! A templates workspace has already been initialized! "+
+                    f"To initialize a new templates workspace, remove '{self.metadata_dirpath}'"
+                    )
+                
+            # If here, we can create the directory
+            os.mkdir(self.metadata_dirpath)
 
-            Single Directory where the payload is a single file
-            '''
+            # Create the workspace metadata
+            base_metadata_filepath = os.path.join(self.metadata_dirpath, ovutils._base_metadata_filename)
+            base_workspace_metadata: ovutils_types.templates_types.BASE_METADATA_DICT = {
+                "id": workspace_id,
+                "name": workspace_name,
+            }
+            with open(base_metadata_filepath, "w") as f:
+                _ = toml.dump(base_workspace_metadata, f)
+            print("\nSUCCESS! An OpenViatica TEMPLATES workspace has been created! The metadata will be stored in ")
+
+        # @typechecked
+        # def add(self, 
+        #         src_path:str,
+        #         config_toml_path : str | None = None,
+        #         name: str | None = None,
+        #         description: str | None = None,
+        #         version: str | None = None,
+        #         out_name: str | None = None,
+        #         force_directory: str | None = None,
+        #         preserve_permissions: bool = True,
+        #         ignore_list: t.List[str] = []                
+        # ) -> None:
+        #     '''
+        #     Adds a template to the templates directory
+        #     '''
+
+        #     ###############################
+        #     # Set default values to all variables
+        #     ###############################
+        #     # region
+
+        #     if not os.path.exists(src_path):
+        #         raise FileNotFoundError(f"ERROR! The file/folder '{src_path}' does NOT EXIST!")
+            
+        #     # We start with the config file
+        #     if config_toml_path is None:
+        #         # If the src path is a directory, then check for the default name for the template toml file
+        #         if os.path.isdir(src_path):
+        #             config_toml_path = os.path.join(src_path,self._default_template_config_filename)
+        #         # Else we assume a sidecar file situation
+        #         else:
+        #             config_toml_path = os.path.basename(src_path)
+
+            
+        #     # Perform checks on the toml file 
+        #     # if not os.path.exists(toml
 
 
+        #     # endregion
+
+
+        #     ".template.toml"
+        #     '''
+        #     # The name of the template when it is accessed
+        #     name = "{basename}"
+
+        #     # Description of the template
+        #     description = ""
+
+        #     # Template Version
+        #     version = ""
+
+        #     # The name of the file/folder when it is cloned
+        #     out_name = name
+
+        #     # Any way I can automatically detect if the user wants the whole template to be a single file or not?
+
+        #     # Whether or not to preserve permissions
+        #     preserve_persmissions = True
+
+        #     ignore = [
+
+        #     ]
+
+
+            
+        #     src path can be folder or file
+        #         If it is a folder
+        #             If the flag is turned on, use the config file in the directory 
+                
+        #     '''
+
+            
+        #     names
+        #     default output_name
+
+            
+
+
+
+'''
+Lets walk this through
+
+User initializes DATA workspace
+    metadata folder is created
+    route for the metadata folder is created
+    workpsace-environment "main" is created
+        "main" is filled with all the default stuff
+            This would be default templates & default data things (catalogs, db, tables, metadata to any of these)
+    I could work directly in main
+    If I wanted a new metadata environment, I could do ovutils ws env init env2
+
+ALL tools will have this environment switching capability
+
+We will do workspace as a project model, where the pyproject.toml will be used to designate the workspace
+s
+'''
+
+ 
             

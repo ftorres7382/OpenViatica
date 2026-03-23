@@ -1,84 +1,151 @@
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-# We define 'is' and 'has' as our own relationship types
-@prefix is:   <http://openviatica.org/rel/is#> .
-@prefix has:  <http://openviatica.org/rel/has#> .
-@prefix can: <http://openviatica.org/rel/can#> .
-@prefix type: <http://openviatica.org/types#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix :   <http://openviatica.org/schema#> .
 
-# OpenViatica relationships
-type:OpenViatica 
-    is:a        type:NameSpace ;
-    has:a      type:DataWorkspace ;
-    has:a  type:TemplatesWorkspace ;
-    has:a  type:WorkflowsWorkspace 
+##############################
+# User Definitions
+##############################
+:User a owl:Class ;
+    :name "User" ;
+    :description "An actor capable of interacting with the OpenViatica system." ;
+
+    # Template call restrictions
+    :restriction :CanCallTemplateEngine;
+    :restriction :CanGetTemplateList;
+    :restriction :CanModifyTemplate;
+.
+
+##############################
+# Template Engine Definition
+##############################
+# region
+
+# Classes
+:TemplateEngine a owl:Class ;
+    :name "Template Engine" ;
+    :description "Can interact with the OpenViatica Template system." ;
+
+    # List in granular detail all the things the engine can do
+    :restriction :CanGetTemplateList;
+    :restriction :CanModifyTemplate;
     .
 
-type:DataWorkspace 
-    is:a    type:Workspace 
+# Restrictions
+:CanCallTemplateEngine a owl:Restriction;
+    :name "Can Call Template Engine";
+    :description "Restriction to be applied to all that can call the template engine.";
+
+    :onProperty :CanCallTemplateEngineProperty;
     .
 
-type:TemplatesWorkspace 
-    is:a      type:Workspace ;
-    has:a       type:TemplateObject 
-    . 
+# Properties
+:CanCallTemplateEngineProperty a owl:ObjectProperty;
+    :name "Can Call Template Engine Property";
+    :description "To be applied to a restriction that can be applied to any actor that can call the the OpenViatica Template Engine";
 
-type:TemplateObject
-    is:a  type:IDFolder ;
-    has:a   type:TemplatesConfigToml ;
-    has:a type:TemplatesPayload ;
-    has:a type:gitignore
+    rdfs:range :TemplateEngine
     .
 
-type:TemplatesPayload
-    is:a type:File ;
-    is:a type:Folder 
-    .
+# endregion
 
-# DEFINE SETTINGS!!!!
-type:TemplatesConfigToml
-    is:a    type:File ;
-    is:a    type:Toml ;
-    can:have type:ID ;# Defaults to the folder name being the ID
-    can:have type:Name ;# defaults to the folder name
-    can:change type:TemplatesPayload
+
+##############################
+# Template Definition
+##############################
+# region
+
+
+# Define what a OpenViatica Template IS
+:Template a owl:Class ;
+
+    :name "Template" ;
+    :description "A Template Class. Encapsulates the things required to be considered a Template" ;
     
+    # Every template IS a type of folder
+    :is :Folder ;
+
+    # Start restrictions
+    :restriction :TemplateTomlOptional
     .
 
+:TemplateList a owl:Class;
+    :name "Template List";
+    :description "A collection of templates.";
 
+    :restriction :ContainsOnlyTemplates;
+    .
+:TemplateToml a owl:Class;
+    :name "TemplateToml";
+    :description "Optional toml located at the root of a template folder";
 
-
-type:WorkflowsWorkspace 
-    is:a      type:Workspace 
+    :restriction :ReqConfigName, :ReqConfigID
     .
 
-type:Workspace
-    is:a    type:Folder ;
-    has:a   type:MetadataFolder;
-    has:a   type:WorkspaceID ;
-    has:a   type:WorkspaceName 
+# Template restrictions
+:TemplateTomlOptional a owl:Restriction;
+    owl:onProperty :TemplateToml;
+    owl:maxCardinality 1
     .
 
-type:MetadataFolder  
-    is:a        type:IDFolder ;
-    is:inside   type:OVFolder 
+:CanModifyTemplate a owl:Restriction;
+    owl:onProperty :CanModifyTemplateProperty;
+    owl:allValuesFrom :Template
+    .
+:CanGetTemplateList a owl:Restriction;
+    owl:onProperty :CanGetTemplateListProperty;
+    owl:allValuesFrom :TemplateList
+    .
+:ContainsOnlyTemplates a owl:Restriction;
+    owl:onProperty :hasMember;
+    owl:allValuesFrom :Template
     .
 
-type:NameSpace
-    is:a    type:SetOfWorkspaces 
+# Template actions
+:CanModifyTemplateProperty a owl:ObjectProperty ;
+    :name "Can Modify Template" ;
+    rdfs:range :Template 
     .
 
-type:IDFolder
-    # The folder name IS the ID
-    is:a type:Folder 
+:CanGetTemplateListProperty a owl:ObjectProperty;
+    :name "Can Get Template List Property";
+    :description "Property applied to all actors that can get a list of templates";
+    
+    rdfs:range :TemplateList
+    .
+# endregion
+# ##############################
+
+
+
+# # General Requirements here
+:ReqConfigName a owl:Restriction;
+    owl:onProperty :ConfigName;
+    owl:cardinality 1
     .
 
-# Add the human-friendly labels for the graph renderer
-type:DataWorkspace rdfs:label "Data Workspace" .
-type:TemplatesWorkspace     rdfs:label "Templates Workspace" .
-type:WorkflowsWorkspace      rdfs:label "Workflows Workspace" .
-type:Workspace           rdfs:label "Workspace" .
-type:MetadataFolder           rdfs:label "MetaData Folder" .
-type:Folder           rdfs:label "Folder" .
-type:Folder           rdfs:label "File" .
-type:OVFolder       rdfs:label "OV Folder" .
-type:NameSpace      rdfs:label "Name Space" .
+:ReqConfigID a owl:Restriction;
+    owl:onProperty :ConfigID;
+    owl:cardinality 1
+    .
+
+# General Propery definitions
+:ConfigName a owl:DatatypeProperty ; rdfs:range xsd:string .
+:ConfigID   a owl:DatatypeProperty ; rdfs:range xsd:string .
+
+
+# Aliases here
+## Linker Aliases
+:is a owl:ObjectProperty ;
+    owl:equivalentProperty rdfs:subClassOf .
+
+:restriction a owl:ObjectProperty ;
+    owl:equivalentProperty rdfs:subClassOf .
+
+## Metadata property aliases 
+:name a owl:AnnotationProperty ;
+    owl:equivalentProperty rdfs:label .
+
+:description a owl:AnnotationProperty ;
+    owl:equivalentProperty rdfs:comment .

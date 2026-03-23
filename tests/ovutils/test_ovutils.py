@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.#
 from OpenViatica import ovutils
-import subprocess
 
 def test_ws_init() -> None:
     '''

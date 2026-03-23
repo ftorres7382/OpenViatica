@@ -16,20 +16,28 @@ import typer
 from ._core_ovutils import ovutils
 
 app = typer.Typer(
-    help="'ovutils' is a python based data analytics workspace creation and management engine",
+    help="OpenVitaca Utilities ('ovutils'): A workspace creation and management engine\n\nGETTING STARTED:\nRun the command inside the quotes: 'ovutils ws init'",
     add_completion=False,
     context_settings={"help_option_names": ["-h", "--help"]}
     )
 # Creating an alias for better organization
 ovutils_app = app
 
+# Create the ws app and add to the set of commands that can be done
 ovutils_ws_app = typer.Typer(
-    help="'ovutils ws' is a CLI tool for workspace creation and management."
+    help="'ovutils ws': Creates & manages OpenViatica DATA Workspaces."
     )
-
 ovutils_app.add_typer(ovutils_ws_app, name="ws")
 
-# Routiung
+# Create the templates app & add to ovutils
+ovutils_templates_app  = typer.Typer(
+    help="'ovutils tmpl': Creates & manages OpenViatica TEMPLATE Workspaces."
+)
+ovutils_app.add_typer(ovutils_templates_app, name="tmpl")
+
+
+
+# ws Routing
 @ovutils_ws_app.command("init")
 def ovutils_ws_init(
     workspace_id:str | None = None, 
@@ -40,8 +48,8 @@ def ovutils_ws_init(
     dirpath:str | None = None,
     workspace_dirname:str | None = None, 
 ) -> None:
-    '''Initializes a new workspace'''
-    ovutils.ws.init(
+    '''Initializes a new OpenViatica DATA workspace'''
+    ovutils.workspace.init(
             workspace_id, 
             workspace_name,
             create_new_directory,
@@ -50,6 +58,25 @@ def ovutils_ws_init(
             dirpath,
             workspace_dirname,
     )
+
+# templates Routing
+@ovutils_templates_app.command("init")
+def init(
+    metadata_dirpath:str = ovutils.templates.default_metadata_dirpath,
+    workspace_id:str | None = None, 
+    workspace_name: str | None = ovutils.templates.default_metadata_dirpath
+) -> None:
+    '''Initializes a new TEMPLATES workspace'''
+    templates_obj = ovutils.templates(metadata_dirpath = metadata_dirpath)
+    
+    # Try and Except so that upon error it does NOT show the traceback to the user
+    try:
+        templates_obj.init_workspace(
+            workspace_id = workspace_id,
+            workspace_name = workspace_name
+        )
+    except Exception as e:
+        print(e)
 
 
 
@@ -67,6 +94,17 @@ def main(ctx: typer.Context) -> None:
 
 @ovutils_ws_app.callback(invoke_without_command=True)
 def ws_main(ctx: typer.Context) -> None:
+    """
+    OpenViatica Utilities CLI.
+    """
+    if ctx.invoked_subcommand is None:
+        # This prints the help menu to the console
+        typer.echo(ctx.get_help())
+        # This exits the program gracefully
+        raise typer.Exit()
+
+@ovutils_templates_app.callback(invoke_without_command=True)
+def templates_main(ctx: typer.Context) -> None:
     """
     OpenViatica Utilities CLI.
     """
