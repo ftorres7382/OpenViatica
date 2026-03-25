@@ -12,110 +12,201 @@
     :description "An actor capable of interacting with the OpenViatica system." ;
 
     # Template call restrictions
-    :restriction :CanCallTemplateEngine;
+    :restriction :CanCallTemplatesEngine;
     :restriction :CanGetTemplateList;
     :restriction :CanModifyTemplate;
 .
 
-##############################
-# Template Engine Definition
-##############################
-# region
-
-# Classes
-:TemplateEngine a owl:Class ;
-    :name "Template Engine" ;
-    :description "Can interact with the OpenViatica Template system." ;
-
-    # List in granular detail all the things the engine can do
-    :restriction :CanGetTemplateList;
-    :restriction :CanModifyTemplate;
-    .
-
-# Restrictions
-:CanCallTemplateEngine a owl:Restriction;
-    :name "Can Call Template Engine";
-    :description "Restriction to be applied to all that can call the template engine.";
-
-    :onProperty :CanCallTemplateEngineProperty;
-    .
-
-# Properties
-:CanCallTemplateEngineProperty a owl:ObjectProperty;
-    :name "Can Call Template Engine Property";
-    :description "To be applied to a restriction that can be applied to any actor that can call the the OpenViatica Template Engine";
-
-    rdfs:range :TemplateEngine
-    .
-
-# endregion
 
 
 ##############################
-# Template Definition
+# Template Related Definitions
 ##############################
 # region
 
+    ##############################
+    # Template Engine Definition
+    ##############################
+    # region
 
-# Define what a OpenViatica Template IS
-:Template a owl:Class ;
+    # Classes
+    :TemplatesEngine a owl:Class ;
+        :name "Template Engine" ;
+        :description "Can interact with the OpenViatica Template system." ;
 
-    :name "Template" ;
-    :description "A Template Class. Encapsulates the things required to be considered a Template" ;
-    
-    # Every template IS a type of folder
-    :is :Folder ;
-
-    # Start restrictions
-    :restriction :TemplateTomlOptional
+        # List in granular detail all the things the engine can do
+        :restriction :CanValidateTemplatesWorkspace; # IMPLEMENT
+        :restriction :CanInitializeTemplatesWorkspace; # IMPLEMENT
+        :restriction :CanGetTemplateList; # IMPLEMENT
+        :restriction :CanCreateBaseTemplate; # IMPLEMENT
     .
 
-:TemplateList a owl:Class;
-    :name "Template List";
-    :description "A collection of templates.";
+    # Restrictions
+    :CanCallTemplatesEngine a owl:Restriction;
+        :name "Can Call Template Engine";
+        :description "Restriction to be applied to all that can call the template engine.";
 
-    :restriction :ContainsOnlyTemplates;
-    .
-:TemplateToml a owl:Class;
-    :name "TemplateToml";
-    :description "Optional toml located at the root of a template folder";
-
-    :restriction :ReqConfigName, :ReqConfigID
+        :onProperty :CanCallTemplatesEngineProperty;
     .
 
-# Template restrictions
-:TemplateTomlOptional a owl:Restriction;
-    owl:onProperty :TemplateToml;
-    owl:maxCardinality 1
+    # Properties
+    :CanCallTemplatesEngineProperty a owl:ObjectProperty;
+        :name "Can Call Template Engine Property";
+        :description "To be applied to a restriction that can be applied to any actor that can call the the OpenViatica Template Engine";
+
+        rdfs:range :TemplatesEngine;
     .
 
-:CanModifyTemplate a owl:Restriction;
-    owl:onProperty :CanModifyTemplateProperty;
-    owl:allValuesFrom :Template
-    .
-:CanGetTemplateList a owl:Restriction;
-    owl:onProperty :CanGetTemplateListProperty;
-    owl:allValuesFrom :TemplateList
-    .
-:ContainsOnlyTemplates a owl:Restriction;
-    owl:onProperty :hasMember;
-    owl:allValuesFrom :Template
+    # endregion
+    # ##############################
+
+    ##############################
+    # Template Workspace Definition
+    ##############################
+    # region
+
+    :TemplatesWorkspace a owl:Class;
+        :name "Template Workspace";
+        :description "A Template Workspace capable of interacting with the TemplatesEngine to fulfill Template requests";
+
+        :is :Folder;
+
+        :restriction :ReqWorkspaceToml
+
+
     .
 
-# Template actions
-:CanModifyTemplateProperty a owl:ObjectProperty ;
-    :name "Can Modify Template" ;
-    rdfs:range :Template 
+    :WorkspaceToml a owl:Class;
+        :name "Workspace Toml";
+        :description "A Toml file found in the workspace folder that has all the metadata of the workspace";
+
+        :restriction :ReqConfigID;
+        :restriction :ReqConfigName;
     .
 
-:CanGetTemplateListProperty a owl:ObjectProperty;
-    :name "Can Get Template List Property";
-    :description "Property applied to all actors that can get a list of templates";
-    
-    rdfs:range :TemplateList
+
+    # Restrictions
+    :ReqWorkspaceToml a owl:Restriction;
+        owl:onProperty :WorkspaceToml;
+        owl:cardinality 1;
     .
-# endregion
-# ##############################
+
+    :CanValidateTemplatesWorkspace a owl:Restriction;
+        owl:onProperty :CanValidateTemplatesWorkspaceProperty;
+    .
+
+    :CanInitializeTemplatesWorkspace a owl:Restriction;
+        owl:onProperty :CanInitializeTemplatesWorkspaceProperty;
+        
+    .
+
+    # Properties 
+    :CanInitializeTemplatesWorkspaceProperty a owl:ObjectProperty;
+        :name "Can Initialize Template Workspace Property";
+        :description "Property to be applied to all classes that can initialize a new templates workspace";
+
+        owl:allValuesFrom :TemplatesWorkspace;
+    .
+
+    :CanValidateTemplatesWorkspaceProperty a owl:ObjectProperty;
+        :name "Can Validate a Template Workspace Property";
+        :description "Property to be applied to all classes that can validate a templates workspace";
+
+        owl:allValuesFrom :TemplatesWorkspace;
+    .
+
+
+
+    # endregion
+
+
+    ##############################
+    # Template Definition
+    ##############################
+    # region
+
+    # Define what a OpenViatica Template IS
+    :Template a owl:Class ;
+
+        :name "Template" ;
+        :description "A Template Class. Encapsulates the things required to be considered a Template" ;
+        
+        # Every template IS a type of folder
+        :is :Folder ;
+
+        # Start restrictions
+        :restriction :TemplateTomlOptional
+    .
+
+    :BaseTemplateInstance a :Template ;
+        :name "Base Template Instance";
+        :description "An instance of the Template with all the base information";
+    .
+
+    :TemplateList a owl:Class;
+        :name "Template List";
+        :description "A collection of templates.";
+
+        :restriction :ContainsOnlyTemplates;
+    .
+
+    :TemplateToml a owl:Class;
+        :name "TemplateToml";
+        :description "Optional toml located at the root of a template folder";
+
+        :restriction :ReqConfigName, :ReqConfigID
+    .
+
+    # Template restrictions
+    :TemplateTomlOptional a owl:Restriction;
+        owl:onProperty :TemplateToml;
+        owl:maxCardinality 1
+    .
+
+    :CanModifyTemplate a owl:Restriction;
+        owl:onProperty :CanModifyTemplateProperty;
+        owl:allValuesFrom :Template;
+    .
+
+    :CanGetTemplateList a owl:Restriction;
+        owl:onProperty :CanGetTemplateListProperty;
+        owl:allValuesFrom :TemplateList
+    .
+
+    :CanCreateBaseTemplate a owl:Restriction;
+        :name "Can Create Base Template";
+        :description "A restriction applied to all actors that can create a base template.";
+        owl:onProperty :CanCreateBaseTemplateProperty;
+        owl:allValuesFrom :BaseTemplateInstance;
+    .
+
+    :ContainsOnlyTemplates a owl:Restriction;
+        owl:onProperty :hasMember;
+        owl:allValuesFrom :Template
+    .
+
+    # Template actions
+    :CanModifyTemplateProperty a owl:ObjectProperty ;
+        :name "Can Modify Template" ;
+        rdfs:range :Template 
+    .
+
+    :CanGetTemplateListProperty a owl:ObjectProperty;
+        :name "Can Get Template List Property";
+        :description "Property applied to all actors that can get a list of templates";
+        
+        rdfs:range :TemplateList
+    .
+
+    :CanCreateBaseTemplateProperty a owl:ObjectProperty;
+        :name "Can Create a Template Property";
+        :description "Property applied to any actor that can create a base template";
+
+        rdfs:range :Template;
+    .
+
+    # endregion
+    # ##############################
 
 
 
@@ -123,12 +214,12 @@
 :ReqConfigName a owl:Restriction;
     owl:onProperty :ConfigName;
     owl:cardinality 1
-    .
+.
 
 :ReqConfigID a owl:Restriction;
     owl:onProperty :ConfigID;
     owl:cardinality 1
-    .
+.
 
 # General Propery definitions
 :ConfigName a owl:DatatypeProperty ; rdfs:range xsd:string .
@@ -138,14 +229,18 @@
 # Aliases here
 ## Linker Aliases
 :is a owl:ObjectProperty ;
-    owl:equivalentProperty rdfs:subClassOf .
+    owl:equivalentProperty rdfs:subClassOf 
+.
 
 :restriction a owl:ObjectProperty ;
-    owl:equivalentProperty rdfs:subClassOf .
+    owl:equivalentProperty rdfs:subClassOf 
+.
 
 ## Metadata property aliases 
 :name a owl:AnnotationProperty ;
-    owl:equivalentProperty rdfs:label .
+    owl:equivalentProperty rdfs:label 
+.
 
 :description a owl:AnnotationProperty ;
-    owl:equivalentProperty rdfs:comment .
+    owl:equivalentProperty rdfs:comment 
+.
