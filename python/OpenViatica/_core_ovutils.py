@@ -18,14 +18,17 @@
 # from pydantic import TypeAdapter
 # from ._general_core import General as G
 # from ._types import ovutils_types
-# import os
+import os
 # import uuid
-# import toml
+import toml
 # from importlib.resources.abc import Traversable
 # import time
 
 # from pathlib import Path
 
+
+
+from typeguard import typechecked
 
 
 class ovutils:
@@ -227,9 +230,31 @@ class ovutils:
 
         All methods in this class MUST have the dirpath sent to it consistently
         '''
-        def 
+        workspace_toml_filename = ".ov-templates.toml"
+        
+        @classmethod
+        def is_workspace_folder(cls,folderpath:str) -> bool:
+            '''Returns True only if the folderpath has all the necessary criteria to be a workspace folder'''
+            # folderpath MUST exist
+            return True
 
-        pass
+        @typechecked
+        @classmethod
+        def validate_is_workspace_folder(cls,folderpath:str) -> None:
+            '''Raises an error if the folder is NOT a workspace folder'''
+
+            # The folderpath MUST exist
+            if not os.path.exists(folderpath):
+                raise FileNotFoundError(f"ERROR! The folder '{folderpath}' does NOT exist!")
+            
+            # The workspace toml file MUST be found in the folder
+            workspace_toml_filepath= os.path.join(folderpath, cls.workspace_toml_filename)
+            if not os.path.exists(workspace_toml_filepath):
+                raise FileNotFoundError(f"ERROR! The Workpsace Toml File '{workspace_toml_filepath}' was does NOT exist!")
+            pass
+
+            # The workspace_toml file must be able to be read and validated
+            
 
     # class templates:
     #     '''

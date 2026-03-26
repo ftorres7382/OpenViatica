@@ -17,6 +17,19 @@
     :restriction :CanModifyTemplate;
 .
 
+##############################
+# region Template Definitions
+##############################
+
+:Template a owl:Class ;
+    rdfs:label "Template" .
+
+:BaseTemplate a owl:Class ;
+    rdfs:subClassOf :Template .
+
+##############################
+# endregion
+##############################
 
 
 ##############################
@@ -34,10 +47,20 @@
         :name "Template Engine" ;
         :description "Can interact with the OpenViatica Template system." ;
 
+        :is :PythonTransformerClass;
+
         # List in granular detail all the things the engine can do
+        :restriction :CanGetWorkspaceTomlDict;  #IMPLEMENT
+        :restriction :CanValidateWorkspaceTomlDict;
+
+        :restriction :CanGetIsTemplatesWorkspace; # IMPLEMENT
         :restriction :CanValidateTemplatesWorkspace; # IMPLEMENT
-        :restriction :CanInitializeTemplatesWorkspace; # IMPLEMENT
+        
         :restriction :CanGetTemplateList; # IMPLEMENT
+
+        :restriction :CanInitializeTemplatesWorkspace; # IMPLEMENT
+        
+        # MAYBE NOT?
         :restriction :CanCreateBaseTemplate; # IMPLEMENT
     .
 
@@ -58,7 +81,7 @@
     .
 
     # endregion
-    # ##############################
+    ##############################
 
     ##############################
     # Template Workspace Definition
@@ -82,6 +105,7 @@
 
         :restriction :ReqConfigID;
         :restriction :ReqConfigName;
+        :restriction :ReqConfigWorkspaceType;
     .
 
 
@@ -91,8 +115,12 @@
         owl:cardinality 1;
     .
 
-    :CanValidateTemplatesWorkspace a owl:Restriction;
-        owl:onProperty :CanValidateTemplatesWorkspaceProperty;
+    :CanGetIsTemplatesWorkspace a owl:Restriction;
+        owl:onProperty :CanGetIsTemplatesWorkspaceProperty;
+    .
+
+    :CanGetWorkspaceTomlDict a owl:Restriction;
+        owl:onProperty :CanGetWorkspaceTomlDictProperty;
     .
 
     :CanInitializeTemplatesWorkspace a owl:Restriction;
@@ -100,25 +128,39 @@
         
     .
 
+    :CanValidateTemplatesWorkspace a owl:Restriction;
+        owl:onProperty :CanValidateTemplatesWorkspaceProperty;
+    .
+
     # Properties 
     :CanInitializeTemplatesWorkspaceProperty a owl:ObjectProperty;
         :name "Can Initialize Template Workspace Property";
         :description "Property to be applied to all classes that can initialize a new templates workspace";
 
-        owl:allValuesFrom :TemplatesWorkspace;
+        :refers_to :TemplatesWorkspace;
+    .
+
+    :CanGetIsTemplatesWorkspaceProperty a owl:ObjectProperty;
+        :name "Can Validate a Template Workspace Property";
+        :description "Property to be applied to all classes that can determine that a given folder IS a templates workspace";
+        :refers_to :TemplatesWorkspace;
     .
 
     :CanValidateTemplatesWorkspaceProperty a owl:ObjectProperty;
-        :name "Can Validate a Template Workspace Property";
+        :name "Can Validate Workspace Property";
         :description "Property to be applied to all classes that can validate a templates workspace";
+        :refers_to :TemplatesWorkspace;
+    .
 
-        owl:allValuesFrom :TemplatesWorkspace;
+    :CanGetWorkspaceTomlDictProperty a owl:ObjectProperty;
+        :name "Can Get Workspace Toml Dict Property";
+        :description "Allows a class to read the Workspace Toml and convert it to a python dictionary";
+        :refers_to :TemplatesWorkspace;
     .
 
 
-
     # endregion
-
+    ##############################
 
     ##############################
     # Template Definition
@@ -135,7 +177,7 @@
         :is :Folder ;
 
         # Start restrictions
-        :restriction :TemplateTomlOptional
+        :restriction :TemplateTomlOptional;
     .
 
     :BaseTemplateInstance a :Template ;
@@ -208,9 +250,23 @@
     # endregion
     # ##############################
 
+# endregion
+
+##############################
+# General Definitions here
+##############################
+# region
+
+# General Class Definitions
+:PythonTransformerClass a owl:Class;
+    :name "Python Transformer Class";
+    :description "A class that transforms an object external to itself or the codebase";
+.
 
 
-# # General Requirements here
+# Requirements definitions
+
+
 :ReqConfigName a owl:Restriction;
     owl:onProperty :ConfigName;
     owl:cardinality 1
@@ -221,10 +277,18 @@
     owl:cardinality 1
 .
 
+:ReqConfigWorkspaceType a owl:Restriction;
+    owl:onProperty :ConfigWorkspaceType;
+.
+
 # General Propery definitions
 :ConfigName a owl:DatatypeProperty ; rdfs:range xsd:string .
 :ConfigID   a owl:DatatypeProperty ; rdfs:range xsd:string .
-
+:ConfigWorkspaceType a owl:DatatypeProperty; 
+    owl:oneOf (
+    "OpenViatica" 
+    "Templates"
+) .
 
 # Aliases here
 ## Linker Aliases
@@ -244,3 +308,12 @@
 :description a owl:AnnotationProperty ;
     owl:equivalentProperty rdfs:comment 
 .
+
+:refers_to a owl:AnnotationProperty ;
+    owl:equivalentProperty rdfs:range 
+.
+
+# endregion
+##############################
+
+
