@@ -1,4 +1,3 @@
-import stat
 from typing import Callable
 from typeguard import typechecked
 import sys
@@ -9,6 +8,11 @@ import glob
 import time
 import shutil
 from importlib import resources
+from ._types import ovutils_types as ot
+import toml
+import typing as t
+from pydantic import TypeAdapter
+
 
 class General:
     '''Used for general functions in the package itself'''
@@ -16,7 +20,7 @@ class General:
     pkg_path: Traversable = resources.files("OpenViatica")
     pkg_templates_path: Traversable = pkg_path.joinpath("templates")
     
-    workpsace_landing_dirname = ".openviatica" 
+    
         
 
 
@@ -72,6 +76,35 @@ class General:
                 return user_input
             
             print(error_msg)
+
+    @staticmethod
+    @typechecked
+    def get_toml_dict(
+        toml_filepath:str, 
+        expected_type: t.Type[ot.ANY_TYPE_DEF_TYPE] | None = None
+        ) -> t.Dict[t.Any,t.Any] | ot.ANY_TYPE_DEF_TYPE:
+        '''
+        This function returns the toml file as a dictionary.
+
+        If the expected_type is defined, it will be validated using pydantic
+        '''
+        # Check for file
+        if not os.path.exists(toml_filepath):
+            raise FileExistsError(f"ERROR! The toml file '{toml_filepath}' does NOT exist!")
+
+        # Read the toml
+        validated_result_dict: t.Dict[t.Any,t.Any] | ot.ANY_TYPE_DEF_TYPE
+        with open(toml_filepath, 'r') as f:
+            validated_result_dict = toml.load(f)
+
+        if expected_type is not None:
+            adapter = TypeAdapter(expected_type)
+            validated_result_dict = adapter.validate_python(validated_result_dict)
+        
+        
+        return validated_result_dict
+
+
 
     # This validator function could be used a lot
     @staticmethod

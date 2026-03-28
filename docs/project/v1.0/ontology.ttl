@@ -12,38 +12,30 @@
     :description "An actor capable of interacting with the OpenViatica system." ;
 
     # Template call restrictions
-    :restriction :CanCallTemplatesEngine;
-    :restriction :CanGetTemplateList;
+    :restriction :CanCallTemplatesTransformerEngine;
+    :restriction :CanGetTemplatesList;
     :restriction :CanModifyTemplate;
 .
 
 ##############################
-# region Template Definitions
+# OpenViatica Workspace Related Definitions
 ##############################
 
-:Template a owl:Class ;
-    rdfs:label "Template" .
-
-:BaseTemplate a owl:Class ;
-    rdfs:subClassOf :Template .
-
-##############################
-# endregion
-##############################
-
+    :OpenViaticaTransformerEngine a owl:Class ;
+        :name "OpenViatica Transformer Engine"
+        :description "Main code engine that interacts with the OpenViatica Workspace system"
+        .
 
 ##############################
 # Template Related Definitions
 ##############################
-# region
 
     ##############################
     # Template Engine Definition
     ##############################
-    # region
 
     # Classes
-    :TemplatesEngine a owl:Class ;
+    :TemplatesTransformerEngine a owl:Class ;
         :name "Template Engine" ;
         :description "Can interact with the OpenViatica Template system." ;
 
@@ -51,12 +43,12 @@
 
         # List in granular detail all the things the engine can do
         :restriction :CanGetWorkspaceTomlDict;  #IMPLEMENT
-        :restriction :CanValidateWorkspaceTomlDict;
+        :restriction :CanValidateWorkspaceToml; #IMPLEMENT
 
         :restriction :CanGetIsTemplatesWorkspace; # IMPLEMENT
         :restriction :CanValidateTemplatesWorkspace; # IMPLEMENT
         
-        :restriction :CanGetTemplateList; # IMPLEMENT
+        :restriction :CanGetTemplatesList; # IMPLEMENT
 
         :restriction :CanInitializeTemplatesWorkspace; # IMPLEMENT
         
@@ -65,32 +57,30 @@
     .
 
     # Restrictions
-    :CanCallTemplatesEngine a owl:Restriction;
+    :CanCallTemplatesTransformerEngine a owl:Restriction;
         :name "Can Call Template Engine";
         :description "Restriction to be applied to all that can call the template engine.";
 
-        :onProperty :CanCallTemplatesEngineProperty;
+        :onProperty :CanCallTemplatesTransformerEngineProperty;
     .
 
     # Properties
-    :CanCallTemplatesEngineProperty a owl:ObjectProperty;
+    :CanCallTemplatesTransformerEngineProperty a owl:ObjectProperty;
         :name "Can Call Template Engine Property";
         :description "To be applied to a restriction that can be applied to any actor that can call the the OpenViatica Template Engine";
 
-        rdfs:range :TemplatesEngine;
+        rdfs:range :TemplatesTransformerEngine;
     .
 
-    # endregion
     ##############################
 
     ##############################
     # Template Workspace Definition
     ##############################
-    # region
 
     :TemplatesWorkspace a owl:Class;
         :name "Template Workspace";
-        :description "A Template Workspace capable of interacting with the TemplatesEngine to fulfill Template requests";
+        :description "A Template Workspace capable of interacting with the TemplatesTransformerEngine to fulfill Template requests";
 
         :is :Folder;
 
@@ -132,6 +122,10 @@
         owl:onProperty :CanValidateTemplatesWorkspaceProperty;
     .
 
+    :CanValidateWorkspaceToml a owl:Restriction;
+        owl:onProperty :CanValidateWorkspaceTomlProperty;
+    .
+
     # Properties 
     :CanInitializeTemplatesWorkspaceProperty a owl:ObjectProperty;
         :name "Can Initialize Template Workspace Property";
@@ -158,14 +152,15 @@
         :refers_to :TemplatesWorkspace;
     .
 
+    :CanValidateWorkspaceTomlProperty a owl:ObjectProperty;
+        :description "Allows a class to validate Workspace Toml";
+        :refers_to :TemplatesWorkspace;
+    .
 
-    # endregion
-    ##############################
 
     ##############################
     # Template Definition
     ##############################
-    # region
 
     # Define what a OpenViatica Template IS
     :Template a owl:Class ;
@@ -185,7 +180,7 @@
         :description "An instance of the Template with all the base information";
     .
 
-    :TemplateList a owl:Class;
+    :TemplatesList a owl:Class;
         :name "Template List";
         :description "A collection of templates.";
 
@@ -210,9 +205,9 @@
         owl:allValuesFrom :Template;
     .
 
-    :CanGetTemplateList a owl:Restriction;
-        owl:onProperty :CanGetTemplateListProperty;
-        owl:allValuesFrom :TemplateList
+    :CanGetTemplatesList a owl:Restriction;
+        owl:onProperty :CanGetTemplatesListProperty;
+        owl:allValuesFrom :TemplatesList
     .
 
     :CanCreateBaseTemplate a owl:Restriction;
@@ -233,11 +228,11 @@
         rdfs:range :Template 
     .
 
-    :CanGetTemplateListProperty a owl:ObjectProperty;
+    :CanGetTemplatesListProperty a owl:ObjectProperty;
         :name "Can Get Template List Property";
         :description "Property applied to all actors that can get a list of templates";
         
-        rdfs:range :TemplateList
+        rdfs:range :TemplatesList
     .
 
     :CanCreateBaseTemplateProperty a owl:ObjectProperty;
@@ -246,11 +241,6 @@
 
         rdfs:range :Template;
     .
-
-    # endregion
-    # ##############################
-
-# endregion
 
 ##############################
 # General Definitions here

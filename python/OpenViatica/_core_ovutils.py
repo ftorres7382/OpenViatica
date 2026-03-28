@@ -15,18 +15,20 @@
 
 
 # from typeguard import typechecked
-# from pydantic import TypeAdapter
 # from ._general_core import General as G
-# from ._types import ovutils_types
+
 import os
+from uuid import uuid4
 # import uuid
-import toml
+from OpenViatica._general_core import General
 # from importlib.resources.abc import Traversable
 # import time
 
 # from pathlib import Path
 
-
+from ._types import ovutils_types as ot
+from  ._errors import ov_errors as ov_err 
+import typing as t
 
 from typeguard import typechecked
 
@@ -43,7 +45,7 @@ class ovutils:
     1. fibonacci(n: int) -> int
     2. fibonacci_rust(n:int) -> int
     '''
-    _base_metadata_filename:str = "workspace-metadata.toml"
+    workpsace_landing_dirname = ".openviatica" 
     
     # class workspace:
     #     '''
@@ -224,37 +226,9 @@ class ovutils:
 
 
 
-    class _template_engine:
-        '''
-        This class is designed to be a classmethod TRANSFORMER ONLY class
+    
 
-        All methods in this class MUST have the dirpath sent to it consistently
-        '''
-        workspace_toml_filename = ".ov-templates.toml"
-        
-        @classmethod
-        def is_workspace_folder(cls,folderpath:str) -> bool:
-            '''Returns True only if the folderpath has all the necessary criteria to be a workspace folder'''
-            # folderpath MUST exist
-            return True
 
-        @typechecked
-        @classmethod
-        def validate_is_workspace_folder(cls,folderpath:str) -> None:
-            '''Raises an error if the folder is NOT a workspace folder'''
-
-            # The folderpath MUST exist
-            if not os.path.exists(folderpath):
-                raise FileNotFoundError(f"ERROR! The folder '{folderpath}' does NOT exist!")
-            
-            # The workspace toml file MUST be found in the folder
-            workspace_toml_filepath= os.path.join(folderpath, cls.workspace_toml_filename)
-            if not os.path.exists(workspace_toml_filepath):
-                raise FileNotFoundError(f"ERROR! The Workpsace Toml File '{workspace_toml_filepath}' was does NOT exist!")
-            pass
-
-            # The workspace_toml file must be able to be read and validated
-            
 
     # class templates:
     #     '''
