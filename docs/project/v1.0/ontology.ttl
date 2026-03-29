@@ -12,19 +12,44 @@
     :description "An actor capable of interacting with the OpenViatica system." ;
 
     # Template call restrictions
-    :restriction :CanCallTemplatesTransformerEngine;
-    :restriction :CanGetTemplatesList;
-    :restriction :CanModifyTemplate;
+    :restricted_by :CanCallTemplatesTransformerEngine;
+    :restricted_by :CanGetTemplatesList;
+    :restricted_by :CanModifyTemplate;
 .
 
 ##############################
 # OpenViatica Workspace Related Definitions
 ##############################
 
-    :OpenViaticaTransformerEngine a owl:Class ;
-        :name "OpenViatica Transformer Engine"
-        :description "Main code engine that interacts with the OpenViatica Workspace system"
-        .
+    :OpenViaticaWorkspaceTransformerEngine a owl:Class ;
+        :name "OpenViatica Workspace Transformer Engine";
+        :description "Main engine that interacts with the OpenViatica Workspace system. ";
+
+        :restricted_by :CanInitializeOpenViaticaWorkspace;
+    .
+
+
+
+    :OpenViaticaWorkspace a owl:Class;
+        :name "OpenViatica Workspace";
+        :description "An OpenViatica Workspace is a workspace that manages other workspaces";
+
+        :is :Folder;
+        :restricted_by :ReqWorkspaceToml;
+    .
+
+    # Restrictions
+    :CanInitializeOpenViaticaWorkspace a owl:Restriction;
+        owl:onProperty :CanInitializeOpenViaticaWorkspaceProperty;
+    . 
+
+    # Properties
+    :CanInitializeOpenViaticaWorkspaceProperty a owl:ObjectProperty;
+        :name "Can Initialize OpenViatica Workspace Property";
+        :description "Property to be applied to all classes that can initialize a new OpenViatica workspace";
+
+        :refers_to :OpenViaticaWorkspace;
+    .
 
 ##############################
 # Template Related Definitions
@@ -42,18 +67,18 @@
         :is :PythonTransformerClass;
 
         # List in granular detail all the things the engine can do
-        :restriction :CanGetWorkspaceTomlDict;  #IMPLEMENT
-        :restriction :CanValidateWorkspaceToml; #IMPLEMENT
+        :restricted_by :CanGetWorkspaceTomlDict;  #IMPLEMENT
+        :restricted_by :CanValidateWorkspaceToml; #IMPLEMENT
 
-        :restriction :CanGetIsTemplatesWorkspace; # IMPLEMENT
-        :restriction :CanValidateTemplatesWorkspace; # IMPLEMENT
+        :restricted_by :CanGetIsTemplatesWorkspace; # IMPLEMENT
+        :restricted_by :CanValidateTemplatesWorkspace; # IMPLEMENT
         
-        :restriction :CanGetTemplatesList; # IMPLEMENT
+        :restricted_by :CanGetTemplatesList; # IMPLEMENT
 
-        :restriction :CanInitializeTemplatesWorkspace; # IMPLEMENT
+        :restricted_by :CanInitializeTemplatesWorkspace; # IMPLEMENT
         
         # MAYBE NOT?
-        :restriction :CanCreateBaseTemplate; # IMPLEMENT
+        :restricted_by :CanCreateBaseTemplate; # IMPLEMENT
     .
 
     # Restrictions
@@ -84,7 +109,7 @@
 
         :is :Folder;
 
-        :restriction :ReqWorkspaceToml
+        :restricted_by :ReqWorkspaceToml;
 
 
     .
@@ -93,9 +118,9 @@
         :name "Workspace Toml";
         :description "A Toml file found in the workspace folder that has all the metadata of the workspace";
 
-        :restriction :ReqConfigID;
-        :restriction :ReqConfigName;
-        :restriction :ReqConfigWorkspaceType;
+        :restricted_by :ReqConfigID;
+        :restricted_by :ReqConfigName;
+        :restricted_by :ReqConfigWorkspaceType;
     .
 
 
@@ -172,7 +197,7 @@
         :is :Folder ;
 
         # Start restrictions
-        :restriction :TemplateTomlOptional;
+        :restricted_by :TemplateTomlOptional;
     .
 
     :BaseTemplateInstance a :Template ;
@@ -184,14 +209,14 @@
         :name "Template List";
         :description "A collection of templates.";
 
-        :restriction :ContainsOnlyTemplates;
+        :restricted_by :ContainsOnlyTemplates;
     .
 
     :TemplateToml a owl:Class;
         :name "TemplateToml";
         :description "Optional toml located at the root of a template folder";
 
-        :restriction :ReqConfigName, :ReqConfigID
+        :restricted_by :ReqConfigName, :ReqConfigID
     .
 
     # Template restrictions
@@ -276,8 +301,8 @@
 :ConfigID   a owl:DatatypeProperty ; rdfs:range xsd:string .
 :ConfigWorkspaceType a owl:DatatypeProperty; 
     owl:oneOf (
-    "OpenViatica" 
-    "Templates"
+    "openviatica" 
+    "ov-templates"
 ) .
 
 # Aliases here
@@ -286,7 +311,7 @@
     owl:equivalentProperty rdfs:subClassOf 
 .
 
-:restriction a owl:ObjectProperty ;
+:restricted_by a owl:ObjectProperty ;
     owl:equivalentProperty rdfs:subClassOf 
 .
 
