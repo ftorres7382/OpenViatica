@@ -4,38 +4,78 @@ from uuid import uuid4
 from OpenViatica._general_core import General
 
 
-from ._types import ovutils_types as ot
+from ._types import openviatica_workspace_types as ov_ws_t
 from  ._errors import ov_errors as ov_err 
 import typing as t
 
 from typeguard import typechecked
+import toml
+
+@typechecked
+def create_workspace_toml(
+    folderpath:str,
+    toml_filename:str,
+    workspace_name:str,
+    workspace_type: ov_ws_t.ws_type_t,
+    workspace_id:str = str(uuid4())
+    ) -> None:
+    '''Creates the required workspace toml file'''
+    
+    # Validate that the folder exists
+    if not os.path.exists(folderpath):
+        raise ov_err.FolderExistsError(f"ERROR! The folder '{folderpath}' does NOT exist!")
+    
+    # Validate that the toml file does NOT already exist
+    toml_filepath = os.path.join(folderpath, toml_filename)
+    if os.path.exists(toml_filepath):
+        raise FileExistsError(f"ERROR! The file '{toml_filepath}' ALREADY exists!")
+    
+    # Create the toml dictionary
+    toml_dict: ov_ws_t.TEMPLATE_WORKSPACE_TOML_DICT_TYPE = {
+        "id": workspace_id,
+        "name": workspace_name,
+        "type": workspace_type
+    }
+    with open(toml_filepath, 'w') as f:
+        toml.dump(toml_dict, f)
 
 
-class ovutils_transformers:
+class ovutils_service:
     '''
-    Internal class that mirrors ovutils classes, except these are all JUST transformer classes
-    '''
-    workspace_toml_filename:str = ".openviatica.toml"
+    Service class where all methods recieve the workspace folderpath.
+
+    The methods can get information or transform the workspace in any way
+    '''    
+
 
     @classmethod
     @typechecked
-    def validate_is_workspace(cls, folderpath:str = "./") -> None:
-        '''Validates that it is openviatica workspace'''
-
-        # Folder must exist
-        if not os.path.exists(folderpath):
-            raise ov_err.FolderNotFoundError(f"ERROR! The folder '{folderpath}' does NOT exist!")
-        
-        # workspace toml file MUST exist
-        if not os.path.
-
-
-
-
-    @classmethod
-    @typechecked
-    def initialize(cls,folderpath:str) -> None:
+    def initialize(
+        cls,
+        folderpath:str
+        ) -> None:
         '''Initializes a new openviatica workspace'''
+        
+        # Check that the folder exists
+        if not os.path.exists(folderpath):
+            raise ov_err.FolderNotFoundError(f"ERROR! The folder '{folderpath}' does NOT exist.")
+        
+        # The workspace toml must NOT exist
+        workspace_toml_filepath = os.path.join(folderpath,cls.workspace_toml_filename)
+        if os.path.exists(workspace_toml_filepath):
+            raise FileExistsError(f"ERROR! The workspace filepath '{workspace_toml_filepath}' ALREADY exists!")
+        
+        # Now we can just create the toml file
+        create_workspace_toml(
+            folderpath=folderpath,
+            toml_filename=cls.workspace_toml_filename,
+            workspace_name=cls.default_workspace_name,
+            workspace_id=str(uuid4()),
+            workspace_type="openviatica"
+        )
+
+
+
 
 
 

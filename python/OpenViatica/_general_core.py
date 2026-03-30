@@ -79,7 +79,7 @@ class General:
 
     @staticmethod
     @typechecked
-    def get_toml_dict(
+    def read_toml_dict(
         toml_filepath:str, 
         expected_type: t.Type[ot.ANY_TYPE_DEF_TYPE] | None = None
         ) -> t.Dict[t.Any,t.Any] | ot.ANY_TYPE_DEF_TYPE:
@@ -104,6 +104,7 @@ class General:
         
         return validated_result_dict
 
+    
 
 
     # This validator function could be used a lot

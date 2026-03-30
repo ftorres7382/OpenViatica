@@ -3,16 +3,15 @@
 
 import typing as t
 
-TEMPLATES_TOML_TYPE_ALLOWED_VALUES = t.Literal["TEMPLATE"]
+ov_ws_type_t = t.Literal["openviatica"]
 
-
-class ovutils_types:
+class openviatica_workspace_types:
+    ws_type_t = ov_ws_type_t
     
-    class templates_types:
-        class TEMPLATE_WORKSPACE_TOML_DICT_TYPE(t.TypedDict):
-            type: TEMPLATES_TOML_TYPE_ALLOWED_VALUES
-            id: str
-            name: str 
+    class TEMPLATE_WORKSPACE_TOML_DICT_TYPE(t.TypedDict):
+        name: str
+        id: str
+        type:  ov_ws_type_t
 
     
     ANY_TYPE_DEF_TYPE = t.TypeVar("ANY_TYPE_DEF_TYPE")

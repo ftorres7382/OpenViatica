@@ -22,11 +22,11 @@ def test_OpenViatica_import() -> None:
     except ImportError:
         pytest.fail("FAILED import of OpenViatica!")
     
-def test_ovutils_import() -> None:
-    '''Tests that the ovutils is importable'''
-    try:
-        from OpenViatica import ovutils
-        _ = ovutils.__doc__
-    except ImportError:
-        pytest.fail("FAILED import of ovutils!")
+# def test_ovutils_import() -> None:
+#     '''Tests that the ovutils is importable'''
+#     try:
+#         from OpenViatica import ovutils
+#         _ = ovutils.__doc__
+#     except ImportError:
+#         pytest.fail("FAILED import of ovutils!")
 

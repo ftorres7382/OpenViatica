@@ -1,186 +1,334 @@
-# @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-# # We define 'is' and 'has' as our own relationship types
-# @prefix is:   <http://openviatica.org/rel/is#> .
-# @prefix has:  <http://openviatica.org/rel/has#> .
-# @prefix can: <http://openviatica.org/rel/can#> .
-# @prefix ov: <http://openviatica.org/types#> .
-
 @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix owl:  <http://www.w3.org/2002/07/owl#> .
-@prefix ov:   <http://openviatica.org/schema#> .
-
-
-# OpenViatica relationships
-# type:OpenViatica 
-#     is:a        type:NameSpace ;
-#     has:a      type:DataWorkspace ;
-#     has:a  type:TemplatesWorkspace ;
-#     has:a  type:WorkflowsWorkspace ;
-#     has:    type:OpenViaticaTool
-#     .
-
-# type:DataWorkspace 
-#     is:a    type:Workspace 
-#     .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix :   <http://openviatica.org/schema#> .
 
 ##############################
-# Templates Definition
+# User Definitions
+##############################
+:User a owl:Class ;
+    :name "User" ;
+    :description "An actor capable of interacting with the OpenViatica system." ;
+
+    # Template call restrictions
+    :restricted_by :CanCallTemplatesTransformerEngine;
+    :restricted_by :CanGetTemplatesList;
+    :restricted_by :CanModifyTemplate;
+.
+
+##############################
+# OpenViatica Workspace Related Definitions
+##############################
+
+    :OpenViaticaWorkspaceTransformerEngine a owl:Class ;
+        :name "OpenViatica Workspace Transformer Engine";
+        :description "Main engine that interacts with the OpenViatica Workspace system. ";
+
+        :restricted_by :CanInitializeOpenViaticaWorkspace;
+    .
+
+
+
+    :OpenViaticaWorkspace a owl:Class;
+        :name "OpenViatica Workspace";
+        :description "An OpenViatica Workspace is a workspace that manages other workspaces";
+
+        :is :Folder;
+        :restricted_by :ReqWorkspaceToml;
+    .
+
+    # Restrictions
+    :CanInitializeOpenViaticaWorkspace a owl:Restriction;
+        owl:onProperty :CanInitializeOpenViaticaWorkspaceProperty;
+    . 
+
+    # Properties
+    :CanInitializeOpenViaticaWorkspaceProperty a owl:ObjectProperty;
+        :name "Can Initialize OpenViatica Workspace Property";
+        :description "Property to be applied to all classes that can initialize a new OpenViatica workspace";
+
+        :refers_to :OpenViaticaWorkspace;
+    .
+
+##############################
+# Template Related Definitions
+##############################
+
+    ##############################
+    # Template Engine Definition
+    ##############################
+
+    # Classes
+    :TemplatesTransformerEngine a owl:Class ;
+        :name "Template Engine" ;
+        :description "Can interact with the OpenViatica Template system." ;
+
+        :is :PythonTransformerClass;
+
+        # List in granular detail all the things the engine can do
+        :restricted_by :CanGetWorkspaceTomlDict;  #IMPLEMENT
+        :restricted_by :CanValidateWorkspaceToml; #IMPLEMENT
+
+        :restricted_by :CanGetIsTemplatesWorkspace; # IMPLEMENT
+        :restricted_by :CanValidateTemplatesWorkspace; # IMPLEMENT
+        
+        :restricted_by :CanGetTemplatesList; # IMPLEMENT
+
+        :restricted_by :CanInitializeTemplatesWorkspace; # IMPLEMENT
+        
+        # MAYBE NOT?
+        :restricted_by :CanCreateBaseTemplate; # IMPLEMENT
+    .
+
+    # Restrictions
+    :CanCallTemplatesTransformerEngine a owl:Restriction;
+        :name "Can Call Template Engine";
+        :description "Restriction to be applied to all that can call the template engine.";
+
+        :onProperty :CanCallTemplatesTransformerEngineProperty;
+    .
+
+    # Properties
+    :CanCallTemplatesTransformerEngineProperty a owl:ObjectProperty;
+        :name "Can Call Template Engine Property";
+        :description "To be applied to a restriction that can be applied to any actor that can call the the OpenViatica Template Engine";
+
+        rdfs:range :TemplatesTransformerEngine;
+    .
+
+    ##############################
+
+    ##############################
+    # Template Workspace Definition
+    ##############################
+
+    :TemplatesWorkspace a owl:Class;
+        :name "Template Workspace";
+        :description "A Template Workspace capable of interacting with the TemplatesTransformerEngine to fulfill Template requests";
+
+        :is :Folder;
+
+        :restricted_by :ReqWorkspaceToml;
+
+
+    .
+
+    :WorkspaceToml a owl:Class;
+        :name "Workspace Toml";
+        :description "A Toml file found in the workspace folder that has all the metadata of the workspace";
+
+        :restricted_by :ReqConfigID;
+        :restricted_by :ReqConfigName;
+        :restricted_by :ReqConfigWorkspaceType;
+    .
+
+
+    # Restrictions
+    :ReqWorkspaceToml a owl:Restriction;
+        owl:onProperty :WorkspaceToml;
+        owl:cardinality 1;
+    .
+
+    :CanGetIsTemplatesWorkspace a owl:Restriction;
+        owl:onProperty :CanGetIsTemplatesWorkspaceProperty;
+    .
+
+    :CanGetWorkspaceTomlDict a owl:Restriction;
+        owl:onProperty :CanGetWorkspaceTomlDictProperty;
+    .
+
+    :CanInitializeTemplatesWorkspace a owl:Restriction;
+        owl:onProperty :CanInitializeTemplatesWorkspaceProperty;
+        
+    .
+
+    :CanValidateTemplatesWorkspace a owl:Restriction;
+        owl:onProperty :CanValidateTemplatesWorkspaceProperty;
+    .
+
+    :CanValidateWorkspaceToml a owl:Restriction;
+        owl:onProperty :CanValidateWorkspaceTomlProperty;
+    .
+
+    # Properties 
+    :CanInitializeTemplatesWorkspaceProperty a owl:ObjectProperty;
+        :name "Can Initialize Template Workspace Property";
+        :description "Property to be applied to all classes that can initialize a new templates workspace";
+
+        :refers_to :TemplatesWorkspace;
+    .
+
+    :CanGetIsTemplatesWorkspaceProperty a owl:ObjectProperty;
+        :name "Can Validate a Template Workspace Property";
+        :description "Property to be applied to all classes that can determine that a given folder IS a templates workspace";
+        :refers_to :TemplatesWorkspace;
+    .
+
+    :CanValidateTemplatesWorkspaceProperty a owl:ObjectProperty;
+        :name "Can Validate Workspace Property";
+        :description "Property to be applied to all classes that can validate a templates workspace";
+        :refers_to :TemplatesWorkspace;
+    .
+
+    :CanGetWorkspaceTomlDictProperty a owl:ObjectProperty;
+        :name "Can Get Workspace Toml Dict Property";
+        :description "Allows a class to read the Workspace Toml and convert it to a python dictionary";
+        :refers_to :TemplatesWorkspace;
+    .
+
+    :CanValidateWorkspaceTomlProperty a owl:ObjectProperty;
+        :description "Allows a class to validate Workspace Toml";
+        :refers_to :TemplatesWorkspace;
+    .
+
+
+    ##############################
+    # Template Definition
+    ##############################
+
+    # Define what a OpenViatica Template IS
+    :Template a owl:Class ;
+
+        :name "Template" ;
+        :description "A Template Class. Encapsulates the things required to be considered a Template" ;
+        
+        # Every template IS a type of folder
+        :is :Folder ;
+
+        # Start restrictions
+        :restricted_by :TemplateTomlOptional;
+    .
+
+    :BaseTemplateInstance a :Template ;
+        :name "Base Template Instance";
+        :description "An instance of the Template with all the base information";
+    .
+
+    :TemplatesList a owl:Class;
+        :name "Template List";
+        :description "A collection of templates.";
+
+        :restricted_by :ContainsOnlyTemplates;
+    .
+
+    :TemplateToml a owl:Class;
+        :name "TemplateToml";
+        :description "Optional toml located at the root of a template folder";
+
+        :restricted_by :ReqConfigName, :ReqConfigID
+    .
+
+    # Template restrictions
+    :TemplateTomlOptional a owl:Restriction;
+        owl:onProperty :TemplateToml;
+        owl:maxCardinality 1
+    .
+
+    :CanModifyTemplate a owl:Restriction;
+        owl:onProperty :CanModifyTemplateProperty;
+        owl:allValuesFrom :Template;
+    .
+
+    :CanGetTemplatesList a owl:Restriction;
+        owl:onProperty :CanGetTemplatesListProperty;
+        owl:allValuesFrom :TemplatesList
+    .
+
+    :CanCreateBaseTemplate a owl:Restriction;
+        :name "Can Create Base Template";
+        :description "A restriction applied to all actors that can create a base template.";
+        owl:onProperty :CanCreateBaseTemplateProperty;
+        owl:allValuesFrom :BaseTemplateInstance;
+    .
+
+    :ContainsOnlyTemplates a owl:Restriction;
+        owl:onProperty :hasMember;
+        owl:allValuesFrom :Template
+    .
+
+    # Template actions
+    :CanModifyTemplateProperty a owl:ObjectProperty ;
+        :name "Can Modify Template" ;
+        rdfs:range :Template 
+    .
+
+    :CanGetTemplatesListProperty a owl:ObjectProperty;
+        :name "Can Get Template List Property";
+        :description "Property applied to all actors that can get a list of templates";
+        
+        rdfs:range :TemplatesList
+    .
+
+    :CanCreateBaseTemplateProperty a owl:ObjectProperty;
+        :name "Can Create a Template Property";
+        :description "Property applied to any actor that can create a base template";
+
+        rdfs:range :Template;
+    .
+
+##############################
+# General Definitions here
 ##############################
 # region
 
-# import typing as t
-# class OV_TEMPLATE_CONFIG_TYPE(t.TypedDict):
-#     name: str
-#     id: str
-#     # List of filepaths
-#     payload: t.List[str]
+# General Class Definitions
+:PythonTransformerClass a owl:Class;
+    :name "Python Transformer Class";
+    :description "A class that transforms an object external to itself or the codebase";
+.
 
-# class OV_Template(OV_Folder):
-#     config: OV_TEMPLATE_CONFIG_TYPE = {}
 
-# Define what a OpenViatica Template IS
-ov:Template
-    a owl:Class ;
+# Requirements definitions
 
-    rdfs:label "TemplateObject" ;
-    rdfs:comment "A Template Object. Encapsulates all the properties needed to integrate with the TemplateEngine" ;
-    
-    # Every template IS a type of folder
-    rdfs:subClassOf ov:Folder ;
 
-    # Start a new property definition
-    rdfs:subClassOf  ov:OneTemplateConfigObjRequired
-    .
-# Tempalate restrictions
-
-# We can read the whole retriction definition as:
-    # The ov:OneConfigObjRequired is a 
-    # formal description on the property
-    # ov:OneTemplateConfigObjRequired where we require 
-    # one and only on present
-ov:OneTemplateConfigObjRequired
-    # Formal Restriction 
-    a owl:Restriction ;
-
-    # The type of property that is in discussion
-    owl:onProperty ov:TemplateConfigObj ;
-
-    # Restriction of the property
-    # One value for this one AND it is a required value
+:ReqConfigName a owl:Restriction;
+    owl:onProperty :ConfigName;
     owl:cardinality 1
-    .
-# Template attributes
-ov:TemplateConfigObj
-    a owl:ObjectProperty;
-    rdfs:label "Template Configuration Object" ;
-    rdfs:comment "Links a Template to its specific configuration metadata."
-    .
+.
 
-    # is:a  type:IDFolder ;
-    # can:have   type:TemplateObjectToml ;
-    # has:a type:TemplatesPayload ;
-    # has:a type:gitignore
-    
-# type:TemplatesWorkspace 
-#     is:a      type:Workspace ;
-#     has:a       type:TemplateObject 
-#     . 
+:ReqConfigID a owl:Restriction;
+    owl:onProperty :ConfigID;
+    owl:cardinality 1
+.
 
-# type:TemplateObject
-#     is:a  type:IDFolder ;
-#     can:have   type:TemplateObjectToml ;
-#     has:a type:TemplatesPayload ;
-#     has:a type:gitignore
-#     .
+:ReqConfigWorkspaceType a owl:Restriction;
+    owl:onProperty :ConfigWorkspaceType;
+.
 
-# type:TemplateObjectsSet:
-#     has:hasMemberType   type:TemplateObject
+# General Propery definitions
+:ConfigName a owl:DatatypeProperty ; rdfs:range xsd:string .
+:ConfigID   a owl:DatatypeProperty ; rdfs:range xsd:string .
+:ConfigWorkspaceType a owl:DatatypeProperty; 
+    owl:oneOf (
+    "openviatica" 
+    "ov-templates"
+) .
 
-# type:TemplatesPayload
-#     is:a type:File ;
-#     is:a type:Folder 
-#     .
+# Aliases here
+## Linker Aliases
+:is a owl:ObjectProperty ;
+    owl:equivalentProperty rdfs:subClassOf 
+.
 
-# type:TemplateObjectToml
-#     is:a    type:File ;
-#     is:a    type:Toml ;
-#     can:have type:ID ;# Defaults to the folder name being the ID
-#     can:have type:Name ;# defaults to the folder name
-#     can:modify type:TemplatesPayload
-    
-#     .
+:restricted_by a owl:ObjectProperty ;
+    owl:equivalentProperty rdfs:subClassOf 
+.
 
-# type:TemplatesEngine
-#     is:a type:OpenViaticaTool ;
-    
-#     # What actions can the Templates Engine do to the workspace itself, no just the template objects in it
-#     can:initialize  type:TemplatesWorkspace ;
+## Metadata property aliases 
+:name a owl:AnnotationProperty ;
+    owl:equivalentProperty rdfs:label 
+.
 
+:description a owl:AnnotationProperty ;
+    owl:equivalentProperty rdfs:comment 
+.
 
-#     # Operations for the Templates Engine 
-#     can:add     type:TemplateObject ;
-#     can:clone   type:TemplateObject ;
-#     can:list    type:TemplateObjectsSet ;
-#     can:
-    
-#     # Gets the default config file for the uesr to fill out
-#     can:get     type:TemplateObjectToml
-#     # WHAT OTHER OPERATIONS COULD BE DONE!? WE MIMIC GITHUB WHEN WE CAN EXCEPT FOR THE REMOTE THING
-#     .
+:refers_to a owl:AnnotationProperty ;
+    owl:equivalentProperty rdfs:range 
+.
 
 # endregion
 ##############################
 
-##############################
-# Classes that are NOT managed by  OpenViatica
-##############################
-# region
 
-ov:Folder
-    # It is a class in of itself
-    a owl:Class ;
-    rdfs:label "Folder" ;
-    rdfs:comment "A directory in file system"
-    .
-# type:WorkflowsWorkspace 
-#     is:a      type:Workspace 
-#     .
-
-
-# type:Workspace
-#     is:a    type:Folder ;
-#     has:a   type:MetadataFolder;
-#     has:a   type:WorkspaceID ;
-#     has:a   type:WorkspaceName 
-#     .
-
-# type:MetadataFolder  
-#     is:a        type:IDFolder ;
-#     is:inside   type:OVFolder 
-#     .
-
-# type:NameSpace
-#     is:a    type:SetOfWorkspaces 
-#     .
-
-# type:IDFolder
-#     # The folder name IS the ID
-#     is:a type:Folder 
-    # .
-
-
-
-# type:OpenViatica 
-#     is:a        type:NameSpace ;
-#     has:a      type:DataWorkspace ;
-#     has:a  type:TemplatesWorkspace ;
-#     has:a  type:WorkflowsWorkspace ;
-#     has:    type:OpenViaticaTool
-#     .
-
-# type:DataWorkspace 
-#     is:a    type:Workspace 
-#     .
-
-# endregion
