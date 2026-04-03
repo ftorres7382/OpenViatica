@@ -1,0 +1,15 @@
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix :   <http://openviatica.org/schema#> .
+
+:User a owl:Class ;
+    :name "User" ;
+    :description "An actor capable of interacting with the OpenViatica system." ;
+
+    # Restrictions
+    :restricted_by :CanUseTerminal;
+    :restricted_by :CanUsePython;
+    :restricted_by :CanUseAPI;
+.

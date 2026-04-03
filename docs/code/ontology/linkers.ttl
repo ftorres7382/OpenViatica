@@ -1,0 +1,26 @@
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix :   <http://openviatica.org/schema#> .
+
+:is a owl:ObjectProperty ;
+    owl:equivalentProperty rdfs:subClassOf 
+.
+
+:restricted_by a owl:ObjectProperty ;
+    owl:equivalentProperty rdfs:subClassOf 
+.
+
+## Metadata property aliases 
+:name a owl:AnnotationProperty ;
+    owl:equivalentProperty rdfs:label 
+.
+
+:description a owl:AnnotationProperty ;
+    owl:equivalentProperty rdfs:comment 
+.
+
+:refers_to a owl:AnnotationProperty ;
+    owl:equivalentProperty rdfs:range 
+.

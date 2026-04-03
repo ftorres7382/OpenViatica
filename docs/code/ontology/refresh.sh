@@ -1,0 +1,1 @@
+cat docs/code/ontology/*.ttl > docs/code/ontology/ontology.ttl
