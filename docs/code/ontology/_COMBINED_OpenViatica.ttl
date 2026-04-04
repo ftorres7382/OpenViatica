@@ -4,13 +4,16 @@
 @prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
 @prefix :   <http://openviatica.org/schema#> .
 
+# OpenViatica
 :OpenViatica a owl:Class;
     :name "OpenViatica";
     :description "The OpenViatica featureset, programs & utilities";
 
+    :includes :Ovutils, :OpenViaticaWorkspace
+
 .
 
-## Ovutils
+# Ovutils
 :Ovutils a owl:Class;
     :name "OpenViatica Utilities";
     :description "Provides access to the OpenViaitca utilites and programs";
@@ -18,7 +21,7 @@
     :is :OpenViatica
 .
 
-## Restrictions
+# Restrictions
 :CanUseOvutils a owl:Restriction ;
     owl:onProperty :canUse ;
     owl:someValuesFrom :Ovutils ;
@@ -55,6 +58,30 @@
 ## Restrictions
 :ReqWorkspaceToml a owl:Restriction;
     owl:onProperty :WorkspaceToml;
+    owl:cardinality 1;
+.
+
+
+# Single Items required for workspaces
+:ConfigName a owl:DatatypeProperty ; rdfs:range xsd:string .
+:ConfigID   a owl:DatatypeProperty ; rdfs:range xsd:string .
+:ConfigWorkspaceType a owl:DatatypeProperty; 
+    :allowedValue "openviatica", "ov-templates";
+.
+
+# Restriction definitions on the single items
+:ReqConfigName a owl:Restriction;
+    owl:onProperty :ConfigName;
+    owl:cardinality 1;
+.
+
+:ReqConfigID a owl:Restriction;
+    owl:onProperty :ConfigID;
+    owl:cardinality 1;
+.
+
+:ReqConfigWorkspaceType a owl:Restriction;
+    owl:onProperty :ConfigWorkspaceType;
     owl:cardinality 1;
 .
 

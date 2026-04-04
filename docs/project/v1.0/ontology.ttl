@@ -273,16 +273,17 @@
 
 :ReqConfigName a owl:Restriction;
     owl:onProperty :ConfigName;
-    owl:cardinality 1
+    owl:cardinality 1;
 .
 
 :ReqConfigID a owl:Restriction;
     owl:onProperty :ConfigID;
-    owl:cardinality 1
+    owl:cardinality 1;
 .
 
 :ReqConfigWorkspaceType a owl:Restriction;
     owl:onProperty :ConfigWorkspaceType;
+    owl:cardinality 1;
 .
 
 # General Propery definitions

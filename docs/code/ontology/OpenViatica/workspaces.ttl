@@ -33,3 +33,27 @@
 .
 
 
+# Single Items required for workspaces
+:ConfigName a owl:DatatypeProperty ; rdfs:range xsd:string .
+:ConfigID   a owl:DatatypeProperty ; rdfs:range xsd:string .
+:ConfigWorkspaceType a owl:DatatypeProperty; 
+    :allowedValue "openviatica", "ov-templates";
+.
+
+# Restriction definitions on the single items
+:ReqConfigName a owl:Restriction;
+    owl:onProperty :ConfigName;
+    owl:cardinality 1;
+.
+
+:ReqConfigID a owl:Restriction;
+    owl:onProperty :ConfigID;
+    owl:cardinality 1;
+.
+
+:ReqConfigWorkspaceType a owl:Restriction;
+    owl:onProperty :ConfigWorkspaceType;
+    owl:cardinality 1;
+.
+
+

@@ -12,6 +12,17 @@
     owl:equivalentProperty rdfs:subClassOf 
 .
 
+:includes a owl:ObjectProperty ;
+    :name "includes" ;
+    :description "Indicates that the subject includes the object as a component." ;
+    a owl:TransitiveProperty ; 
+.
+
+:allowedValue a owl:AnnotationProperty;
+    rdfs:label "Allowed Value";
+    rdfs:comment "A metadata tag used to list the valid options for a property."
+.
+
 ## Metadata property aliases 
 :name a owl:AnnotationProperty ;
     owl:equivalentProperty rdfs:label 
@@ -24,4 +35,6 @@
 :refers_to a owl:AnnotationProperty ;
     owl:equivalentProperty rdfs:range 
 .
+
+
 
