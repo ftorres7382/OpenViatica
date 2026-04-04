@@ -1,3 +1,4 @@
+@prefix faas: <http://semantic-faas.com/ontology#>.
 @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix owl:  <http://www.w3.org/2002/07/owl#> .
@@ -18,7 +19,9 @@
     :name "OpenViatica Utilities";
     :description "Provides access to the OpenViaitca utilites and programs";
 
-    :is :OpenViatica
+    :is :OpenViatica;
+    
+    :restricted_by :CanInitializeOpenViaticaWorkspace;
 .
 
 # Restrictions
@@ -33,20 +36,27 @@
 @prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
 @prefix :   <http://openviatica.org/schema#> .
 
-# Workspaces
+#OpenViatica Workspace
 :OpenViaticaWorkspace a owl:Class;
     :name "OpenViatica Workspace";
     :description "A OpenViatica Workspace of workspaces.";
 
     :is :Folder;
 
-    :restricted_by :ReqWorkspaceToml;
+    :restricted_by :ReqBaseWorkspaceToml;
 
+.
+
+# Restrictions
+:CanInitializeOpenViaticaWorkspace a owl:Restriction;
+    owl:onProperty :canInitialize;
+    owl:someValuesFrom :OpenViaticaWorkspace;
+    :description "Capability to Initialize an OpenViatica Workspace"  
 .
 
 
 ## Workspace Toml
-:WorkspaceToml a owl:Class;
+:BaseWorkspaceToml a owl:Class;
     :name "Workspace Toml";
     :description "A Toml file found in the workspace folder that has the minimum metadata for the workspace";
 
@@ -56,8 +66,8 @@
 .
 
 ## Restrictions
-:ReqWorkspaceToml a owl:Restriction;
-    owl:onProperty :WorkspaceToml;
+:ReqBaseWorkspaceToml a owl:Restriction;
+    owl:onProperty :BaseWorkspaceToml;
     owl:cardinality 1;
 .
 
@@ -95,6 +105,7 @@
 
 :canUse a owl:ObjectProperty .
 
+:canIntialize a owl:ObjectProperty .
 @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix owl:  <http://www.w3.org/2002/07/owl#> .
@@ -113,6 +124,11 @@
     :name "includes" ;
     :description "Indicates that the subject includes the object as a component." ;
     a owl:TransitiveProperty ; 
+.
+
+:allowedValue a owl:AnnotationProperty;
+    rdfs:label "Allowed Value";
+    rdfs:comment "A metadata tag used to list the valid options for a property."
 .
 
 ## Metadata property aliases 

@@ -4,20 +4,27 @@
 @prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
 @prefix :   <http://openviatica.org/schema#> .
 
-# Workspaces
+#OpenViatica Workspace
 :OpenViaticaWorkspace a owl:Class;
     :name "OpenViatica Workspace";
     :description "A OpenViatica Workspace of workspaces.";
 
     :is :Folder;
 
-    :restricted_by :ReqWorkspaceToml;
+    :restricted_by :ReqBaseWorkspaceToml;
 
+.
+
+# Restrictions
+:CanInitializeOpenViaticaWorkspace a owl:Restriction;
+    owl:onProperty :canInitialize;
+    owl:someValuesFrom :OpenViaticaWorkspace;
+    :description "Capability to Initialize an OpenViatica Workspace"  
 .
 
 
 ## Workspace Toml
-:WorkspaceToml a owl:Class;
+:BaseWorkspaceToml a owl:Class;
     :name "Workspace Toml";
     :description "A Toml file found in the workspace folder that has the minimum metadata for the workspace";
 
@@ -27,8 +34,8 @@
 .
 
 ## Restrictions
-:ReqWorkspaceToml a owl:Restriction;
-    owl:onProperty :WorkspaceToml;
+:ReqBaseWorkspaceToml a owl:Restriction;
+    owl:onProperty :BaseWorkspaceToml;
     owl:cardinality 1;
 .
 

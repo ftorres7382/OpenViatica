@@ -7,3 +7,4 @@
 
 :canUse a owl:ObjectProperty .
 
+:canIntialize a owl:ObjectProperty .
