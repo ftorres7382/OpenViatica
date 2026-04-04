@@ -8,14 +8,6 @@
     :name "Terminal";
     :description "A computer terminal in Windows or Linux";
 
+    :restricted_by :CanUseOvutils
 .
 
-# Terminal Restrictions
-:CanUseTerminal a owl:Restriction;
-    owl:onProperty :CanUseTerminalProperty;
-. 
-
-# Terminal Properties
-:CanUseTerminalProperty a owl:ObjectProperty;
-    :refers_to :Terminal;
-.

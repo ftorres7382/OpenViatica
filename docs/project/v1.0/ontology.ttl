@@ -17,293 +17,282 @@
     :restricted_by :CanUseAPI;
 .
 
-# ##############################
-# # OpenViatica Workspace Related Definitions
-# ##############################
+##############################
+# OpenViatica Workspace Related Definitions
+##############################
 
-#     :OpenViaticaWorkspaceTransformerEngine a owl:Class ;
-#         :name "OpenViatica Workspace Transformer Engine";
-#         :description "Main engine that interacts with the OpenViatica Workspace system. ";
+    :OpenViaticaWorkspaceTransformerEngine a owl:Class ;
+        :name "OpenViatica Workspace Transformer Engine";
+        :description "Main engine that interacts with the OpenViatica Workspace system. ";
 
-#         :restricted_by :CanInitializeOpenViaticaWorkspace;
-#     .
+        :restricted_by :CanInitializeOpenViaticaWorkspace;
+    .
 
 
 
-#     :OpenViaticaWorkspace a owl:Class;
-#         :name "OpenViatica Workspace";
-#         :description "An OpenViatica Workspace is a workspace that manages other workspaces";
+    :OpenViaticaWorkspace a owl:Class;
+        :name "OpenViatica Workspace";
+        :description "An OpenViatica Workspace is a workspace that manages other workspaces";
 
-#         :is :Folder;
-#         :restricted_by :ReqWorkspaceToml;
-#     .
+        :is :Folder;
+        :restricted_by :ReqWorkspaceToml;
+    .
 
-#     # Restrictions
-#     :CanInitializeOpenViaticaWorkspace a owl:Restriction;
-#         owl:onProperty :CanInitializeOpenViaticaWorkspaceProperty;
-#     . 
+    # Restrictions
+    :CanInitializeOpenViaticaWorkspace a owl:Restriction;
+        owl:onProperty :CanInitializeOpenViaticaWorkspaceProperty;
+    . 
 
-#     # Properties
-#     :CanInitializeOpenViaticaWorkspaceProperty a owl:ObjectProperty;
-#         :name "Can Initialize OpenViatica Workspace Property";
-#         :description "Property to be applied to all classes that can initialize a new OpenViatica workspace";
+    # Properties
+    :CanInitializeOpenViaticaWorkspaceProperty a owl:ObjectProperty;
+        :name "Can Initialize OpenViatica Workspace Property";
+        :description "Property to be applied to all classes that can initialize a new OpenViatica workspace";
 
-#         :refers_to :OpenViaticaWorkspace;
-#     .
+        :refers_to :OpenViaticaWorkspace;
+    .
 
-# ##############################
-# # Template Related Definitions
-# ##############################
+##############################
+# Template Related Definitions
+##############################
 
-#     ##############################
-#     # Template Engine Definition
-#     ##############################
+    ##############################
+    # Template Engine Definition
+    ##############################
 
-#     # Classes
-#     :TemplatesTransformerEngine a owl:Class ;
-#         :name "Template Engine" ;
-#         :description "Can interact with the OpenViatica Template system." ;
+    # Classes
+    :TemplatesTransformerEngine a owl:Class ;
+        :name "Template Engine" ;
+        :description "Can interact with the OpenViatica Template system." ;
 
-#         :is :PythonTransformerClass;
+        :is :PythonTransformerClass;
 
-#         # List in granular detail all the things the engine can do
-#         :restricted_by :CanGetWorkspaceTomlDict;  #IMPLEMENT
-#         :restricted_by :CanValidateWorkspaceToml; #IMPLEMENT
+        # List in granular detail all the things the engine can do
+        :restricted_by :CanGetWorkspaceTomlDict;  #IMPLEMENT
+        :restricted_by :CanValidateWorkspaceToml; #IMPLEMENT
 
-#         :restricted_by :CanGetIsTemplatesWorkspace; # IMPLEMENT
-#         :restricted_by :CanValidateTemplatesWorkspace; # IMPLEMENT
+        :restricted_by :CanGetIsTemplatesWorkspace; # IMPLEMENT
+        :restricted_by :CanValidateTemplatesWorkspace; # IMPLEMENT
         
-#         :restricted_by :CanGetTemplatesList; # IMPLEMENT
+        :restricted_by :CanGetTemplatesList; # IMPLEMENT
 
-#         :restricted_by :CanInitializeTemplatesWorkspace; # IMPLEMENT
+        :restricted_by :CanInitializeTemplatesWorkspace; # IMPLEMENT
         
-#         # MAYBE NOT?
-#         :restricted_by :CanCreateBaseTemplate; # IMPLEMENT
-#     .
+        # MAYBE NOT?
+        :restricted_by :CanCreateBaseTemplate; # IMPLEMENT
+    .
 
-#     # Restrictions
-#     :CanCallTemplatesTransformerEngine a owl:Restriction;
-#         :name "Can Call Template Engine";
-#         :description "Restriction to be applied to all that can call the template engine.";
+    # Restrictions
+    :CanCallTemplatesTransformerEngine a owl:Restriction;
+        :name "Can Call Template Engine";
+        :description "Restriction to be applied to all that can call the template engine.";
 
-#         :onProperty :CanCallTemplatesTransformerEngineProperty;
-#     .
+        :onProperty :CanCallTemplatesTransformerEngineProperty;
+    .
 
-#     # Properties
-#     :CanCallTemplatesTransformerEngineProperty a owl:ObjectProperty;
-#         :name "Can Call Template Engine Property";
-#         :description "To be applied to a restriction that can be applied to any actor that can call the the OpenViatica Template Engine";
+    # Properties
+    :CanCallTemplatesTransformerEngineProperty a owl:ObjectProperty;
+        :name "Can Call Template Engine Property";
+        :description "To be applied to a restriction that can be applied to any actor that can call the the OpenViatica Template Engine";
 
-#         rdfs:range :TemplatesTransformerEngine;
-#     .
+        rdfs:range :TemplatesTransformerEngine;
+    .
 
-#     ##############################
+    ##############################
 
-#     ##############################
-#     # Template Workspace Definition
-#     ##############################
+    ##############################
+    # Template Workspace Definition
+    ##############################
 
-#     :TemplatesWorkspace a owl:Class;
-#         :name "Template Workspace";
-#         :description "A Template Workspace capable of interacting with the TemplatesTransformerEngine to fulfill Template requests";
+    :TemplatesWorkspace a owl:Class;
+        :name "Template Workspace";
+        :description "A Template Workspace capable of interacting with the TemplatesTransformerEngine to fulfill Template requests";
 
-#         :is :Folder;
+        :is :Folder;
 
-#         :restricted_by :ReqWorkspaceToml;
-
-
-#     .
-
-#     :WorkspaceToml a owl:Class;
-#         :name "Workspace Toml";
-#         :description "A Toml file found in the workspace folder that has all the metadata of the workspace";
-
-#         :restricted_by :ReqConfigID;
-#         :restricted_by :ReqConfigName;
-#         :restricted_by :ReqConfigWorkspaceType;
-#     .
+        :restricted_by :ReqWorkspaceToml;
 
 
-#     # Restrictions
-#     :ReqWorkspaceToml a owl:Restriction;
-#         owl:onProperty :WorkspaceToml;
-#         owl:cardinality 1;
-#     .
+    .
 
-#     :CanGetIsTemplatesWorkspace a owl:Restriction;
-#         owl:onProperty :CanGetIsTemplatesWorkspaceProperty;
-#     .
+    
 
-#     :CanGetWorkspaceTomlDict a owl:Restriction;
-#         owl:onProperty :CanGetWorkspaceTomlDictProperty;
-#     .
 
-#     :CanInitializeTemplatesWorkspace a owl:Restriction;
-#         owl:onProperty :CanInitializeTemplatesWorkspaceProperty;
+    
+
+    :CanGetIsTemplatesWorkspace a owl:Restriction;
+        owl:onProperty :CanGetIsTemplatesWorkspaceProperty;
+    .
+
+    :CanGetWorkspaceTomlDict a owl:Restriction;
+        owl:onProperty :CanGetWorkspaceTomlDictProperty;
+    .
+
+    :CanInitializeTemplatesWorkspace a owl:Restriction;
+        owl:onProperty :CanInitializeTemplatesWorkspaceProperty;
         
-#     .
+    .
 
-#     :CanValidateTemplatesWorkspace a owl:Restriction;
-#         owl:onProperty :CanValidateTemplatesWorkspaceProperty;
-#     .
+    :CanValidateTemplatesWorkspace a owl:Restriction;
+        owl:onProperty :CanValidateTemplatesWorkspaceProperty;
+    .
 
-#     :CanValidateWorkspaceToml a owl:Restriction;
-#         owl:onProperty :CanValidateWorkspaceTomlProperty;
-#     .
+    :CanValidateWorkspaceToml a owl:Restriction;
+        owl:onProperty :CanValidateWorkspaceTomlProperty;
+    .
 
-#     # Properties 
-#     :CanInitializeTemplatesWorkspaceProperty a owl:ObjectProperty;
-#         :name "Can Initialize Template Workspace Property";
-#         :description "Property to be applied to all classes that can initialize a new templates workspace";
+    # Properties 
+    :CanInitializeTemplatesWorkspaceProperty a owl:ObjectProperty;
+        :name "Can Initialize Template Workspace Property";
+        :description "Property to be applied to all classes that can initialize a new templates workspace";
 
-#         :refers_to :TemplatesWorkspace;
-#     .
+        :refers_to :TemplatesWorkspace;
+    .
 
-#     :CanGetIsTemplatesWorkspaceProperty a owl:ObjectProperty;
-#         :name "Can Validate a Template Workspace Property";
-#         :description "Property to be applied to all classes that can determine that a given folder IS a templates workspace";
-#         :refers_to :TemplatesWorkspace;
-#     .
+    :CanGetIsTemplatesWorkspaceProperty a owl:ObjectProperty;
+        :name "Can Validate a Template Workspace Property";
+        :description "Property to be applied to all classes that can determine that a given folder IS a templates workspace";
+        :refers_to :TemplatesWorkspace;
+    .
 
-#     :CanValidateTemplatesWorkspaceProperty a owl:ObjectProperty;
-#         :name "Can Validate Workspace Property";
-#         :description "Property to be applied to all classes that can validate a templates workspace";
-#         :refers_to :TemplatesWorkspace;
-#     .
+    :CanValidateTemplatesWorkspaceProperty a owl:ObjectProperty;
+        :name "Can Validate Workspace Property";
+        :description "Property to be applied to all classes that can validate a templates workspace";
+        :refers_to :TemplatesWorkspace;
+    .
 
-#     :CanGetWorkspaceTomlDictProperty a owl:ObjectProperty;
-#         :name "Can Get Workspace Toml Dict Property";
-#         :description "Allows a class to read the Workspace Toml and convert it to a python dictionary";
-#         :refers_to :TemplatesWorkspace;
-#     .
+    :CanGetWorkspaceTomlDictProperty a owl:ObjectProperty;
+        :name "Can Get Workspace Toml Dict Property";
+        :description "Allows a class to read the Workspace Toml and convert it to a python dictionary";
+        :refers_to :TemplatesWorkspace;
+    .
 
-#     :CanValidateWorkspaceTomlProperty a owl:ObjectProperty;
-#         :description "Allows a class to validate Workspace Toml";
-#         :refers_to :TemplatesWorkspace;
-#     .
+    :CanValidateWorkspaceTomlProperty a owl:ObjectProperty;
+        :description "Allows a class to validate Workspace Toml";
+        :refers_to :TemplatesWorkspace;
+    .
 
 
-#     ##############################
-#     # Template Definition
-#     ##############################
+    ##############################
+    # Template Definition
+    ##############################
 
-#     # Define what a OpenViatica Template IS
-#     :Template a owl:Class ;
+    # Define what a OpenViatica Template IS
+    :Template a owl:Class ;
 
-#         :name "Template" ;
-#         :description "A Template Class. Encapsulates the things required to be considered a Template" ;
+        :name "Template" ;
+        :description "A Template Class. Encapsulates the things required to be considered a Template" ;
         
-#         # Every template IS a type of folder
-#         :is :Folder ;
+        # Every template IS a type of folder
+        :is :Folder ;
 
-#         # Start restrictions
-#         :restricted_by :TemplateTomlOptional;
-#     .
+        # Start restrictions
+        :restricted_by :TemplateTomlOptional;
+    .
 
-#     :BaseTemplateInstance a :Template ;
-#         :name "Base Template Instance";
-#         :description "An instance of the Template with all the base information";
-#     .
+    :BaseTemplateInstance a :Template ;
+        :name "Base Template Instance";
+        :description "An instance of the Template with all the base information";
+    .
 
-#     :TemplatesList a owl:Class;
-#         :name "Template List";
-#         :description "A collection of templates.";
+    :TemplatesList a owl:Class;
+        :name "Template List";
+        :description "A collection of templates.";
 
-#         :restricted_by :ContainsOnlyTemplates;
-#     .
+        :restricted_by :ContainsOnlyTemplates;
+    .
 
-#     :TemplateToml a owl:Class;
-#         :name "TemplateToml";
-#         :description "Optional toml located at the root of a template folder";
+    :TemplateToml a owl:Class;
+        :name "TemplateToml";
+        :description "Optional toml located at the root of a template folder";
 
-#         :restricted_by :ReqConfigName, :ReqConfigID
-#     .
+        :restricted_by :ReqConfigName, :ReqConfigID
+    .
 
-#     # Template restrictions
-#     :TemplateTomlOptional a owl:Restriction;
-#         owl:onProperty :TemplateToml;
-#         owl:maxCardinality 1
-#     .
+    # Template restrictions
+    :TemplateTomlOptional a owl:Restriction;
+        owl:onProperty :TemplateToml;
+        owl:maxCardinality 1
+    .
 
-#     :CanModifyTemplate a owl:Restriction;
-#         owl:onProperty :CanModifyTemplateProperty;
-#         owl:allValuesFrom :Template;
-#     .
+    :CanModifyTemplate a owl:Restriction;
+        owl:onProperty :CanModifyTemplateProperty;
+        owl:allValuesFrom :Template;
+    .
 
-#     :CanGetTemplatesList a owl:Restriction;
-#         owl:onProperty :CanGetTemplatesListProperty;
-#         owl:allValuesFrom :TemplatesList
-#     .
+    :CanGetTemplatesList a owl:Restriction;
+        owl:onProperty :CanGetTemplatesListProperty;
+        owl:allValuesFrom :TemplatesList
+    .
 
-#     :CanCreateBaseTemplate a owl:Restriction;
-#         :name "Can Create Base Template";
-#         :description "A restriction applied to all actors that can create a base template.";
-#         owl:onProperty :CanCreateBaseTemplateProperty;
-#         owl:allValuesFrom :BaseTemplateInstance;
-#     .
+    :CanCreateBaseTemplate a owl:Restriction;
+        :name "Can Create Base Template";
+        :description "A restriction applied to all actors that can create a base template.";
+        owl:onProperty :CanCreateBaseTemplateProperty;
+        owl:allValuesFrom :BaseTemplateInstance;
+    .
 
-#     :ContainsOnlyTemplates a owl:Restriction;
-#         owl:onProperty :hasMember;
-#         owl:allValuesFrom :Template
-#     .
+    :ContainsOnlyTemplates a owl:Restriction;
+        owl:onProperty :hasMember;
+        owl:allValuesFrom :Template
+    .
 
-#     # Template actions
-#     :CanModifyTemplateProperty a owl:ObjectProperty ;
-#         :name "Can Modify Template" ;
-#         rdfs:range :Template 
-#     .
+    # Template actions
+    :CanModifyTemplateProperty a owl:ObjectProperty ;
+        :name "Can Modify Template" ;
+        rdfs:range :Template 
+    .
 
-#     :CanGetTemplatesListProperty a owl:ObjectProperty;
-#         :name "Can Get Template List Property";
-#         :description "Property applied to all actors that can get a list of templates";
+    :CanGetTemplatesListProperty a owl:ObjectProperty;
+        :name "Can Get Template List Property";
+        :description "Property applied to all actors that can get a list of templates";
         
-#         rdfs:range :TemplatesList
-#     .
+        rdfs:range :TemplatesList
+    .
 
-#     :CanCreateBaseTemplateProperty a owl:ObjectProperty;
-#         :name "Can Create a Template Property";
-#         :description "Property applied to any actor that can create a base template";
+    :CanCreateBaseTemplateProperty a owl:ObjectProperty;
+        :name "Can Create a Template Property";
+        :description "Property applied to any actor that can create a base template";
 
-#         rdfs:range :Template;
-#     .
+        rdfs:range :Template;
+    .
 
-# ##############################
-# # General Definitions here
-# ##############################
-# # region
+##############################
+# General Definitions here
+##############################
+# region
 
-# # General Class Definitions
-# :PythonTransformerClass a owl:Class;
-#     :name "Python Transformer Class";
-#     :description "A class that transforms an object external to itself or the codebase";
-# .
-
-
-# # Requirements definitions
+# General Class Definitions
+:PythonTransformerClass a owl:Class;
+    :name "Python Transformer Class";
+    :description "A class that transforms an object external to itself or the codebase";
+.
 
 
-# :ReqConfigName a owl:Restriction;
-#     owl:onProperty :ConfigName;
-#     owl:cardinality 1
-# .
+# Requirements definitions
 
-# :ReqConfigID a owl:Restriction;
-#     owl:onProperty :ConfigID;
-#     owl:cardinality 1
-# .
 
-# :ReqConfigWorkspaceType a owl:Restriction;
-#     owl:onProperty :ConfigWorkspaceType;
-# .
+:ReqConfigName a owl:Restriction;
+    owl:onProperty :ConfigName;
+    owl:cardinality 1
+.
 
-# # General Propery definitions
-# :ConfigName a owl:DatatypeProperty ; rdfs:range xsd:string .
-# :ConfigID   a owl:DatatypeProperty ; rdfs:range xsd:string .
-# :ConfigWorkspaceType a owl:DatatypeProperty; 
-#     owl:oneOf (
-#     "openviatica" 
-#     "ov-templates"
-# ) .
+:ReqConfigID a owl:Restriction;
+    owl:onProperty :ConfigID;
+    owl:cardinality 1
+.
+
+:ReqConfigWorkspaceType a owl:Restriction;
+    owl:onProperty :ConfigWorkspaceType;
+.
+
+# General Propery definitions
+:ConfigName a owl:DatatypeProperty ; rdfs:range xsd:string .
+:ConfigID   a owl:DatatypeProperty ; rdfs:range xsd:string .
+:ConfigWorkspaceType a owl:DatatypeProperty; 
+    owl:oneOf (
+    "openviatica" 
+    "ov-templates"
+) .
 
 # Aliases here
 ## Linker Aliases

@@ -1,0 +1,61 @@
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix :   <http://openviatica.org/schema#> .
+
+:OpenViatica a owl:Class;
+    :name "OpenViatica";
+    :description "The OpenViatica featureset, programs & utilities";
+
+.
+
+## Ovutils
+:Ovutils a owl:Class;
+    :name "OpenViatica Utilities";
+    :description "Provides access to the OpenViaitca utilites and programs";
+
+    :is :OpenViatica
+.
+
+## Restrictions
+:CanUseOvutils a owl:Restriction ;
+    owl:onProperty :canUse ;
+    owl:someValuesFrom :Ovutils ;
+    :description "Capability: Ovutils Execution" 
+.
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix :   <http://openviatica.org/schema#> .
+
+# Workspaces
+:OpenViaticaWorkspace a owl:Class;
+    :name "OpenViatica Workspace";
+    :description "A OpenViatica Workspace of workspaces.";
+
+    :is :Folder;
+
+    :restricted_by :ReqWorkspaceToml;
+
+.
+
+
+## Workspace Toml
+:WorkspaceToml a owl:Class;
+    :name "Workspace Toml";
+    :description "A Toml file found in the workspace folder that has the minimum metadata for the workspace";
+
+    :restricted_by :ReqConfigID;
+    :restricted_by :ReqConfigName;
+    :restricted_by :ReqConfigWorkspaceType;
+.
+
+## Restrictions
+:ReqWorkspaceToml a owl:Restriction;
+    owl:onProperty :WorkspaceToml;
+    owl:cardinality 1;
+.
+
+

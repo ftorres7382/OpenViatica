@@ -4,13 +4,6 @@
 @prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
 @prefix :   <http://openviatica.org/schema#> .
 
-:User a owl:Class ;
-    :name "User" ;
-    :description "An actor capable of interacting with the OpenViatica system." ;
 
-    # Restrictions
-    :restricted_by :CanUseTerminal;
-    :restricted_by :CanUsePython;
-    :restricted_by :CanUseAPI;
-.
+:canUse a owl:ObjectProperty .
 

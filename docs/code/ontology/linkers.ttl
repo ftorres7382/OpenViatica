@@ -24,3 +24,4 @@
 :refers_to a owl:AnnotationProperty ;
     owl:equivalentProperty rdfs:range 
 .
+

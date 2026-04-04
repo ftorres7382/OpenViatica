@@ -1,0 +1,26 @@
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix :   <http://openviatica.org/schema#> .
+
+:OpenViatica a owl:Class;
+    :name "OpenViatica";
+    :description "The OpenViatica featureset, programs & utilities";
+
+.
+
+## Ovutils
+:Ovutils a owl:Class;
+    :name "OpenViatica Utilities";
+    :description "Provides access to the OpenViaitca utilites and programs";
+
+    :is :OpenViatica
+.
+
+## Restrictions
+:CanUseOvutils a owl:Restriction ;
+    owl:onProperty :canUse ;
+    owl:someValuesFrom :Ovutils ;
+    :description "Capability: Ovutils Execution" 
+.

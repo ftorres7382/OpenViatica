@@ -1,3 +1,4 @@
+@prefix faas: <http://semantic-faas.com/ontology#>.
 @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix owl:  <http://www.w3.org/2002/07/owl#> .
@@ -7,15 +8,14 @@
 :Python a owl:Class;
     :name "Python";
     :description "A programming language";
-
+    
+    :restricted_by :CanUseOvutils
 .
 
-# Terminal Restrictions
-:CanUsePython a owl:Restriction;
-    owl:onProperty :CanUsePythonProperty;
-. 
-
-# Terminal Properties
-:CanUsePythonProperty a owl:ObjectProperty;
-    :refers_to :Python;
+# Restrictions
+:CanUsePython a owl:Restriction ;
+    owl:onProperty :canUse ;
+    owl:someValuesFrom :Python ;
+    :description "Capability: Python Execution" 
 .
+
