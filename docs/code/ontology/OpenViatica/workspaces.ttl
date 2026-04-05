@@ -4,14 +4,26 @@
 @prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
 @prefix :   <http://openviatica.org/schema#> .
 
+# Workspace definition
+:Workspace a owl:Class;
+    :name "Workspace";
+    :description "Anything in the OpenViatica system that can be called a workspace";
+    
+    :is :Folder;
+
+    :restricted_by :ReqBaseWorkspaceToml;
+.
+
 #OpenViatica Workspace
 :OpenViaticaWorkspace a owl:Class;
     :name "OpenViatica Workspace";
     :description "A OpenViatica Workspace of workspaces.";
 
-    :is :Folder;
 
-    :restricted_by :ReqBaseWorkspaceToml;
+    :is :Workspace;
+    :includes :Workspace; 
+
+    
 
 .
 

@@ -1,5 +1,5 @@
 
-from OpenViatica._core_ovutils_transformers import ovutils_transformer
+from OpenViatica._core_ovutils_services import ovutils_transformer
 
 
 def test_ovutils_transformer_initialize():
