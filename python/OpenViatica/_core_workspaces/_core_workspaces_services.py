@@ -1,12 +1,9 @@
 
 import os
-from uuid import uuid4
-from OpenViatica._general_core import General
 
 
-from ._types import openviatica_workspace_types as ov_ws_t
-from  ._errors import ov_errors as ov_err 
-import typing as t
+from OpenViatica._types import openviatica_workspace_types as ov_ws_t
+from  OpenViatica._errors import ov_errors as ov_err 
 
 from typeguard import typechecked
 import toml
@@ -17,7 +14,7 @@ def create_workspace_toml(
     toml_filename:str,
     workspace_name:str,
     workspace_type: ov_ws_t.ws_type_t,
-    workspace_id:str = str(uuid4())
+    workspace_id:str
     ) -> None:
     '''Creates the required workspace toml file'''
     
@@ -40,19 +37,28 @@ def create_workspace_toml(
         toml.dump(toml_dict, f)
 
 
-class ovutils_service:
+class ws_service:
     '''
     Service class where all methods recieve the workspace folderpath.
 
     The methods can get information or transform the workspace in any way
+    
+    This service class handles an OpenViatica Workspace, a workspace of other workspaces
     '''    
+    DEFAULT_WORKSPACE_NAME = "openviatica"
+    DEFAULT_FOLDERPATH = "." + DEFAULT_WORKSPACE_NAME
+
+
 
 
     @classmethod
     @typechecked
     def initialize(
         cls,
-        folderpath:str
+        folderpath:str,
+        workspace_toml_filename:str ,
+        workspace_name: str,
+        workspace_id: str
         ) -> None:
         '''Initializes a new openviatica workspace'''
         
@@ -61,16 +67,16 @@ class ovutils_service:
             raise ov_err.FolderNotFoundError(f"ERROR! The folder '{folderpath}' does NOT exist.")
         
         # The workspace toml must NOT exist
-        workspace_toml_filepath = os.path.join(folderpath,cls.workspace_toml_filename)
+        workspace_toml_filepath = os.path.join(folderpath,workspace_toml_filename)
         if os.path.exists(workspace_toml_filepath):
             raise FileExistsError(f"ERROR! The workspace filepath '{workspace_toml_filepath}' ALREADY exists!")
         
         # Now we can just create the toml file
         create_workspace_toml(
             folderpath=folderpath,
-            toml_filename=cls.workspace_toml_filename,
-            workspace_name=cls.default_workspace_name,
-            workspace_id=str(uuid4()),
+            toml_filename=workspace_toml_filename,
+            workspace_name=workspace_name,
+            workspace_id=workspace_id,
             workspace_type="openviatica"
         )
 
@@ -79,7 +85,7 @@ class ovutils_service:
 
 
 
-
+"""
 
 class templates:
     '''
@@ -158,3 +164,4 @@ class templates:
         if not os.path
         os.mkdir(folderpath)
 
+"""

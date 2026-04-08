@@ -8,7 +8,7 @@
     :name "Terminal";
     :description "A computer terminal in Windows or Linux";
 
-    :restricted_by :CanUseOvutils;
+    :restricted_by :CanUsePython;
 .
 
 # Restrictions

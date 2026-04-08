@@ -36,6 +36,7 @@
 @prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
 @prefix :   <http://openviatica.org/schema#> .
 
+#############################################
 # Workspace definition
 :Workspace a owl:Class;
     :name "Workspace";
@@ -46,26 +47,42 @@
     :restricted_by :ReqBaseWorkspaceToml;
 .
 
-#OpenViatica Workspace
+#Meta Workspace
+:MetaWorkspace a owl:Class;
+    :name "Meta Workspace";
+    :description "A workspace of workspaces.";
+
+
+    :is :Workspace;
+    :includes :Workspace; 
+.
+
+# Restrictions
+:CanInitializeMetaWorkspace a owl:Restriction;
+    owl:onProperty :canInitialize;
+    owl:someValuesFrom :MetaWorkspace;
+    :description "Capability to Initialize an OpenViatica Workspace"  
+.
+
+# Preset Workspace
 :OpenViaticaWorkspace a owl:Class;
     :name "OpenViatica Workspace";
     :description "A OpenViatica Workspace of workspaces.";
 
 
-    :is :Workspace;
-    :includes :Workspace; 
-
-    
+    :is :MetaWorkspace;
 
 .
 
-# Restrictions
+# Preset Workspace Restrictions
 :CanInitializeOpenViaticaWorkspace a owl:Restriction;
     owl:onProperty :canInitialize;
     owl:someValuesFrom :OpenViaticaWorkspace;
     :description "Capability to Initialize an OpenViatica Workspace"  
 .
 
+
+#############################################
 
 ## Workspace Toml
 :BaseWorkspaceToml a owl:Class;
@@ -189,7 +206,7 @@
     :name "Terminal";
     :description "A computer terminal in Windows or Linux";
 
-    :restricted_by :CanUseOvutils;
+    :restricted_by :CanUsePython;
 .
 
 # Restrictions

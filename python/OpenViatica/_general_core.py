@@ -8,7 +8,7 @@ import glob
 import time
 import shutil
 from importlib import resources
-from ._types import ovutils_types as ot
+from OpenViatica._types import openviatica_workspace_types as ov_ws_t
 import toml
 import typing as t
 from pydantic import TypeAdapter
@@ -81,8 +81,8 @@ class General:
     @typechecked
     def read_toml_dict(
         toml_filepath:str, 
-        expected_type: t.Type[ot.ANY_TYPE_DEF_TYPE] | None = None
-        ) -> t.Dict[t.Any,t.Any] | ot.ANY_TYPE_DEF_TYPE:
+        expected_type: t.Type[ov_ws_t.ANY_TYPE_DEF_TYPE] | None = None
+        ) -> t.Dict[t.Any,t.Any] | ov_ws_t.ANY_TYPE_DEF_TYPE:
         '''
         This function returns the toml file as a dictionary.
 
@@ -93,7 +93,7 @@ class General:
             raise FileExistsError(f"ERROR! The toml file '{toml_filepath}' does NOT exist!")
 
         # Read the toml
-        validated_result_dict: t.Dict[t.Any,t.Any] | ot.ANY_TYPE_DEF_TYPE
+        validated_result_dict: t.Dict[t.Any,t.Any] | ov_ws_t.ANY_TYPE_DEF_TYPE
         with open(toml_filepath, 'r') as f:
             validated_result_dict = toml.load(f)
 
