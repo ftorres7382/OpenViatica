@@ -13,6 +13,7 @@ The main function will be invokeable through the ovutils keyword
 # Home
 # make purpose of each folder more clear, especially repos
 import typer
+from OpenViatica import ovutils
 
 app = typer.Typer(
     help="OpenVitaca Utilities ('ovutils'): A workspace creation and management engine\n\nGETTING STARTED:\nRun the command inside the quotes: 'ovutils ws init'",
@@ -42,10 +43,11 @@ def ovutils_init() -> None:
 
 
 # ws Routing
-@ovutils_ws_app.command("init")
+@ovutils_ws_meta_app.command("init")
 def ovutils_ws_init() -> None:
     '''Initializes a new OpenViatica Meta workspace'''
-    print("Hello")
+    meta_ws = ovutils.MetaWorkspace()
+    meta_ws.initialize()
 
 
 

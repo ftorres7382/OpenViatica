@@ -21,7 +21,11 @@ class General:
     pkg_templates_path: Traversable = pkg_path.joinpath("templates")
     
     
-        
+    @staticmethod
+    @typechecked
+    def get_posix_path(path:str) -> str:
+        '''Returns the posix representation of the path'''
+        return Path(path).as_posix()
 
 
 

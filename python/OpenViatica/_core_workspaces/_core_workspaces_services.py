@@ -4,9 +4,13 @@ import os
 
 from OpenViatica._types import openviatica_workspace_types as ov_ws_t
 from  OpenViatica._errors import ov_errors as ov_err 
+from OpenViatica._general_core import General as G
 
 from typeguard import typechecked
 import toml
+import typing as t
+
+DEFAULT_WORKSPACE_TOML_FILENAME = "workspace.toml"
 
 @typechecked
 def create_workspace_toml(
@@ -37,7 +41,7 @@ def create_workspace_toml(
         toml.dump(toml_dict, f)
 
 
-class ws_service:
+class MetaWorkspaceService:
     '''
     Service class where all methods recieve the workspace folderpath.
 
@@ -45,8 +49,12 @@ class ws_service:
     
     This service class handles an OpenViatica Workspace, a workspace of other workspaces
     '''    
-    DEFAULT_WORKSPACE_NAME = "openviatica"
+    DEFAULT_WORKSPACE_NAME = "ov-meta"
     DEFAULT_FOLDERPATH = "." + DEFAULT_WORKSPACE_NAME
+
+    WORKSPACE_TYPE: t.Final = "ov-meta-ws"
+
+    
 
 
 
@@ -56,28 +64,36 @@ class ws_service:
     def initialize(
         cls,
         folderpath:str,
+        workspace_relpath:str,
         workspace_toml_filename:str ,
         workspace_name: str,
-        workspace_id: str
+        workspace_id: str,        
         ) -> None:
         '''Initializes a new openviatica workspace'''
         
+        # Standardize the path values
+        folderpath = G.get_posix_path(folderpath)
+        workspace_relpath = G.get_posix_path(workspace_relpath)
+        workspace_path = os.path.join(folderpath, workspace_relpath)
+
         # Check that the folder exists
         if not os.path.exists(folderpath):
             raise ov_err.FolderNotFoundError(f"ERROR! The folder '{folderpath}' does NOT exist.")
         
-        # The workspace toml must NOT exist
-        workspace_toml_filepath = os.path.join(folderpath,workspace_toml_filename)
-        if os.path.exists(workspace_toml_filepath):
-            raise FileExistsError(f"ERROR! The workspace filepath '{workspace_toml_filepath}' ALREADY exists!")
-        
-        # Now we can just create the toml file
+        # The workspace path must NOT exist
+        if os.path.exists(workspace_path):
+            raise ov_err.FolderExistsError(f"ERROR! The workspace folder '{workspace_path}' ALREADY exists!")
+
+        # Create the workspace folder
+        os.mkdir(workspace_path)
+
+        # Now we can just create the toml file in the workspace folder
         create_workspace_toml(
-            folderpath=folderpath,
+            folderpath=workspace_path,
             toml_filename=workspace_toml_filename,
             workspace_name=workspace_name,
             workspace_id=workspace_id,
-            workspace_type="openviatica"
+            workspace_type=cls.WORKSPACE_TYPE
         )
 
 
