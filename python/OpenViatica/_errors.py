@@ -14,3 +14,8 @@ class ov_errors:
     class FolderNotFoundError(OpenViaticaError):
         '''Raised whenever a folder is found'''
         pass
+
+    class WorkspaceMetadataExistsError(OpenViaticaError):
+        '''Raised whenever the workspace metadata folder has been identified and should not be there'''
+        pass
+

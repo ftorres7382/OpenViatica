@@ -18,28 +18,33 @@ class MetaWorkspace:
         @typechecked
         def __init__(
             self,
-            folderpath:str = "./",
-            _workspace_relpath:str | None = None,
+            workspace_path:str = "./",
+            _workspace_metadata_path:str | None = None,
             _workspace_toml_filename: str | None = None
             ) -> None:
             '''
             Initializes a configured transformer for an OpenViatica Workspace 
             '''
-            self._root_folderpath  : str
-            self._workspace_relpath : str
-            self._workspace_path : str
+            self._workspace_path  : str
+            self._workspace_metadata_relpath : str
+            self._workspace_metadata_path : str
             self._workspace_toml_filename:str
 
+            # Clean workspace path
+            workspace_path = Path(workspace_path).as_posix()
+
             # If the user did not define a workspace relpath, use the program default
-            if _workspace_relpath is None:
-                _workspace_relpath = MetaWorkspaceService.DEFAULT_FOLDERPATH
+            if _workspace_metadata_path is None:
+                _workspace_metadata_path = os.path.join(
+                    workspace_path,
+                    MetaWorkspaceService.DEFAULT_METADATA_FOLDERPATH
+                )
 
             if _workspace_toml_filename is None:
                 _workspace_toml_filename = DEFAULT_WORKSPACE_TOML_FILENAME
 
-            self._root_folderpath = Path(folderpath).as_posix()
-            self._workspace_relpath = Path(_workspace_relpath).as_posix()
-            self._workspace_path = os.path.join(self._root_folderpath, self._workspace_relpath)
+            self._workspace_path = workspace_path
+            self._workspace_metadata_path = _workspace_metadata_path
 
             self._workspace_toml_filename = _workspace_toml_filename
 
@@ -58,13 +63,10 @@ class MetaWorkspace:
             if workspace_name is None:
                 workspace_name = MetaWorkspaceService.DEFAULT_WORKSPACE_NAME
             
-            if os.path.exists(self._workspace_path):
-                raise NotImplementedError("ERROR! IF the folder already exists, we need to validate that it is NOT already a meta workspace!")
-
-            
+            # Any necessary checks are done in the service itself
             MetaWorkspaceService.initialize(
-                folderpath = self._root_folderpath,
-                workspace_relpath=self._workspace_relpath,
+                folderpath = self._workspace_path,
+                workspace_metadata_path=self._workspace_metadata_path,
                 workspace_toml_filename = self._workspace_toml_filename,
                 workspace_name=workspace_name,
                 workspace_id=workspace_id

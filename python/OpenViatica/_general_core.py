@@ -94,7 +94,7 @@ class General:
         '''
         # Check for file
         if not os.path.exists(toml_filepath):
-            raise FileExistsError(f"ERROR! The toml file '{toml_filepath}' does NOT exist!")
+            raise FileExistsError(f"The toml file '{toml_filepath}' does NOT exist!")
 
         # Read the toml
         validated_result_dict: t.Dict[t.Any,t.Any] | ov_ws_t.ANY_TYPE_DEF_TYPE
@@ -172,4 +172,4 @@ class General:
             elif os.path.isdir(delete_path):
                 shutil.rmtree(delete_path)
             else:
-                raise NotImplementedError(f"ERROR! The deletion of a path with the same type as '{delete_path}' has NOT been implemented yet!")
+                raise NotImplementedError(f"The deletion of a path with the same type as '{delete_path}' has NOT been implemented yet!")

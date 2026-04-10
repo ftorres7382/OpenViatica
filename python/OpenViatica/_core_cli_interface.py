@@ -25,9 +25,9 @@ ovutils_app = app
 
 # Create the ws app and add to the set of commands that can be done
 ovutils_ws_app = typer.Typer(
-    help="For creating and managing independent OpenViatica workspaces."
+    help="Tools for creating and managing individual OpenViatica workspaces."
     )
-ovutils_app.add_typer(ovutils_ws_app, name="ws")
+ovutils_app.add_typer(ovutils_ws_app, name="ws-tools")
 
 # Create the ws sub apps
 ovutils_ws_meta_app = typer.Typer(
@@ -36,20 +36,51 @@ ovutils_ws_meta_app = typer.Typer(
 ovutils_ws_app.add_typer(ovutils_ws_meta_app, name="meta-ws")
 
 # ovutils Routing
-@ovutils_app.command("init")
-def ovutils_init() -> None:
-    '''Initializes a new OpenViatica workspace'''
-    print("Hello")
+# @ovutils_app.command("init")
+# def ovutils_init() -> None:
+#     '''Initializes a new OpenViatica pre-configured workspace'''
+#     print("Hello")
 
 
 # ws Routing
 @ovutils_ws_meta_app.command("init")
-def ovutils_ws_init() -> None:
+def ovutils_ws_init(
+    # Class init args
+    ws_path:str = "./",
+    workspace_metadata_path:str | None = None,
+    workspace_toml_filename: str | None = None,
+    
+    # Initialize function args
+    workspace_id: str | None = None,
+    workspace_name: str | None = None,
+    
+    # Other args
+    debug:bool = False
+) -> None:
     '''Initializes a new OpenViatica Meta workspace'''
-    meta_ws = ovutils.MetaWorkspace()
-    meta_ws.initialize()
-
-
+    if debug:
+        meta_ws = ovutils.WorkpaceTools.MetaWorkspace(
+            workspace_path=ws_path,
+            _workspace_metadata_path = workspace_metadata_path,
+            _workspace_toml_filename = workspace_toml_filename
+        )
+        meta_ws.initialize(
+            workspace_id=workspace_id,
+            workspace_name=workspace_name
+        )
+    else:
+        try:
+            meta_ws = ovutils.WorkpaceTools.MetaWorkspace(
+                workspace_path=ws_path
+            )
+            meta_ws.initialize(
+                workspace_id=workspace_id,
+                workspace_name=workspace_name
+            )
+        except Exception as e:
+            print(e)
+            pass
+            
 
 # Default callbacks for whenever the tool is called without any arguments
 @ovutils_app.callback(invoke_without_command=True)
