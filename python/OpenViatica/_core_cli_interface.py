@@ -8,7 +8,7 @@ The main function will be invokeable through the ovutils keyword
 
 # README.md not intuitive enough, find another filename that screams click and read me please
     # SECTION_PURPOSE.md
-    # HOW_TO_GET_STARTED.md
+    # GETTING_STARTED.md
 # Make the purpose of the Docs folder more apparent
 # Home
 # make purpose of each folder more clear, especially repos
@@ -24,16 +24,16 @@ app = typer.Typer(
 ovutils_app = app
 
 # Create the ws app and add to the set of commands that can be done
-ovutils_ws_app = typer.Typer(
+ovutils_wsTools_app = typer.Typer(
     help="Tools for creating and managing individual OpenViatica workspaces."
     )
-ovutils_app.add_typer(ovutils_ws_app, name="ws-tools")
+ovutils_app.add_typer(ovutils_wsTools_app, name="ws-tools")
 
 # Create the ws sub apps
-ovutils_ws_meta_app = typer.Typer(
-    help="For creating and managing a workspace that manages other workspaces."
+ovutils_wsTools_ovMeta_app = typer.Typer(
+    help="OpenViatica Meta Workspace: For creating and managing a workspace that manages other workspaces."
     )
-ovutils_ws_app.add_typer(ovutils_ws_meta_app, name="meta-ws")
+ovutils_wsTools_app.add_typer(ovutils_wsTools_ovMeta_app, name="ov-meta")
 
 # ovutils Routing
 # @ovutils_app.command("init")
@@ -43,7 +43,7 @@ ovutils_ws_app.add_typer(ovutils_ws_meta_app, name="meta-ws")
 
 
 # ws Routing
-@ovutils_ws_meta_app.command("init")
+@ovutils_wsTools_ovMeta_app.command("init")
 def ovutils_ws_init(
     # Class init args
     ws_path:str = "./",
@@ -78,7 +78,7 @@ def ovutils_ws_init(
                 workspace_name=workspace_name
             )
         except Exception as e:
-            print(e)
+            print(f"ERROR!: {e}")
             pass
             
 
@@ -94,7 +94,7 @@ def main(ctx: typer.Context) -> None:
         # This exits the program gracefully
         raise typer.Exit()
 
-@ovutils_ws_meta_app.callback(invoke_without_command=True)
+@ovutils_wsTools_ovMeta_app.callback(invoke_without_command=True)
 def ws_meta_main(ctx: typer.Context) -> None:
     """
     OpenViatica Utilities CLI.
@@ -105,7 +105,7 @@ def ws_meta_main(ctx: typer.Context) -> None:
         # This exits the program gracefully
         raise typer.Exit()
 
-@ovutils_ws_app.callback(invoke_without_command=True)
+@ovutils_wsTools_app.callback(invoke_without_command=True)
 def ws_main(ctx: typer.Context) -> None:
     """
     OpenViatica Utilities CLI.

@@ -173,3 +173,5 @@ class General:
                 shutil.rmtree(delete_path)
             else:
                 raise NotImplementedError(f"The deletion of a path with the same type as '{delete_path}' has NOT been implemented yet!")
+
+            

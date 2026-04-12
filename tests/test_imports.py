@@ -17,16 +17,11 @@ def test_OpenViatica_import() -> None:
     '''Tests that OpenViatica is importable'''
     try:
         import OpenViatica
-        # using is to make the linter happy
+        # MUST have documentation on it
         _ = OpenViatica.__doc__
     except ImportError:
         pytest.fail("FAILED import of OpenViatica!")
+
+
     
-# def test_ovutils_import() -> None:
-#     '''Tests that the ovutils is importable'''
-#     try:
-#         from OpenViatica import ovutils
-#         _ = ovutils.__doc__
-#     except ImportError:
-#         pytest.fail("FAILED import of ovutils!")
 

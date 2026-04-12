@@ -1,0 +1,5 @@
+# This toml contains metadata about the workspace
+
+id = "your_workspace_id_here"
+name = "your_workspace_name_here"
+type= "workspace_type_here" # {{allowed_workspace_types}}
