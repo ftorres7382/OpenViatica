@@ -21,6 +21,7 @@ ovutils = "OpenViatica._core_cli_interface:app"
 [dependency-groups]
 dev = [
     "pytest",
+    "pytest-dependency",
     # Type checkers
     "mypy", # Static Typechecker, will be using mypy --strict
     "types-toml", # Makes type hinting happy

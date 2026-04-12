@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.#
 import pytest
+@pytest.mark.dependency()
 def test_OpenViatica_import() -> None:
     '''Tests that OpenViatica is importable'''
     try:
@@ -22,6 +23,14 @@ def test_OpenViatica_import() -> None:
     except ImportError:
         pytest.fail("FAILED import of OpenViatica!")
 
-
+@pytest.mark.dependency(depends=["test_OpenViatica_import"])
+def test_ovutils_import() -> None:
+    '''Tests that OpenViatica is importable'''
+    try:
+        from OpenViatica import ovutils
+        # MUST have documentation on it
+        _ = ovutils.__doc__
+    except ImportError:
+        pytest.fail("FAILED import of OpenViatica!")
     
 
