@@ -1,5 +1,6 @@
-# This toml contains metadata about the workspace
+#:schema {{schema_filepath}}
+# This toml holds the workspace's metadata
 
-id = "your_workspace_id_here"
-name = "your_workspace_name_here"
-type= "workspace_type_here" # {{allowed_workspace_types}}
+id = "workspace_id_here"
+name = "workspace_name_here"
+type = "workspace_type_here" # Allowed_values: {{allowed_workspace_types}}

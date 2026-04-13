@@ -8,17 +8,17 @@ import glob
 import time
 import shutil
 from importlib import resources
-from OpenViatica._types import openviatica_workspace_types as ov_ws_t
+from OpenViatica._types import ov_ws_types as ov_ws_t
 import toml
 import typing as t
 from pydantic import TypeAdapter
+from contextlib import contextmanager
 
 
 class General:
     '''Used for general functions in the package itself'''
 
     pkg_path: Traversable = resources.files("OpenViatica")
-    pkg_templates_path: Traversable = pkg_path.joinpath("templates")
     
     
     @staticmethod
@@ -27,6 +27,13 @@ class General:
         '''Returns the posix representation of the path'''
         return Path(path).as_posix()
 
+
+    @staticmethod
+    @contextmanager
+    def get_package_path() -> t.Generator [str,None,None]:
+        with resources.as_file(General.pkg_path) as pkg_path:
+            yield pkg_path.as_posix()
+            pass
 
 
 

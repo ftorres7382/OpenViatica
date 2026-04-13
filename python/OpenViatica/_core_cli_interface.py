@@ -44,7 +44,7 @@ ovutils_wsTools_app.add_typer(ovutils_wsTools_ovMeta_app, name="ov-meta")
 
 # ws Routing
 @ovutils_wsTools_ovMeta_app.command("init")
-def ovutils_ws_init(
+def ovutils_meta_ws_init(
     # Class init args
     ws_path:str = "./",
     workspace_metadata_path:str | None = None,

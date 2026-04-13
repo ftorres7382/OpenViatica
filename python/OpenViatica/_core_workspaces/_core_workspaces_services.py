@@ -2,19 +2,24 @@
 import os
 
 
-from OpenViatica._types import openviatica_workspace_types as ov_ws_t
+from OpenViatica._types import ov_ws_types as ov_ws_t
 from  OpenViatica._errors import ov_errors as ov_err 
 from OpenViatica._general_core import General as G
 
 from typeguard import typechecked
-import toml
+from jinja2 import Template
 import typing as t
+import shutil
+import tomlkit
+from pydantic import TypeAdapter
+import json
 
 DEFAULT_WORKSPACE_TOML_FILENAME = "workspace.toml"
 
 
 
 class BaseWorkspaceService:
+    WORKSPACE_TOML_TEMPLATE_RELPATH = "templates/toml_templates/base_workspace/workspace.tmpl.toml"
     @classmethod
     @typechecked
     def create_workspace_toml(
@@ -35,17 +40,44 @@ class BaseWorkspaceService:
         toml_filepath = os.path.join(folderpath, toml_filename)
         if os.path.exists(toml_filepath):
             raise FileExistsError(f"The file '{toml_filepath}' ALREADY exists!")
-        
-        # Create the toml dictionary
-        toml_dict: ov_ws_t.TEMPLATE_WORKSPACE_TOML_DICT_TYPE = {
-            "id": workspace_id,
-            "name": workspace_name,
-            "type": workspace_type
-        }
-        with open(toml_filepath, 'w') as f:
-            toml.dump(toml_dict, f)
 
-   
+        # Copy the workspace toml file
+        with G.get_package_path() as pkg_path:
+            base_workspace_toml_path = os.path.join(
+                pkg_path, cls.WORKSPACE_TOML_TEMPLATE_RELPATH
+            )
+            shutil.copy2(base_workspace_toml_path, toml_filepath)
+        
+        # Read with tomlkit
+        with open(toml_filepath, mode="rt") as f:
+            doc = tomlkit.parse(f.read())
+        
+        # Change the values
+        doc["id"] = workspace_id
+        doc["name"] = workspace_name
+        doc["type"] = workspace_type
+
+        # Replace all the relevant template values
+        data = {
+            "allowed_workspace_types": str(list(t.get_args(ov_ws_t.ws_type_t))),
+            "schema_filepath": "./"+ toml_filename + ".schema.json"
+        }
+        template = Template(doc.as_string())
+        toml_string = template.render(data)
+
+        # Create the workspace toml
+        with open(toml_filepath, 'w') as f:
+            f.write(toml_string)
+
+        # Create the sidecar schema json file
+        schema_json_filepath = toml_filepath + ".schema.json"
+        adapter = TypeAdapter(ov_ws_t.BASE_WORKSPACE_TOML_DICT_TYPE)
+        schema = adapter.json_schema()
+
+        with open(schema_json_filepath, "w") as f:
+            json.dump(schema, f, indent=2)
+        
+        
 
 class MetaWorkspaceService:
     '''

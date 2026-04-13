@@ -610,6 +610,7 @@ name = "openviatica"
 version = "0.1.5"
 source = { editable = "." }
 dependencies = [
+    { name = "jinja2" },
     { name = "pydantic" },
     { name = "toml" },
     { name = "tomlkit" },
@@ -638,6 +639,7 @@ extra = [
 
 [package.metadata]
 requires-dist = [
+    { name = "jinja2", specifier = ">=3.1.6" },
     { name = "pydantic" },
     { name = "toml" },
     { name = "tomlkit", specifier = ">=0.14.0" },
