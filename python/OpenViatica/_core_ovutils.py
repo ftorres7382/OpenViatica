@@ -4,7 +4,7 @@ class ovutils:
 
     class WorkpaceTools:
         MetaWorkspace: type["MetaWorkspace"]
-    pass
+
 
 ovutils.WorkpaceTools.MetaWorkspace = MetaWorkspace
 

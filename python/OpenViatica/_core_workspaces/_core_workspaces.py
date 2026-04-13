@@ -26,7 +26,6 @@ class MetaWorkspace:
             Initializes a configured transformer for an OpenViatica Workspace 
             '''
             self._workspace_path  : str
-            self._workspace_metadata_relpath : str
             self._workspace_metadata_path : str
             self._workspace_toml_filename:str
 
