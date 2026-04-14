@@ -26,7 +26,6 @@ def test_MetaWorkspace_initialize() -> None:
             2. If I try to run the init a second time, it should give me a specific error
             3. If I reset the test folder, then I should be able to define the workspace path and redo the same steps
             4. Check each of the user facing config in the initialize function
-            5. Redo all the tests but doing terminal commands
     
     It will not test anything that is NOT user facing, ONLY user facing functions and variables will be tested
     
@@ -39,6 +38,9 @@ def test_MetaWorkspace_initialize() -> None:
 
     og_cwd = os.getcwd()
 
+    ####################
+    # Test 1
+    ####################
     os.chdir(test_dir)
 
     # test default behaviour
@@ -59,6 +61,10 @@ def test_MetaWorkspace_initialize() -> None:
     # Go back and redo while changing all the user parameters
     os.chdir(og_cwd)
     shutil.rmtree(test_dir)
+
+    ####################
+    # Test 2
+    ####################
     os.mkdir(test_dir)
 
     id_value = "test_id"
