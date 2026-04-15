@@ -71,8 +71,8 @@ def test_MetaWorkspace_initialize() -> None:
     workspace_name_value = "test_name"
     ovutils_meta_ws_init(
         ws_path=test_dir,
-        workspace_id=id_value,
-        workspace_name = workspace_name_value
+        ws_id=id_value,
+        ws_name = workspace_name_value
     )
 
     # Check that the metadata folder has been created

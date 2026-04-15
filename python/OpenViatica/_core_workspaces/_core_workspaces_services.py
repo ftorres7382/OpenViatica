@@ -115,7 +115,7 @@ class MetaWorkspaceService:
 
         # Check that the folder exists
         if not os.path.exists(folderpath):
-            raise ov_err.FolderNotFoundError(f"The folder '{folderpath}' does NOT exist.")
+            raise ov_err.FolderNotExistsError(f"The folder '{folderpath}' does NOT exist.")
         
         # The workspace metadata path must NOT exist
         if os.path.exists(workspace_metadata_path):

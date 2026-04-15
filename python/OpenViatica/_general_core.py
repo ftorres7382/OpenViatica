@@ -1,4 +1,4 @@
-from typing import Callable
+from  OpenViatica._errors import ov_errors as ov_err 
 from typeguard import typechecked
 import sys
 from pathlib import Path
@@ -74,7 +74,7 @@ class General:
     @typechecked
     def get_valid_input(
         prompt: str, 
-        validation_function:Callable[[str], bool], 
+        validation_function:t.Callable[[str], bool], 
         error_msg:str = "Invalid input. Try again.") -> str:
         '''
         This function will try to get the users input until the validator function returns a True on the userś input
@@ -181,4 +181,23 @@ class General:
             else:
                 raise NotImplementedError(f"The deletion of a path with the same type as '{delete_path}' has NOT been implemented yet!")
 
-            
+    @classmethod
+    @typechecked
+    def check_folder_exists(
+        cls,
+        folderpath: str
+    ) -> None:
+        '''Raises and error if a folder does NOT exist'''
+        if not os.path.exists(folderpath):
+            raise ov_err.FolderNotExistsError(f"The folder '{folderpath}' does NOT exist. The folder must be created to continue.")
+    
+    @classmethod
+    @typechecked
+    def check_folder_NOT_exists(
+        cls,
+        folderpath: str
+    ) -> None:
+        '''Raises and error if a folder does NOT exist'''
+        if os.path.exists(folderpath):
+            raise ov_err.FolderExistsError(f"The folder '{folderpath}' already exists. The folder must be removed to continue.")
+        

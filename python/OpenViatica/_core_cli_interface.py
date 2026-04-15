@@ -36,10 +36,47 @@ ovutils_wsTools_ovMeta_app = typer.Typer(
 ovutils_wsTools_app.add_typer(ovutils_wsTools_ovMeta_app, name="ov-meta")
 
 # ovutils Routing
-# @ovutils_app.command("init")
-# def ovutils_init() -> None:
-#     '''Initializes a new OpenViatica pre-configured workspace'''
-#     print("Hello")
+@ovutils_app.command("init")
+def ovutils_init(
+    # Class init args
+    ws_path:str = "./",
+    ws_metadata_path: None | str = None,   
+
+    ## Meta workspace arguments, they get passed directly to the Meta workspace class
+    meta_ws_path: str | None = None,
+    meta_ws_metadata_path: str | None = None,
+    meta_ws_toml_filename: str | None = None,
+
+    # Initialize args
+    ws_id: str | None = None,
+    ws_name: str | None = None,
+
+    # Other args
+    debug:bool = False
+) -> None:
+    '''Initializes a new OpenViatica pre-configured workspace'''
+    def run() -> None:
+        ov_ws = ovutils(
+            workspace_path=ws_path,
+            _workspace_metadata_path = ws_metadata_path,
+            
+            _meta_workspace_path = meta_ws_path,
+            _meta_workspace_metadata_path = meta_ws_metadata_path,
+            _meta_workspace_toml_filename = meta_ws_toml_filename
+        )
+        ov_ws.initialize(
+            workspace_id=ws_id,
+            workspace_name=ws_name
+        )
+
+    if debug:
+        run()
+    else:
+        try:
+            run()
+        except Exception as e:
+            print(f"ERROR!: {e}")
+            pass
 
 
 # ws Routing
@@ -51,32 +88,30 @@ def ovutils_meta_ws_init(
     workspace_toml_filename: str | None = None,
     
     # Initialize function args
-    workspace_id: str | None = None,
-    workspace_name: str | None = None,
+    ws_id: str | None = None,
+    ws_name: str | None = None,
     
     # Other args
     debug:bool = False
 ) -> None:
     '''Initializes a new OpenViatica Meta workspace'''
-    if debug:
+
+    def run() -> None:
         meta_ws = ovutils.WorkpaceTools.MetaWorkspace(
             workspace_path=ws_path,
             _workspace_metadata_path = workspace_metadata_path,
             _workspace_toml_filename = workspace_toml_filename
         )
         meta_ws.initialize(
-            workspace_id=workspace_id,
-            workspace_name=workspace_name
+            workspace_id=ws_id,
+            workspace_name=ws_name
         )
+
+    if debug:
+        run()
     else:
         try:
-            meta_ws = ovutils.WorkpaceTools.MetaWorkspace(
-                workspace_path=ws_path
-            )
-            meta_ws.initialize(
-                workspace_id=workspace_id,
-                workspace_name=workspace_name
-            )
+            run()
         except Exception as e:
             print(f"ERROR!: {e}")
             pass

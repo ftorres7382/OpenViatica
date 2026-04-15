@@ -11,7 +11,7 @@ class ov_errors:
         '''Raised whenever a folder is found'''
         pass
     
-    class FolderNotFoundError(OpenViaticaError):
+    class FolderNotExistsError(OpenViaticaError):
         '''Raised whenever a folder is found'''
         pass
 
