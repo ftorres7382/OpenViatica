@@ -20,6 +20,45 @@ DEFAULT_WORKSPACE_TOML_FILENAME = "workspace.toml"
 
 class BaseWorkspaceService:
     WORKSPACE_TOML_TEMPLATE_RELPATH = "templates/toml_templates/base_workspace/workspace.tmpl.toml"
+
+    @classmethod
+    @typechecked
+    def initialize(
+        cls,
+        folderpath:str,
+        workspace_metadata_path:str,
+        workspace_toml_filename:str ,
+        workspace_name: str,
+        workspace_id: str,
+        workspace_type: ov_ws_t.ws_type_t  
+        ) -> None:
+        '''Initializes a new Templates workspace'''
+        
+        # Standardize the path values
+        folderpath = G.get_posix_path(folderpath)
+        workspace_metadata_path = G.get_posix_path(workspace_metadata_path)
+
+        # Check that the folder exists
+        if not os.path.exists(folderpath):
+            raise ov_err.FolderNotExistsError(f"The folder '{folderpath}' does NOT exist.")
+        
+        # The workspace metadata path must NOT exist
+        if os.path.exists(workspace_metadata_path):
+            raise ov_err.WorkspaceMetadataExistsError(f"Workspace metadata folder detected in '{workspace_metadata_path}'! The metadata folder must be removed to sucessfully initialize a new workspace.")
+
+        # Create the workspace folder
+        os.mkdir(workspace_metadata_path)
+
+        # Now we can just create the toml file in the workspace folder
+        cls.create_workspace_toml(
+            folderpath=workspace_metadata_path,
+            toml_filename=workspace_toml_filename,
+            workspace_name=workspace_name,
+            workspace_id=workspace_id,
+            workspace_type=workspace_type
+        )
+
+
     @classmethod
     @typechecked
     def create_workspace_toml(
@@ -85,15 +124,12 @@ class MetaWorkspaceService:
 
     The methods can get information or transform the workspace in any way
     
-    This service class handles an OpenViatica Workspace, a workspace of other workspaces
+    This service class handles a Meta workspace, a workspace of other workspaces
     '''    
     DEFAULT_WORKSPACE_NAME:t.Final = "ov-meta"
     DEFAULT_METADATA_FOLDERPATH:t.Final = "." + DEFAULT_WORKSPACE_NAME
 
     WORKSPACE_TYPE: t.Final = DEFAULT_WORKSPACE_NAME
-
-    
-
 
 
 
@@ -107,29 +143,49 @@ class MetaWorkspaceService:
         workspace_name: str,
         workspace_id: str,        
         ) -> None:
-        '''Initializes a new openviatica workspace'''
+        '''Initializes a new meta workspace'''
         
-        # Standardize the path values
-        folderpath = G.get_posix_path(folderpath)
-        workspace_metadata_path = G.get_posix_path(workspace_metadata_path)
-
-        # Check that the folder exists
-        if not os.path.exists(folderpath):
-            raise ov_err.FolderNotExistsError(f"The folder '{folderpath}' does NOT exist.")
-        
-        # The workspace metadata path must NOT exist
-        if os.path.exists(workspace_metadata_path):
-            raise ov_err.WorkspaceMetadataExistsError(f"Workspace metadata folder detected in '{workspace_metadata_path}'! The metadata folder must be removed to sucessfully initialize a new workspace.")
-
-        # Create the workspace folder
-        os.mkdir(workspace_metadata_path)
-
-        # Now we can just create the toml file in the workspace folder
-        BaseWorkspaceService.create_workspace_toml(
-            folderpath=workspace_metadata_path,
-            toml_filename=workspace_toml_filename,
+        # Initialize a base workspace
+        BaseWorkspaceService.initialize(
+            folderpath=folderpath,
+            workspace_metadata_path= workspace_metadata_path,
+            workspace_toml_filename=workspace_toml_filename,
             workspace_name=workspace_name,
             workspace_id=workspace_id,
             workspace_type=cls.WORKSPACE_TYPE
         )
 
+class TemplatesWorkspaceService:
+    '''
+    Service class where all methods recieve the workspace folderpath.
+
+    The methods can get information or transform the workspace in any way
+    
+    This service class handles a Templates workspace, a workspace of tempalate files and folders
+    '''    
+    DEFAULT_WORKSPACE_NAME:t.Final = "ov-templates"
+    DEFAULT_METADATA_FOLDERPATH:t.Final = "." + DEFAULT_WORKSPACE_NAME
+
+    WORKSPACE_TYPE: t.Final = DEFAULT_WORKSPACE_NAME
+
+    @classmethod
+    @typechecked
+    def initialize(
+        cls,
+        folderpath:str,
+        workspace_metadata_path:str,
+        workspace_toml_filename:str ,
+        workspace_name: str,
+        workspace_id: str,        
+        ) -> None:
+        '''Initializes a new Tempaltes workspace'''
+        
+        # Initialize a base workspace
+        BaseWorkspaceService.initialize(
+            folderpath=folderpath,
+            workspace_metadata_path= workspace_metadata_path,
+            workspace_toml_filename=workspace_toml_filename,
+            workspace_name=workspace_name,
+            workspace_id=workspace_id,
+            workspace_type=cls.WORKSPACE_TYPE
+        )

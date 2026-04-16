@@ -4,19 +4,19 @@ import os
 import shutil
 from OpenViatica import ovutils
 from OpenViatica._core_workspaces._core_workspaces_services import \
-    MetaWorkspaceService, DEFAULT_WORKSPACE_TOML_FILENAME
-from OpenViatica._core_cli_interface import ovutils_wstools_meta_init
+    TemplatesWorkspaceService, DEFAULT_WORKSPACE_TOML_FILENAME
+from OpenViatica._core_cli_interface import ovutils_wstools_templates_init
 
 @pytest.mark.dependency()
-def test_MetaWorkspace_import() -> None:
-    '''Tests that OpenViatica MetaWorkspace is importable'''
+def test_TemplatesWorkspace_import() -> None:
+    '''Tests that OpenViatica TemplatesWorkspace is importable'''
     
     try:
-        _ = ovutils.WorkspaceTools.MetaWorkspace
+        _ = ovutils.WorkspaceTools.TemplatesWorkspace
     except ImportError:
-        pytest.fail("FAILED import of ovutils.WorkspaceTools.MetaWorkspace!")
+        pytest.fail("FAILED import of ovutils.WorkspaceTools.TemplatesWorkspace!")
 
-def test_MetaWorkspace_initialize() -> None:
+def test_TemplatesWorkspace_initialize() -> None:
     '''
     Tests that the initialize function in the MetWorkspace tool functions properly
     
@@ -30,7 +30,7 @@ def test_MetaWorkspace_initialize() -> None:
     It will not test anything that is NOT user facing, ONLY user facing functions and variables will be tested
     
     '''
-    test_dir = "tmp/test_MetaWorkspace_init"
+    test_dir = "tmp/test_TemplatesWorkspace_init"
     # Reset dir
     if os.path.exists(test_dir):
         shutil.rmtree(test_dir)
@@ -46,15 +46,15 @@ def test_MetaWorkspace_initialize() -> None:
     # test default behaviour
     # By calling the terminal, we should be able to test the terminal and class at the same time
     # Also the terminal will be the primary way some users interact with the tool
-    ovutils_wstools_meta_init()
+    ovutils_wstools_templates_init()
 
     # Check that the metadata folder has been created
-    if not os.path.exists(MetaWorkspaceService.DEFAULT_METADATA_FOLDERPATH):
+    if not os.path.exists(TemplatesWorkspaceService.DEFAULT_METADATA_FOLDERPATH):
         pytest.fail("Default metadata folder was NOT created!")
     
     # Check that the toml also was created
     if not os.path.exists(os.path.join(
-        MetaWorkspaceService.DEFAULT_METADATA_FOLDERPATH, DEFAULT_WORKSPACE_TOML_FILENAME
+        TemplatesWorkspaceService.DEFAULT_METADATA_FOLDERPATH, DEFAULT_WORKSPACE_TOML_FILENAME
     )):
         pytest.fail("Default workspace toml was NOT created!")
     
@@ -69,7 +69,7 @@ def test_MetaWorkspace_initialize() -> None:
 
     id_value = "test_id"
     workspace_name_value = "test_name"
-    ovutils_wstools_meta_init(
+    ovutils_wstools_templates_init(
         ws_path=test_dir,
         ws_id=id_value,
         ws_name = workspace_name_value
@@ -78,13 +78,13 @@ def test_MetaWorkspace_initialize() -> None:
     # Check that the metadata folder has been created
     if not os.path.exists(os.path.join(
         test_dir,
-        MetaWorkspaceService.DEFAULT_METADATA_FOLDERPATH
+        TemplatesWorkspaceService.DEFAULT_METADATA_FOLDERPATH
     )):
         pytest.fail("Default metadata folder was NOT created!")
     
     # Check that the toml also was created
     workspace_toml_path = os.path.join(
-        test_dir, MetaWorkspaceService.DEFAULT_METADATA_FOLDERPATH, DEFAULT_WORKSPACE_TOML_FILENAME
+        test_dir, TemplatesWorkspaceService.DEFAULT_METADATA_FOLDERPATH, DEFAULT_WORKSPACE_TOML_FILENAME
     ) 
     if not os.path.exists(workspace_toml_path):
         pytest.fail("Default workspace toml was NOT created!")

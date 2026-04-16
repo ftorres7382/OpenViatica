@@ -1,4 +1,4 @@
-from OpenViatica._core_workspaces._core_workspaces import MetaWorkspace
+from OpenViatica._core_workspaces._core_workspaces import MetaWorkspace, TemplatesWorkspace
 from typeguard import typechecked
 from OpenViatica._general_core import General as G
 import os
@@ -21,6 +21,9 @@ class ovutils:
         _meta_workspace_path: str | None = None,
         _meta_workspace_metadata_path: str | None = None,
         _meta_workspace_toml_filename: str | None = None
+
+        # Templates workspace arguments
+        
         ) -> None:
 
         self._workspace_path: str
@@ -78,11 +81,13 @@ class ovutils:
         )
 
 
-    class WorkpaceTools:
+    class WorkspaceTools:
         MetaWorkspace: type["MetaWorkspace"]
+        TemplatesWorkspace: type["TemplatesWorkspace"]
 
 
-ovutils.WorkpaceTools.MetaWorkspace = MetaWorkspace
+ovutils.WorkspaceTools.MetaWorkspace = MetaWorkspace
+ovutils.WorkspaceTools.TemplatesWorkspace = TemplatesWorkspace
 
 
 

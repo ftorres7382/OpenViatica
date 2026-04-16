@@ -12,9 +12,9 @@ def test_ovutils_import() -> None:
     
     try:
         from OpenViatica import ovutils
-        _ = ovutils.WorkpaceTools.MetaWorkspace
+        _ = ovutils.WorkspaceTools.MetaWorkspace
     except ImportError:
-        pytest.fail("FAILED import of ovutils.WorkpaceTools.MetaWorkspace!")
+        pytest.fail("FAILED import of ovutils.WorkspaceTools.MetaWorkspace!")
 
 def test_MetaWorkspace_initialize() -> None:
     '''

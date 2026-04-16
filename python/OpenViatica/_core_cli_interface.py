@@ -15,6 +15,7 @@ The main function will be invokeable through the ovutils keyword
 import typer
 from OpenViatica import ovutils
 
+# Entry point for the application
 app = typer.Typer(
     help="OpenVitaca Utilities ('ovutils'): A workspace creation and management engine\n\nGETTING STARTED:\nRun the command inside the quotes: 'ovutils ws init'",
     add_completion=False,
@@ -30,10 +31,17 @@ ovutils_wsTools_app = typer.Typer(
 ovutils_app.add_typer(ovutils_wsTools_app, name="ws-tools")
 
 # Create the ws sub apps
+## ov-meta
 ovutils_wsTools_ovMeta_app = typer.Typer(
     help="OpenViatica Meta Workspace: For creating and managing a workspace that manages other workspaces."
     )
 ovutils_wsTools_app.add_typer(ovutils_wsTools_ovMeta_app, name="ov-meta")
+
+## ov-templates
+ovutils_wsTools_ovTemplates_app = typer.Typer(
+    help="OpenViatica Templates Workspace: For creating and managing template files and folders."
+    )
+ovutils_wsTools_app.add_typer(ovutils_wsTools_ovTemplates_app, name="ov-templates")
 
 # ovutils Routing
 @ovutils_app.command("init")
@@ -80,8 +88,9 @@ def ovutils_init(
 
 
 # ws Routing
+## ov-meta
 @ovutils_wsTools_ovMeta_app.command("init")
-def ovutils_meta_ws_init(
+def ovutils_wstools_meta_init(
     # Class init args
     ws_path:str = "./",
     workspace_metadata_path:str | None = None,
@@ -97,7 +106,7 @@ def ovutils_meta_ws_init(
     '''Initializes a new OpenViatica Meta workspace'''
 
     def run() -> None:
-        meta_ws = ovutils.WorkpaceTools.MetaWorkspace(
+        meta_ws = ovutils.WorkspaceTools.MetaWorkspace(
             workspace_path=ws_path,
             _workspace_metadata_path = workspace_metadata_path,
             _workspace_toml_filename = workspace_toml_filename
@@ -115,7 +124,43 @@ def ovutils_meta_ws_init(
         except Exception as e:
             print(f"ERROR!: {e}")
             pass
-            
+
+## ov-templates  
+@ovutils_wsTools_ovTemplates_app.command("init")   
+def ovutils_wstools_templates_init(
+    # Class init args
+    ws_path:str = "./",
+    workspace_metadata_path:str | None = None,
+    workspace_toml_filename: str | None = None,
+    
+    # Initialize function args
+    ws_id: str | None = None,
+    ws_name: str | None = None,
+    
+    # Other args
+    debug:bool = False
+) -> None:
+    '''Initializes a new OpenViatica Meta workspace'''
+
+    def run() -> None:
+        templates_ws = ovutils.WorkspaceTools.TemplatesWorkspace(
+            workspace_path=ws_path,
+            _workspace_metadata_path = workspace_metadata_path,
+            _workspace_toml_filename = workspace_toml_filename
+        )
+        templates_ws.initialize(
+            workspace_id=ws_id,
+            workspace_name=ws_name
+        )
+
+    if debug:
+        run()
+    else:
+        try:
+            run()
+        except Exception as e:
+            print(f"ERROR!: {e}")
+            pass
 
 # Default callbacks for whenever the tool is called without any arguments
 @ovutils_app.callback(invoke_without_command=True)
@@ -129,8 +174,8 @@ def main(ctx: typer.Context) -> None:
         # This exits the program gracefully
         raise typer.Exit()
 
-@ovutils_wsTools_ovMeta_app.callback(invoke_without_command=True)
-def ws_meta_main(ctx: typer.Context) -> None:
+@ovutils_wsTools_app.callback(invoke_without_command=True)
+def ovutils_wstools_main(ctx: typer.Context) -> None:
     """
     OpenViatica Utilities CLI.
     """
@@ -140,8 +185,21 @@ def ws_meta_main(ctx: typer.Context) -> None:
         # This exits the program gracefully
         raise typer.Exit()
 
-@ovutils_wsTools_app.callback(invoke_without_command=True)
-def ws_main(ctx: typer.Context) -> None:
+@ovutils_wsTools_ovMeta_app.callback(invoke_without_command=True)
+def ovutils_wstools_meta_main(ctx: typer.Context) -> None:
+    """
+    OpenViatica Utilities CLI.
+    """
+    if ctx.invoked_subcommand is None:
+        # This prints the help menu to the console
+        typer.echo(ctx.get_help())
+        # This exits the program gracefully
+        raise typer.Exit()
+
+
+
+@ovutils_wsTools_ovTemplates_app.callback(invoke_without_command=True)
+def ovutils_wstools_templates_main(ctx: typer.Context) -> None:
     """
     OpenViatica Utilities CLI.
     """

@@ -3,7 +3,7 @@
 import typing_extensions as te
 import typing as t
 
-ov_ws_type_t = t.Literal["ov-meta"]
+ov_ws_type_t = t.Literal["ov-meta", "ov-templates"]
 
 class ov_ws_types:
     ws_type_t: te.TypeAlias = ov_ws_type_t
