@@ -30,7 +30,7 @@ class ovutils:
         workspace_path = G.get_posix_path(workspace_path)
 
         if _workspace_metadata_path is None:
-            _workspace_metadata_path = self.DEFAULT_METADATA_FOLDERPATH
+            _workspace_metadata_path = os.path.join(workspace_path, self.DEFAULT_METADATA_FOLDERPATH)
         else:
             _workspace_metadata_path = G.get_posix_path(_workspace_metadata_path)
         
