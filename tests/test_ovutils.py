@@ -4,7 +4,7 @@ import os
 import shutil
 from OpenViatica._core_cli_interface import ovutils_init
 from OpenViatica._core_workspaces._core_workspaces_services import \
-    MetaWorkspaceService, DEFAULT_WORKSPACE_TOML_FILENAME
+    MetaWorkspaceService, TemplatesWorkspaceService, DEFAULT_WORKSPACE_TOML_FILENAME
 
 @pytest.mark.dependency()
 def test_ovutils_import() -> None:
@@ -16,7 +16,7 @@ def test_ovutils_import() -> None:
     except ImportError:
         pytest.fail("FAILED import of ovutils.WorkspaceTools.MetaWorkspace!")
 
-def test_MetaWorkspace_initialize() -> None:
+def test_ovutils_initialize() -> None:
     '''
     Tests that the initialize function in the MetWorkspace tool functions properly
     
@@ -59,7 +59,13 @@ def test_MetaWorkspace_initialize() -> None:
     if not os.path.exists(os.path.join(
         ovutils.DEFAULT_METADATA_FOLDERPATH, MetaWorkspaceService.DEFAULT_METADATA_FOLDERPATH
     )):
-        pytest.fail("Meta worksapace metadata folder was NOT created!")
+        pytest.fail("Meta workspace metadata folder was NOT created!")
+    
+    # Check that the templates workspace has been created
+    if not os.path.exists(os.path.join(
+        ovutils.DEFAULT_METADATA_FOLDERPATH, TemplatesWorkspaceService.DEFAULT_METADATA_FOLDERPATH
+    )):
+        pytest.fail("Templates workspace metadata folder was NOT created!")
     
     # Go back and redo while changing all the user parameters
     os.chdir(og_cwd)
@@ -93,6 +99,16 @@ def test_MetaWorkspace_initialize() -> None:
     ) 
     if not os.path.exists(meta_workspace_metadata_path):
         pytest.fail("Default meta workspace metadata folder was NOT created!")
+
+    # Check that the templates workspace has been created
+    if not os.path.exists(os.path.join(
+        test_dir,
+        ovutils.DEFAULT_METADATA_FOLDERPATH, TemplatesWorkspaceService.DEFAULT_METADATA_FOLDERPATH
+    )):
+        pytest.fail("Templates workspace metadata folder was NOT created!")
+
+    # Chose not to validate Templates workspace toml since that would not be that important
+    # However since the OpenViatica Workspace IS a Meta Workspace, then we should validate the values
 
     # Check that the meta workspace toml has been created
     workspace_toml_path = os.path.join(
