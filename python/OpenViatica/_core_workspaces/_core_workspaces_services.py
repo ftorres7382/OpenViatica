@@ -30,7 +30,9 @@ class BaseWorkspaceService:
         workspace_toml_filename:str ,
         workspace_name: str,
         workspace_id: str,
-        workspace_type: ov_ws_t.ws_type_t  
+        workspace_type: ov_ws_t.ws_type_t,
+
+        _replace_toml_template_values: bool = True  
         ) -> None:
         '''Initializes a new Templates workspace'''
         
@@ -55,7 +57,9 @@ class BaseWorkspaceService:
             toml_filename=workspace_toml_filename,
             workspace_name=workspace_name,
             workspace_id=workspace_id,
-            workspace_type=workspace_type
+            workspace_type=workspace_type,
+
+            _replace_template_values = _replace_toml_template_values
         )
 
 
@@ -67,9 +71,13 @@ class BaseWorkspaceService:
         toml_filename:str,
         workspace_name:str,
         workspace_type: ov_ws_t.ws_type_t,
-        workspace_id:str
+        workspace_id:str,
+
+        _replace_template_values:bool = True
         ) -> None:
         '''Creates the required workspace toml file'''
+
+        folderpath = G.get_posix_path(folderpath)
         
         # Validate that the folder exists
         if not os.path.exists(folderpath):
@@ -96,13 +104,16 @@ class BaseWorkspaceService:
         doc["name"] = workspace_name
         doc["type"] = workspace_type
 
-        # Replace all the relevant template values
-        data = {
-            "allowed_workspace_types": str(list(t.get_args(ov_ws_t.ws_type_t))),
-            "schema_filepath": "./"+ toml_filename + ".schema.json"
-        }
-        template = Template(doc.as_string())
-        toml_string = template.render(data)
+        if _replace_template_values:
+            # Replace all the relevant template values
+            data = {
+                "allowed_workspace_types": str(list(t.get_args(ov_ws_t.ws_type_t))),
+                "schema_filepath": "./"+ toml_filename + ".schema.json"
+            }
+            template = Template(doc.as_string())
+            toml_string = template.render(data)
+        else:
+            toml_string = doc.as_string()
 
         # Create the workspace toml
         with open(toml_filepath, 'w') as f:
@@ -152,8 +163,63 @@ class MetaWorkspaceService:
             workspace_toml_filename=workspace_toml_filename,
             workspace_name=workspace_name,
             workspace_id=workspace_id,
-            workspace_type=cls.WORKSPACE_TYPE
+            workspace_type=cls.WORKSPACE_TYPE,
+
+            _replace_toml_template_values = False
         )
+
+        # Now add the things needed for a meta workspace
+        toml_filepath = os.path.join(workspace_metadata_path, workspace_toml_filename)
+        # Read with tomlkit
+        with open(toml_filepath, mode="rt") as f:
+            doc = tomlkit.parse(f.read())
+        
+        # Add to the values
+        self_entry_dict: ov_ws_t.META_WORKSPACE_TOML_MANAGES_DICT_TYPE = {
+            "id": str(doc["id"]),
+            "name": str(doc["name"]),
+            "type": cls.WORKSPACE_TYPE,
+            "workspace_tomlpath": G.get_posix_path(os.path.abspath(toml_filepath))
+        }
+        doc["manages"] = [self_entry_dict]
+
+        # Replace all the relevant template values
+        data = {
+            "allowed_workspace_types": str([cls.WORKSPACE_TYPE]),
+            "schema_filepath": "./"+ workspace_toml_filename + ".schema.json"
+        }
+        template = Template(doc.as_string())
+        toml_string = template.render(data)
+
+        # Create the workspace toml
+        with open(toml_filepath, 'w') as f:
+            f.write(toml_string)
+
+        # Create the sidecar schema json file
+        schema_json_filepath = toml_filepath + ".schema.json"
+        adapter = TypeAdapter(ov_ws_t.META_WORKSPACE_TOML_DICT_TYPE)
+        schema = adapter.json_schema()
+
+        with open(schema_json_filepath, "w") as f:
+            json.dump(schema, f, indent=2)
+
+
+    # def link(
+    #     cls,
+    #     manager_workspace_toml_filepath:str,
+    #     managed_workspace_toml_filepath:str
+    # ) -> None:
+    #     '''
+    #     This function links one workspace with another.
+    #     The meta workspace is set as the manager, the other as the managed 
+    #     '''
+    #     # Clean the filepaths
+    #     manager_workspace_toml_filepath = G.get_posix_path(manager_workspace_toml_filepath)
+    #     managed_workspace_toml_filepath = G.get_posix_path(managed_workspace_toml_filepath)
+
+
+
+    
 
 class TemplatesWorkspaceService:
     '''
