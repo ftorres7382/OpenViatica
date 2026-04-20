@@ -1,8 +1,10 @@
-import tomlkit
+import typing as t
 import pytest
 import os
 import shutil
 from OpenViatica import ovutils
+from OpenViatica._general_core import General as G
+from OpenViatica._types import ov_ws_types, meta_workspace_toml_type_value
 from OpenViatica._core_workspaces._core_workspaces_services import \
     MetaWorkspaceService, DEFAULT_WORKSPACE_TOML_FILENAME
 from OpenViatica._core_cli_interface import ovutils_wstools_meta_init
@@ -88,17 +90,29 @@ def test_MetaWorkspace_initialize() -> None:
     ) 
     if not os.path.exists(workspace_toml_path):
         pytest.fail("Default workspace toml was NOT created!")
-
-    # Check the value of the workspace toml
-    with open(workspace_toml_path, mode="rt") as f:
-        doc = tomlkit.parse(f.read())
     
-    if not doc["id"] == id_value:
-        pytest.fail(f"The value of the workspace id is '{doc['id']}'. It SHOULD be '{id_value}'")
+    # Validate that it is of the correct data structure
+    workspace_dict = G.read_toml_dict(
+        workspace_toml_path, 
+        expected_type=ov_ws_types.META_WORKSPACE_TOML_DICT_TYPE)
+    workspace_dict = t.cast(ov_ws_types.META_WORKSPACE_TOML_DICT_TYPE, workspace_dict)
+
+    if not workspace_dict["id"] == id_value:
+        pytest.fail(f"The value of the workspace id is '{workspace_dict['id']}'. It SHOULD be '{id_value}'")
 
 
-    if not doc["name"] == workspace_name_value:
-        pytest.fail(f"The value of the workspace id is '{doc['workspace_name']}'. It SHOULD be '{workspace_name_value}'")
+    if not workspace_dict["name"] == workspace_name_value:
+        pytest.fail(f"The value of the workspace id is '{workspace_dict['name']}'. It SHOULD be '{workspace_name_value}'")
+    
+    # Validate manages values
+    expected_manages_value = [{
+        'id': id_value,
+        'name': workspace_name_value,
+        'type': meta_workspace_toml_type_value,
+        'workspace_tomlpath': G.get_posix_path(os.path.abspath(workspace_toml_path))
+    }]
+    if workspace_dict["manages"] != expected_manages_value:
+        pytest.fail(f"The value of 'manages' is '{workspace_dict['manages']}' expected value: '{expected_manages_value}'")
 
     # Cleanup
     shutil.rmtree(test_dir)
