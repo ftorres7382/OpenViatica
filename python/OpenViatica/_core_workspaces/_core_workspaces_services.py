@@ -175,13 +175,13 @@ class MetaWorkspaceService:
             doc = tomlkit.parse(f.read())
         
         # Add to the values
-        self_entry_dict: ov_ws_t.META_WORKSPACE_TOML_MANAGES_DICT_TYPE = {
+        self_entry_dict: ov_ws_t.META_WORKSPACE_TOML_LINKS_TO_DICT_TYPE = {
             "id": str(doc["id"]),
             "name": str(doc["name"]),
             "type": cls.WORKSPACE_TYPE,
             "workspace_tomlpath": G.get_posix_path(os.path.abspath(toml_filepath))
         }
-        doc["manages"] = [self_entry_dict]
+        doc["links_to"] = [self_entry_dict]
 
         # Replace all the relevant template values
         data = {
@@ -203,7 +203,8 @@ class MetaWorkspaceService:
         with open(schema_json_filepath, "w") as f:
             json.dump(schema, f, indent=2)
 
-
+    # @classmethod
+    # @typechecked
     # def link(
     #     cls,
     #     manager_workspace_toml_filepath:str,
@@ -211,7 +212,10 @@ class MetaWorkspaceService:
     # ) -> None:
     #     '''
     #     This function links one workspace with another.
-    #     The meta workspace is set as the manager, the other as the managed 
+
+    #     One workspace takes the manager role, able to pass arguments to the 
+    #     This is reflected in the workspace tom of the manager and the managed being changed.
+
     #     '''
     #     # Clean the filepaths
     #     manager_workspace_toml_filepath = G.get_posix_path(manager_workspace_toml_filepath)

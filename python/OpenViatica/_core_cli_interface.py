@@ -33,7 +33,7 @@ ovutils_app.add_typer(ovutils_wsTools_app, name="ws-tools")
 # Create the ws sub apps
 ## ov-meta
 ovutils_wsTools_ovMeta_app = typer.Typer(
-    help="OpenViatica Meta Workspace: For creating and managing a workspace that manages other workspaces."
+    help="OpenViatica Meta Workspace: For creating and managing a workspace that links other workspaces."
     )
 ovutils_wsTools_app.add_typer(ovutils_wsTools_ovMeta_app, name="ov-meta")
 

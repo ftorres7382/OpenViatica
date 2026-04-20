@@ -18,14 +18,15 @@ class ov_ws_types:
     class BASE_WORKSPACE_TOML_DICT_TYPE(_COMMON_FIELDS_DICT_TYPE):
         type:  ov_ws_type_t
     
-    class META_WORKSPACE_TOML_MANAGES_DICT_TYPE(BASE_WORKSPACE_TOML_DICT_TYPE):
+    class META_WORKSPACE_TOML_LINKS_TO_DICT_TYPE(BASE_WORKSPACE_TOML_DICT_TYPE):
         workspace_tomlpath : str
 
     class META_WORKSPACE_TOML_DICT_TYPE(_COMMON_FIELDS_DICT_TYPE):
         type: t.Literal["ov-meta"]
 
-        # list of the workspaces it manages
-        manages: t.List["ov_ws_types.META_WORKSPACE_TOML_MANAGES_DICT_TYPE"]
+        # list of the workspaces it links_to
+        links_to: t.List["ov_ws_types.META_WORKSPACE_TOML_LINKS_TO_DICT_TYPE"]
+
         
 
     

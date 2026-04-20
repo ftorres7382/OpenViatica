@@ -104,15 +104,15 @@ def test_MetaWorkspace_initialize() -> None:
     if not workspace_dict["name"] == workspace_name_value:
         pytest.fail(f"The value of the workspace id is '{workspace_dict['name']}'. It SHOULD be '{workspace_name_value}'")
     
-    # Validate manages values
-    expected_manages_value = [{
+    # Validate links_to values
+    expected_links_to_value = [{
         'id': id_value,
         'name': workspace_name_value,
         'type': meta_workspace_toml_type_value,
         'workspace_tomlpath': G.get_posix_path(os.path.abspath(workspace_toml_path))
     }]
-    if workspace_dict["manages"] != expected_manages_value:
-        pytest.fail(f"The value of 'manages' is '{workspace_dict['manages']}' expected value: '{expected_manages_value}'")
+    if workspace_dict["links_to"] != expected_links_to_value:
+        pytest.fail(f"The value of 'links_to' is '{workspace_dict['links_to']}' expected value: '{expected_links_to_value}'")
 
     # Cleanup
     shutil.rmtree(test_dir)
