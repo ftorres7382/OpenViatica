@@ -4,3 +4,16 @@
 id = "workspace_id_here"
 name = "workspace_name_here"
 type = "workspace_type_here" # Allowed_values: {{allowed_workspace_types}}
+
+# ------------------------------------------------------------------------------
+# LINKED_BY (Inbound Permissions)
+# Workspaces that are in the 'linked_by' are capable of requesting command execution
+# ------------------------------------------------------------------------------
+# Example:
+# [[linked_by]]
+# id = "workspace-uuid"
+# name = "admin"
+# type = "ov-meta"
+# workspace_tomlpath = "/path/to/workspace.toml"
+
+linked_by = []

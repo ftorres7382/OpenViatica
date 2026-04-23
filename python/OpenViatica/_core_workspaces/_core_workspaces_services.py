@@ -18,7 +18,7 @@ DEFAULT_WORKSPACE_TOML_FILENAME = "workspace.toml"
 
 
 
-class BaseWorkspaceService:
+class GenericWorkspaceService:
     WORKSPACE_TOML_TEMPLATE_RELPATH = "templates/toml_templates/generic_workspace/workspace.tmpl.toml"
 
     @classmethod
@@ -157,7 +157,7 @@ class MetaWorkspaceService:
         '''Initializes a new meta workspace'''
         
         # Initialize a base workspace
-        BaseWorkspaceService.initialize(
+        GenericWorkspaceService.initialize(
             folderpath=folderpath,
             workspace_metadata_path= workspace_metadata_path,
             workspace_toml_filename=workspace_toml_filename,
@@ -251,7 +251,7 @@ class TemplatesWorkspaceService:
         '''Initializes a new Tempaltes workspace'''
         
         # Initialize a base workspace
-        BaseWorkspaceService.initialize(
+        GenericWorkspaceService.initialize(
             folderpath=folderpath,
             workspace_metadata_path= workspace_metadata_path,
             workspace_toml_filename=workspace_toml_filename,

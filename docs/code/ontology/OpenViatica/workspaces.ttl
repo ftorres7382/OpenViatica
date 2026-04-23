@@ -12,7 +12,7 @@
     
     :is :Folder;
 
-    :restricted_by :ReqBaseWorkspaceToml;
+    :restricted_by :ReqGenericWorkspaceToml;
 .
 
 #Meta Workspace
@@ -53,7 +53,7 @@
 #############################################
 
 ## Workspace Toml
-:BaseWorkspaceToml a owl:Class;
+:GenericWorkspaceToml a owl:Class;
     :name "Workspace Toml";
     :description "A Toml file found in the workspace folder that has the minimum metadata for the workspace";
 
@@ -63,8 +63,8 @@
 .
 
 ## Restrictions
-:ReqBaseWorkspaceToml a owl:Restriction;
-    owl:onProperty :BaseWorkspaceToml;
+:ReqGenericWorkspaceToml a owl:Restriction;
+    owl:onProperty :GenericWorkspaceToml;
     owl:cardinality 1;
 .
 
