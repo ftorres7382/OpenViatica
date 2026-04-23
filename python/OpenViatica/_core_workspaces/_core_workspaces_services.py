@@ -19,7 +19,7 @@ DEFAULT_WORKSPACE_TOML_FILENAME = "workspace.toml"
 
 
 class BaseWorkspaceService:
-    WORKSPACE_TOML_TEMPLATE_RELPATH = "templates/toml_templates/base_workspace/workspace.tmpl.toml"
+    WORKSPACE_TOML_TEMPLATE_RELPATH = "templates/toml_templates/generic_workspace/workspace.tmpl.toml"
 
     @classmethod
     @typechecked
@@ -90,10 +90,10 @@ class BaseWorkspaceService:
 
         # Copy the workspace toml file
         with G.get_package_path() as pkg_path:
-            base_workspace_toml_path = os.path.join(
+            generic_workspace_toml_path = os.path.join(
                 pkg_path, cls.WORKSPACE_TOML_TEMPLATE_RELPATH
             )
-            shutil.copy2(base_workspace_toml_path, toml_filepath)
+            shutil.copy2(generic_workspace_toml_path, toml_filepath)
         
         # Read with tomlkit
         with open(toml_filepath, mode="rt") as f:
@@ -121,7 +121,7 @@ class BaseWorkspaceService:
 
         # Create the sidecar schema json file
         schema_json_filepath = toml_filepath + ".schema.json"
-        adapter = TypeAdapter(ov_ws_t.BASE_WORKSPACE_TOML_DICT_TYPE)
+        adapter = TypeAdapter(ov_ws_t.GENERIC_WORKSPACE_TOML_DICT_TYPE)
         schema = adapter.json_schema()
 
         with open(schema_json_filepath, "w") as f:
@@ -175,7 +175,7 @@ class MetaWorkspaceService:
             doc = tomlkit.parse(f.read())
         
         # Add to the values
-        self_entry_dict: ov_ws_t.META_WORKSPACE_TOML_LINKS_TO_DICT_TYPE = {
+        self_entry_dict: ov_ws_t.WORKSPACE_TOML_LINK_DICT_TYPE  = {
             "id": str(doc["id"]),
             "name": str(doc["name"]),
             "type": cls.WORKSPACE_TYPE,

@@ -11,21 +11,30 @@ class ov_ws_types:
     ws_type_t: te.TypeAlias = ov_ws_type_t
     
 
-    class _COMMON_FIELDS_DICT_TYPE(t.TypedDict):
+    # Common fields that all workspace types share
+    class WORKSPACE_COMMON_FIELDS_DICT_TYPE(t.TypedDict):
         name: str
         id: str
-    
-    class BASE_WORKSPACE_TOML_DICT_TYPE(_COMMON_FIELDS_DICT_TYPE):
-        type:  ov_ws_type_t
-    
-    class META_WORKSPACE_TOML_LINKS_TO_DICT_TYPE(BASE_WORKSPACE_TOML_DICT_TYPE):
-        workspace_tomlpath : str
+        linked_by: t.List["ov_ws_types.WORKSPACE_TOML_LINK_DICT_TYPE"]
 
-    class META_WORKSPACE_TOML_DICT_TYPE(_COMMON_FIELDS_DICT_TYPE):
+    # What does the link or linked_by entry need to have
+    class WORKSPACE_TOML_LINK_DICT_TYPE (WORKSPACE_COMMON_FIELDS_DICT_TYPE):
+        workspace_tomlpath : str
+        type:  ov_ws_type_t
+
+    # What should a workspace of any type contain
+    # Made a different one because overriding after inheritance was not feasible thanks to strict type checking
+    class GENERIC_WORKSPACE_TOML_DICT_TYPE(WORKSPACE_COMMON_FIELDS_DICT_TYPE):
+        type:  ov_ws_type_t
+        
+    
+    
+    # What should a workspac
+    class META_WORKSPACE_TOML_DICT_TYPE(WORKSPACE_COMMON_FIELDS_DICT_TYPE):
         type: t.Literal["ov-meta"]
 
         # list of the workspaces it links_to
-        links_to: t.List["ov_ws_types.META_WORKSPACE_TOML_LINKS_TO_DICT_TYPE"]
+        links_to: t.List["ov_ws_types.WORKSPACE_TOML_LINK_DICT_TYPE"]
 
         
 
