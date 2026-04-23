@@ -90,7 +90,7 @@ def test_MetaWorkspace_initialize() -> None:
     ) 
     if not os.path.exists(workspace_toml_path):
         pytest.fail("Default workspace toml was NOT created!")
-    
+
     # Validate that it is of the correct data structure
     workspace_dict = G.read_toml_dict(
         workspace_toml_path, 
@@ -104,13 +104,17 @@ def test_MetaWorkspace_initialize() -> None:
     if not workspace_dict["name"] == workspace_name_value:
         pytest.fail(f"The value of the workspace id is '{workspace_dict['name']}'. It SHOULD be '{workspace_name_value}'")
     
+    if not workspace_dict["type"] == meta_workspace_toml_type_value:
+        pytest.fail(f"The value of the workspace id is '{workspace_dict['name']}'. It SHOULD be '{workspace_name_value}'")
+
+
+    # Validate linked_by values
+    expected_linked_by_value: t.List[ov_ws_types.WORKSPACE_TOML_LINK_DICT_TYPE] = []
+    if workspace_dict["linked_by"] != expected_linked_by_value:
+        pytest.fail(f"The value of 'links_to' is '{workspace_dict['linked_by']}' expected value: '{expected_linked_by_value}'")
+
     # Validate links_to values
-    expected_links_to_value = [{
-        'id': id_value,
-        'name': workspace_name_value,
-        'type': meta_workspace_toml_type_value,
-        'workspace_tomlpath': G.get_posix_path(os.path.abspath(workspace_toml_path))
-    }]
+    expected_links_to_value: t.List[ov_ws_types.WORKSPACE_TOML_LINK_DICT_TYPE] = []
     if workspace_dict["links_to"] != expected_links_to_value:
         pytest.fail(f"The value of 'links_to' is '{workspace_dict['links_to']}' expected value: '{expected_links_to_value}'")
 

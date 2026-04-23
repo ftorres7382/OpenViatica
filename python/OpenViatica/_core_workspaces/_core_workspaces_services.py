@@ -137,6 +137,8 @@ class MetaWorkspaceService:
     
     This service class handles a Meta workspace, a workspace of other workspaces
     '''    
+    WORKSPACE_TOML_TEMPLATE_RELPATH = "templates/toml_templates/meta_workspace/workspace.tmpl.toml"
+
     DEFAULT_WORKSPACE_NAME:t.Final = "ov-meta"
     DEFAULT_METADATA_FOLDERPATH:t.Final = "." + DEFAULT_WORKSPACE_NAME
 
@@ -168,21 +170,21 @@ class MetaWorkspaceService:
             _replace_toml_template_values = False
         )
 
-        # Now add the things needed for a meta workspace
+        # Add the meta workspace stuff to the template
         toml_filepath = os.path.join(workspace_metadata_path, workspace_toml_filename)
+        with G.get_package_path() as pkg_path:
+            meta_workspace_toml_template_path = os.path.join(
+                pkg_path, cls.WORKSPACE_TOML_TEMPLATE_RELPATH
+            )
+            G.concatenate_file_contents(
+                [toml_filepath, meta_workspace_toml_template_path],
+                toml_filepath
+            )
+
         # Read with tomlkit
         with open(toml_filepath, mode="rt") as f:
             doc = tomlkit.parse(f.read())
         
-        # Add to the values
-        self_entry_dict: ov_ws_t.WORKSPACE_TOML_LINK_DICT_TYPE  = {
-            "id": str(doc["id"]),
-            "name": str(doc["name"]),
-            "type": cls.WORKSPACE_TYPE,
-            "workspace_tomlpath": G.get_posix_path(os.path.abspath(toml_filepath))
-        }
-        doc["links_to"] = [self_entry_dict]
-
         # Replace all the relevant template values
         data = {
             "allowed_workspace_types": str([cls.WORKSPACE_TYPE]),

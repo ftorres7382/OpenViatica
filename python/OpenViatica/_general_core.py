@@ -200,4 +200,23 @@ class General:
         '''Raises and error if a folder does NOT exist'''
         if os.path.exists(folderpath):
             raise ov_err.FolderExistsError(f"The folder '{folderpath}' already exists. The folder must be removed to continue.")
+    
+    @classmethod
+    @typechecked
+    def concatenate_file_contents(cls, filepaths_list: t.List[str], output_filepath: str) -> None:
+        '''This function concatenates the contents of the files defined and outputs the final results to the output filepath'''
+        # Write everything to a temp file
+        tmp_output_filepath = cls.get_posix_path(output_filepath) + "._tmp"
+        with open(tmp_output_filepath, "wb") as dst:
+            for filepath in filepaths_list:
+                posix_filepath = cls.get_posix_path(filepath)
+                with open(posix_filepath, "rb") as src:
+                    shutil.copyfileobj(src,dst)
         
+        # Remove original if present
+        if os.path.exists(output_filepath):
+            os.remove(output_filepath)
+        
+        # Rename tmp
+        os.rename(tmp_output_filepath, output_filepath)
+            

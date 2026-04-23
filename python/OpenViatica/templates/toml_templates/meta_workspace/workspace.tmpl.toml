@@ -1,0 +1,13 @@
+
+# ------------------------------------------------------------------------------
+# LINKS_TO (Outbound Commands)
+# This workspace 'links_to' others to send commands/requests.
+# ------------------------------------------------------------------------------
+# Example:
+# [[links_to]]
+# id = "workspace-uuid"
+# name = "admin"
+# type = "ov-meta"
+# workspace_tomlpath = "/path/to/workspace.toml"
+
+links_to = []
