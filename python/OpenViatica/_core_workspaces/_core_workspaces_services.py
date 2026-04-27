@@ -1,8 +1,10 @@
 
 import os
+from tomlkit.items import AoT
 
 
-from OpenViatica._types import ov_ws_types as ov_ws_t
+from OpenViatica._types import ov_ws_types
+from OpenViatica._types import WORKSPACE_DEFAULT_METADATA_INFO_DICT_TYPE
 from  OpenViatica._errors import ov_errors as ov_err 
 from OpenViatica._general_core import General as G
 
@@ -30,7 +32,7 @@ class GenericWorkspaceService:
         workspace_toml_filename:str ,
         workspace_name: str,
         workspace_id: str,
-        workspace_type: ov_ws_t.ws_type_t,
+        workspace_type: ov_ws_types.ws_type_t,
 
         _replace_toml_template_values: bool = True  
         ) -> None:
@@ -70,7 +72,7 @@ class GenericWorkspaceService:
         folderpath:str,
         toml_filename:str,
         workspace_name:str,
-        workspace_type: ov_ws_t.ws_type_t,
+        workspace_type: ov_ws_types.ws_type_t,
         workspace_id:str,
 
         _replace_template_values:bool = True
@@ -107,7 +109,7 @@ class GenericWorkspaceService:
         if _replace_template_values:
             # Replace all the relevant template values
             data = {
-                "allowed_workspace_types": str(list(t.get_args(ov_ws_t.ws_type_t))),
+                "allowed_workspace_types": str(list(t.get_args(ov_ws_types.ws_type_t))),
                 "schema_filepath": "./"+ toml_filename + ".schema.json"
             }
             template = Template(doc.as_string())
@@ -121,7 +123,7 @@ class GenericWorkspaceService:
 
         # Create the sidecar schema json file
         schema_json_filepath = toml_filepath + ".schema.json"
-        adapter = TypeAdapter(ov_ws_t.GENERIC_WORKSPACE_TOML_DICT_TYPE)
+        adapter = TypeAdapter(ov_ws_types.GENERIC_WORKSPACE_TOML_DICT_TYPE)
         schema = adapter.json_schema()
 
         with open(schema_json_filepath, "w") as f:
@@ -138,6 +140,8 @@ class MetaWorkspaceService:
     This service class handles a Meta workspace, a workspace of other workspaces
     '''    
     WORKSPACE_TOML_TEMPLATE_RELPATH = "templates/toml_templates/meta_workspace/workspace.tmpl.toml"
+
+    DEFAULT_WORKSPACE_PATH = "./"
 
     DEFAULT_WORKSPACE_NAME:t.Final = "ov-meta"
     DEFAULT_METADATA_FOLDERPATH:t.Final = "." + DEFAULT_WORKSPACE_NAME
@@ -199,30 +203,147 @@ class MetaWorkspaceService:
 
         # Create the sidecar schema json file
         schema_json_filepath = toml_filepath + ".schema.json"
-        adapter = TypeAdapter(ov_ws_t.META_WORKSPACE_TOML_DICT_TYPE)
+        adapter = TypeAdapter(ov_ws_types.META_WORKSPACE_TOML_DICT_TYPE)
         schema = adapter.json_schema()
 
         with open(schema_json_filepath, "w") as f:
             json.dump(schema, f, indent=2)
 
-    # @classmethod
-    # @typechecked
-    # def link(
-    #     cls,
-    #     manager_workspace_toml_filepath:str,
-    #     managed_workspace_toml_filepath:str
-    # ) -> None:
-    #     '''
-    #     This function links one workspace with another.
+    @classmethod
+    @typechecked
+    def link(
+        cls,
+        subject_workspace_toml_filepath:str,
+        target_workspace_toml_filepath:str
+    ) -> None:
+        '''
+        This function links one workspace with another.
 
-    #     One workspace takes the manager role, able to pass arguments to the 
-    #     This is reflected in the workspace tom of the manager and the managed being changed.
+        One workspace takes the manager role, able to pass arguments to the 
+        This is reflected in the workspace tom of the manager and the managed being changed.
 
-    #     '''
-    #     # Clean the filepaths
-    #     manager_workspace_toml_filepath = G.get_posix_path(manager_workspace_toml_filepath)
-    #     managed_workspace_toml_filepath = G.get_posix_path(managed_workspace_toml_filepath)
+        '''
+        # Clean the filepaths
+        subject_workspace_toml_filepath = G.get_posix_path(subject_workspace_toml_filepath)
+        target_workspace_toml_filepath = G.get_posix_path(target_workspace_toml_filepath)
 
+        # Both MUST exist
+        G.check_file_exists(subject_workspace_toml_filepath)
+        G.check_file_exists(target_workspace_toml_filepath)
+
+        # Read in the required information for both
+
+        ## The subject should ALWAYS be a meta workspace
+        subject_workspace_toml_doc = G.read_toml_doc(
+            subject_workspace_toml_filepath,
+            ov_ws_types.META_WORKSPACE_TOML_DICT_TYPE
+        )
+        subject_workspace_toml_dict = t.cast(
+            ov_ws_types.META_WORKSPACE_TOML_DICT_TYPE,
+            subject_workspace_toml_doc.unwrap()
+        )
+
+        ## The target can be any ov workspace
+        target_workspace_toml_doc = G.read_toml_doc(
+            target_workspace_toml_filepath,
+            ov_ws_types.GENERIC_WORKSPACE_TOML_DICT_TYPE
+        )
+        target_workspace_toml_dict = t.cast(
+            ov_ws_types.GENERIC_WORKSPACE_TOML_DICT_TYPE,
+            target_workspace_toml_doc.unwrap()
+        )
+
+        # Extract the linked_by info from the dictionary & create doc table      
+        linked_by_dict: ov_ws_types.WORKSPACE_TOML_LINK_DICT_TYPE ={
+            "id": subject_workspace_toml_dict["id"],
+            "name": subject_workspace_toml_dict["name"],
+            "type": subject_workspace_toml_dict["type"],
+            "workspace_tomlpath": os.path.abspath(subject_workspace_toml_filepath)
+        } 
+        linked_by_table = tomlkit.table()
+        linked_by_table.update(linked_by_dict)
+
+        # Check if the linked_by has already been defined
+        found_id = False
+        for linked_by_item in target_workspace_toml_doc["linked_by"].unwrap():
+            linked_by_item_dict = t.cast(
+                ov_ws_types.WORKSPACE_TOML_LINK_DICT_TYPE,
+                linked_by_item
+            )
+            if linked_by_dict["id"] == linked_by_item_dict["id"]:
+                found_id = True
+                break
+        
+        if found_id:
+            raise ov_err.LinkFoundError(f"Found a linked_by entry in '{target_workspace_toml_filepath}' that matches the workspace information in '{subject_workspace_toml_filepath}'")        
+        # After this check we are assured that the found_by entry is clean from duplicates
+
+
+        # Add linked_by to the target
+        linked_by = target_workspace_toml_doc["linked_by"]
+
+        ## If it is an AoT and it already has a value, then append
+        if isinstance(linked_by, AoT) and len(linked_by) > 0:
+            # Mypy now knows linked_by is a Sized AoT
+            linked_by.append(linked_by_table)
+        else:
+            # If it's missing, empty, or a different type (like a tomlkit.items.Array), 
+            # create a fresh Array of Tables (AoT)
+            new_aot = tomlkit.aot()
+            new_aot.append(linked_by_table)
+            target_workspace_toml_doc["linked_by"] = new_aot
+        
+        ## Write
+        with open(target_workspace_toml_filepath, "w") as f:
+            f.write(tomlkit.dumps(target_workspace_toml_doc))
+        
+
+        
+
+        # Add links_to to the target
+        # Extract the links_to info from the dictionary & create doc table      
+        links_to_dict: ov_ws_types.WORKSPACE_TOML_LINK_DICT_TYPE ={
+            "id": target_workspace_toml_dict["id"],
+            "name": target_workspace_toml_dict["name"],
+            "type": target_workspace_toml_dict["type"],
+            "workspace_tomlpath": os.path.abspath(target_workspace_toml_filepath)
+        } 
+        links_to_table = tomlkit.table()
+        links_to_table.update(links_to_dict)
+
+        # Check if the links_to has already been defined
+        found_id = False
+        for links_to_item in subject_workspace_toml_doc["links_to"].unwrap():
+            links_to_item_dict = t.cast(
+                ov_ws_types.WORKSPACE_TOML_LINK_DICT_TYPE,
+                links_to_item
+            )
+            if links_to_dict["id"] == links_to_item_dict["id"]:
+                found_id = True
+                break
+        
+        if found_id:
+            raise ov_err.LinkFoundError(f"Found a links_to entry in '{subject_workspace_toml_filepath}' that matches the workspace information in '{target_workspace_toml_filepath}'")        
+        # After this check we are assured that the found_by entry is clean from duplicates
+
+
+        # Add links_to to the target
+        links_to = subject_workspace_toml_doc["links_to"]
+
+        ## If it is an AoT and it already has a value, then append
+        if isinstance(links_to, AoT) and len(links_to) > 0:
+            # Mypy now knows links_to is a Sized AoT
+            links_to.append(links_to_table)
+        else:
+            # If it's missing, empty, or a different type (like a tomlkit.items.Array), 
+            # create a fresh Array of Tables (AoT)
+            new_aot = tomlkit.aot()
+            new_aot.append(links_to_table)
+            subject_workspace_toml_doc["links_to"] = new_aot
+        
+        ## Write
+        with open(subject_workspace_toml_filepath, "w") as f:
+            f.write(tomlkit.dumps(subject_workspace_toml_doc))
 
 
     
@@ -261,3 +382,11 @@ class TemplatesWorkspaceService:
             workspace_id=workspace_id,
             workspace_type=cls.WORKSPACE_TYPE
         )
+
+
+
+
+DEFAULT_WORKSPACE_METADATA_INFO: WORKSPACE_DEFAULT_METADATA_INFO_DICT_TYPE = {
+    "ov-meta": MetaWorkspaceService.DEFAULT_METADATA_FOLDERPATH,
+    "ov-templates": TemplatesWorkspaceService.DEFAULT_METADATA_FOLDERPATH
+}

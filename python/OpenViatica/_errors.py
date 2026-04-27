@@ -19,3 +19,11 @@ class ov_errors:
         '''Raised whenever the workspace metadata folder has been identified and should not be there'''
         pass
 
+    class WorkspaceTomlFormatError(OpenViaticaError):
+        '''Raised whenever the workspace toml does not conform to format'''
+        pass
+
+    class LinkFoundError(OpenViaticaError):
+        '''Raised whenever the workspace has already been linked'''
+        pass
+

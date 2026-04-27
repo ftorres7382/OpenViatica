@@ -1,4 +1,6 @@
+from tomlkit.toml_document import TOMLDocument
 from  OpenViatica._errors import ov_errors as ov_err 
+import tomlkit
 from typeguard import typechecked
 import sys
 from pathlib import Path
@@ -114,6 +116,35 @@ class General:
         
         
         return validated_result_dict
+    
+    @staticmethod
+    @typechecked
+    def read_toml_doc(
+        toml_filepath:str, 
+        expected_type: t.Type[ov_ws_t.ANY_TYPE_DEF_TYPE] | None = None
+        ) -> TOMLDocument:
+        '''
+        This function returns the toml file as a dictionary.
+
+        If the expected_type is defined, it will be validated using pydantic
+        '''
+        # Check for file
+        if not os.path.exists(toml_filepath):
+            raise FileExistsError(f"The toml file '{toml_filepath}' does NOT exist!")
+
+        # Read the toml
+        with open(toml_filepath, "r") as f:
+            doc = tomlkit.load(f)
+
+        # Validate the dictionary
+        if expected_type is not None:
+            toml_dict = doc.unwrap()
+            adapter = TypeAdapter(expected_type)
+            _ = adapter.validate_python(toml_dict)
+        
+        
+        return doc
+
 
     
 
@@ -130,7 +161,7 @@ class General:
     @typechecked
     def reset_dir(cls, dirpath:str, ask_dir_cleanup:bool = True) -> None:
         '''
-        This function is responsible for deleting all items in the currnt folder in a safe way
+        This function is responsible for deleting all items in the current folder in a safe way
         '''
         # Go through whole confirmation process & clean directory
         deletion_listing = glob.glob(os.path.join(dirpath, "*"), include_hidden=True)
@@ -183,6 +214,17 @@ class General:
 
     @classmethod
     @typechecked
+    def check_file_exists(
+        cls,
+        filepath: str
+    ) -> None:
+        '''Raises and error if a folder does NOT exist'''
+        if not os.path.exists(filepath):
+            raise FileNotFoundError(f"The file '{filepath}' does NOT exist. The file must be created to continue.")
+
+
+    @classmethod
+    @typechecked
     def check_folder_exists(
         cls,
         folderpath: str
@@ -219,4 +261,10 @@ class General:
         
         # Rename tmp
         os.rename(tmp_output_filepath, output_filepath)
-            
+    
+
+
+    @classmethod
+    @typechecked
+    def get_typed_dict_keys(cls, typed_dict: t.Type[t.Mapping[str, t.Any]]) -> t.List[str]:
+        return list(t.get_type_hints(typed_dict).keys())

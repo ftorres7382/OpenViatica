@@ -12,15 +12,19 @@ class ov_ws_types:
     
 
     # Common fields that all workspace types share
-    class WORKSPACE_COMMON_FIELDS_DICT_TYPE(t.TypedDict):
+    class WORKSPACE_IDENTIFICATION_COMMON_FIELDS_DICT_TYPE(t.TypedDict):
         name: str
         id: str
-        linked_by: t.List["ov_ws_types.WORKSPACE_TOML_LINK_DICT_TYPE"]
 
     # What does the link or linked_by entry need to have
-    class WORKSPACE_TOML_LINK_DICT_TYPE (WORKSPACE_COMMON_FIELDS_DICT_TYPE):
-        workspace_tomlpath : str
+    class WORKSPACE_TOML_LINK_DICT_TYPE (WORKSPACE_IDENTIFICATION_COMMON_FIELDS_DICT_TYPE):
         type:  ov_ws_type_t
+        workspace_tomlpath : str
+    
+    # Now the common fields for all workspaces
+    class WORKSPACE_COMMON_FIELDS_DICT_TYPE(WORKSPACE_IDENTIFICATION_COMMON_FIELDS_DICT_TYPE):
+        
+        linked_by: t.List["ov_ws_types.WORKSPACE_TOML_LINK_DICT_TYPE"]
 
     # What should a workspace of any type contain
     # Made a different one because overriding after inheritance was not feasible thanks to strict type checking
@@ -35,8 +39,18 @@ class ov_ws_types:
 
         # list of the workspaces it links_to
         links_to: t.List["ov_ws_types.WORKSPACE_TOML_LINK_DICT_TYPE"]
-
-        
-
     
     ANY_TYPE_DEF_TYPE = t.TypeVar("ANY_TYPE_DEF_TYPE")
+
+# Other types
+WORKSPACE_DEFAULT_METADATA_INFO_DICT_TYPE = t.Dict[
+    # The key is one of the workspace types
+    ov_ws_type_t, 
+
+    # The values are string but should be metadata path
+    str
+]
+
+
+
+#

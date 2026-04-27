@@ -14,6 +14,7 @@ The main function will be invokeable through the ovutils keyword
 # make purpose of each folder more clear, especially repos
 import typer
 from OpenViatica import ovutils
+from OpenViatica._types import ov_ws_type_t
 
 # Entry point for the application
 app = typer.Typer(
@@ -91,14 +92,14 @@ def ovutils_init(
 ## ov-meta
 @ovutils_wsTools_ovMeta_app.command("init")
 def ovutils_wstools_meta_init(
+    # Initialize function args
+    ws_id: str | None = None,
+    ws_name: str | None = None,
+
     # Class init args
     ws_path:str = "./",
     workspace_metadata_path:str | None = None,
     workspace_toml_filename: str | None = None,
-    
-    # Initialize function args
-    ws_id: str | None = None,
-    ws_name: str | None = None,
     
     # Other args
     debug:bool = False
@@ -124,6 +125,48 @@ def ovutils_wstools_meta_init(
         except Exception as e:
             print(f"ERROR!: {e}")
             pass
+
+@ovutils_wsTools_ovMeta_app.command("link")
+def ovutils_wstools_meta_link(
+    # Function args
+    target_ws_path:str,
+    target_ws_type:ov_ws_type_t,
+    target_workspace_metadata_path:str | None = None,
+    target_workspace_toml_filename: str | None = None,
+
+    # Class init args
+    subject_ws_path:str = "./",
+    subject_workspace_metadata_path:str | None = None,
+    subject_workspace_toml_filename: str | None = None,
+
+    
+    # Other args
+    debug:bool = False
+) -> None:
+    '''Links a OpenViatica workspace to a Meta workspace'''
+
+    def run() -> None:
+        meta_ws = ovutils.WorkspaceTools.MetaWorkspace(
+            workspace_path=subject_ws_path,
+            _workspace_metadata_path = subject_workspace_metadata_path,
+            _workspace_toml_filename = subject_workspace_toml_filename
+        )
+        meta_ws.link(
+            target_workspace_path=target_ws_path,
+            target_workspace_type=target_ws_type,
+            _target_workspace_metadata_path = target_workspace_metadata_path,
+            _target_workspace_toml_filename = target_workspace_toml_filename
+        )
+
+    if debug:
+        run()
+    else:
+        try:
+            run()
+        except Exception as e:
+            print(f"ERROR!: {e}")
+            pass
+    
 
 ## ov-templates  
 @ovutils_wsTools_ovTemplates_app.command("init")   
