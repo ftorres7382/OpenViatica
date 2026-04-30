@@ -19,6 +19,8 @@ class MetaWorkspace:
         
         '''
 
+        WORKSPACE_TYPE = MetaWorkspaceService.WORKSPACE_TYPE
+
         @typechecked
         def __init__(
             self,
@@ -29,7 +31,7 @@ class MetaWorkspace:
             '''
             Initializes a configured transformer for an OpenViatica Workspace 
             '''
-            self._workspace_path  : str
+            self.workspace_path  : str
             self._workspace_metadata_path : str
             self._workspace_toml_filename:str
             self._workspace_toml_filepath : str 
@@ -48,7 +50,7 @@ class MetaWorkspace:
             if _workspace_toml_filename is None:
                 _workspace_toml_filename = DEFAULT_WORKSPACE_TOML_FILENAME
 
-            self._workspace_path = workspace_path
+            self.workspace_path = workspace_path
             self._workspace_metadata_path = _workspace_metadata_path
 
             self._workspace_toml_filename = _workspace_toml_filename
@@ -72,7 +74,7 @@ class MetaWorkspace:
             
             # Any necessary checks are done in the service itself
             MetaWorkspaceService.initialize(
-                folderpath = self._workspace_path,
+                folderpath = self.workspace_path,
                 workspace_metadata_path=self._workspace_metadata_path,
                 workspace_toml_filename = self._workspace_toml_filename,
                 workspace_name=workspace_name,
@@ -165,10 +167,10 @@ class MetaWorkspace:
             '''Raises an error if the workspace has not been initialized'''
             
             # Check that the workspace path exists
-            G.check_folder_exists(self._workspace_path)
+            G.check_folder_exists(self.workspace_path)
 
             # Check that the workspace metadata folder exists
-            G.check_folder_exists(self._workspace_path)
+            G.check_folder_exists(self.workspace_path)
 
             # Check that the workspace toml exists
             G.check_file_exists(self._workspace_toml_filepath)
@@ -190,8 +192,6 @@ class MetaWorkspace:
 
 
 
-
-
 class TemplatesWorkspace:
         '''
         # Templates Workspace
@@ -199,6 +199,7 @@ class TemplatesWorkspace:
         Provides a set of function for managing a Templates Workspace of template files and folders
         
         '''
+        WORKSPACE_TYPE = TemplatesWorkspaceService.WORKSPACE_TYPE
 
         @typechecked
         def __init__(
@@ -210,7 +211,7 @@ class TemplatesWorkspace:
             '''
             Initializes a configured transformer for an OpenViatica Workspace 
             '''
-            self._workspace_path  : str
+            self.workspace_path  : str
             self._workspace_metadata_path : str
             self._workspace_toml_filename:str
 
@@ -227,7 +228,7 @@ class TemplatesWorkspace:
             if _workspace_toml_filename is None:
                 _workspace_toml_filename = DEFAULT_WORKSPACE_TOML_FILENAME
 
-            self._workspace_path = workspace_path
+            self.workspace_path = workspace_path
             self._workspace_metadata_path = _workspace_metadata_path
 
             self._workspace_toml_filename = _workspace_toml_filename
@@ -249,7 +250,7 @@ class TemplatesWorkspace:
             
             # Any necessary checks are done in the service itself
             TemplatesWorkspaceService.initialize(
-                folderpath = self._workspace_path,
+                folderpath = self.workspace_path,
                 workspace_metadata_path=self._workspace_metadata_path,
                 workspace_toml_filename = self._workspace_toml_filename,
                 workspace_name=workspace_name,

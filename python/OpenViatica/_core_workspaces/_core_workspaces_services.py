@@ -146,7 +146,7 @@ class MetaWorkspaceService:
     DEFAULT_WORKSPACE_NAME:t.Final = "ov-meta"
     DEFAULT_METADATA_FOLDERPATH:t.Final = "." + DEFAULT_WORKSPACE_NAME
 
-    WORKSPACE_TYPE: t.Final = DEFAULT_WORKSPACE_NAME
+    WORKSPACE_TYPE: t.Final[t.Literal["ov-meta"]] = DEFAULT_WORKSPACE_NAME
 
     # FUTURE IMPROVEMENTS
         # 
@@ -476,7 +476,7 @@ class TemplatesWorkspaceService:
     DEFAULT_WORKSPACE_NAME:t.Final = "ov-templates"
     DEFAULT_METADATA_FOLDERPATH:t.Final = "." + DEFAULT_WORKSPACE_NAME
 
-    WORKSPACE_TYPE: t.Final = DEFAULT_WORKSPACE_NAME
+    WORKSPACE_TYPE: t.Final[t.Literal["ov-templates"]] = DEFAULT_WORKSPACE_NAME
 
     @classmethod
     @typechecked

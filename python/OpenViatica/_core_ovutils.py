@@ -110,9 +110,13 @@ class ovutils:
             workspace_id = templates_workspace_id,
             workspace_name = templates_workspace_name
         )
-        #######################################################
-        # LINK THE NEW WORKSPACES TO THE OpeViatica META WORKSPACE!!!!!!!!!!
-        #######################################################
+        
+        # Link the meta workspace with all other workspaces
+        self._meta_ws.link(
+            target_workspace_path=self._tmpl_ws.workspace_path, 
+            target_workspace_type=self._tmpl_ws.WORKSPACE_TYPE
+            )
+
 
 
     class WorkspaceTools:
