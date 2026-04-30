@@ -166,7 +166,47 @@ def ovutils_wstools_meta_link(
         except Exception as e:
             print(f"ERROR!: {e}")
             pass
+
+@ovutils_wsTools_ovMeta_app.command("unlink")
+def ovutils_wstools_meta_unlink(
+    # Function args
+    target_ws_path:str,
+    target_ws_type:ov_ws_type_t,
+    target_workspace_metadata_path:str | None = None,
+    target_workspace_toml_filename: str | None = None,
+
+    # Class init args
+    subject_ws_path:str = "./",
+    subject_workspace_metadata_path:str | None = None,
+    subject_workspace_toml_filename: str | None = None,
+
     
+    # Other args
+    debug:bool = False
+) -> None:
+    '''Links a OpenViatica workspace to a Meta workspace'''
+
+    def run() -> None:
+        meta_ws = ovutils.WorkspaceTools.MetaWorkspace(
+            workspace_path=subject_ws_path,
+            _workspace_metadata_path = subject_workspace_metadata_path,
+            _workspace_toml_filename = subject_workspace_toml_filename
+        )
+        meta_ws.unlink(
+            target_workspace_path=target_ws_path,
+            target_workspace_type=target_ws_type,
+            _target_workspace_metadata_path = target_workspace_metadata_path,
+            _target_workspace_toml_filename = target_workspace_toml_filename
+        )
+
+    if debug:
+        run()
+    else:
+        try:
+            run()
+        except Exception as e:
+            print(f"ERROR!: {e}")
+            pass   
 
 ## ov-templates  
 @ovutils_wsTools_ovTemplates_app.command("init")   

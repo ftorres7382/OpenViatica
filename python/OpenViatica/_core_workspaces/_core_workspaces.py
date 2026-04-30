@@ -80,7 +80,8 @@ class MetaWorkspace:
             )
 
 
-        def link(self,
+        def link(
+            self,
             target_workspace_path:str,
             target_workspace_type: ov_ws_type_t,
             _target_workspace_metadata_path:str | None = None,
@@ -110,6 +111,41 @@ class MetaWorkspace:
             target_workspace_toml_filepath = os.path.join(_target_workspace_metadata_path, _target_workspace_toml_filename)
 
             MetaWorkspaceService.link(
+                subject_workspace_toml_filepath=self._workspace_toml_filepath,
+                target_workspace_toml_filepath=target_workspace_toml_filepath
+            )
+
+        def unlink(
+            self,
+            target_workspace_path:str,
+            target_workspace_type: ov_ws_type_t,
+            _target_workspace_metadata_path:str | None = None,
+            _target_workspace_toml_filename: str | None = None
+            ) -> None:
+            '''
+            Links the meta workspace with another workspace
+            '''          
+
+            # Clean paths & set defaults
+            target_workspace_path = G.get_posix_path(target_workspace_path)
+
+            if _target_workspace_metadata_path is not None:
+                _target_workspace_metadata_path = G.get_posix_path(_target_workspace_metadata_path)
+            else:
+                # Else we should be able to define the workspace metadata path based on the type
+                _target_workspace_metadata_path = os.path.join(
+                    target_workspace_path,
+                    DEFAULT_WORKSPACE_METADATA_INFO[target_workspace_type]
+                    )
+
+            if _target_workspace_toml_filename is None:
+                _target_workspace_toml_filename = DEFAULT_WORKSPACE_TOML_FILENAME
+            
+            
+            # We should be able to define the workspace toml filepath now
+            target_workspace_toml_filepath = os.path.join(_target_workspace_metadata_path, _target_workspace_toml_filename)
+
+            MetaWorkspaceService.unlink(
                 subject_workspace_toml_filepath=self._workspace_toml_filepath,
                 target_workspace_toml_filepath=target_workspace_toml_filepath
             )

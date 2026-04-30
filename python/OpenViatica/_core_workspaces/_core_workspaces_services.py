@@ -148,6 +148,8 @@ class MetaWorkspaceService:
 
     WORKSPACE_TYPE: t.Final = DEFAULT_WORKSPACE_NAME
 
+    # FUTURE IMPROVEMENTS
+        # 
 
 
     @classmethod
@@ -223,6 +225,7 @@ class MetaWorkspaceService:
         This is reflected in the workspace tom of the manager and the managed being changed.
 
         '''
+
         # Clean the filepaths
         subject_workspace_toml_filepath = G.get_posix_path(subject_workspace_toml_filepath)
         target_workspace_toml_filepath = G.get_posix_path(target_workspace_toml_filepath)
@@ -274,28 +277,31 @@ class MetaWorkspaceService:
                 found_id = True
                 break
         
+        skip_linked_by = False
         if found_id:
-            raise ov_err.LinkFoundError(f"Found a linked_by entry in '{target_workspace_toml_filepath}' that matches the workspace information in '{subject_workspace_toml_filepath}'")        
+            # Thechnically if we find the id, it is not certain that everything has the information it should, but this can be enhanced later
+            skip_linked_by = True
+
         # After this check we are assured that the found_by entry is clean from duplicates
 
+        if not skip_linked_by:
+            # Add linked_by to the target
+            linked_by = target_workspace_toml_doc["linked_by"]
 
-        # Add linked_by to the target
-        linked_by = target_workspace_toml_doc["linked_by"]
-
-        ## If it is an AoT and it already has a value, then append
-        if isinstance(linked_by, AoT) and len(linked_by) > 0:
-            # Mypy now knows linked_by is a Sized AoT
-            linked_by.append(linked_by_table)
-        else:
-            # If it's missing, empty, or a different type (like a tomlkit.items.Array), 
-            # create a fresh Array of Tables (AoT)
-            new_aot = tomlkit.aot()
-            new_aot.append(linked_by_table)
-            target_workspace_toml_doc["linked_by"] = new_aot
-        
-        ## Write
-        with open(target_workspace_toml_filepath, "w") as f:
-            f.write(tomlkit.dumps(target_workspace_toml_doc))
+            ## If it is an AoT and it already has a value, then append
+            if isinstance(linked_by, AoT) and len(linked_by) > 0:
+                # Mypy now knows linked_by is a Sized AoT
+                linked_by.append(linked_by_table)
+            else:
+                # If it's missing, empty, or a different type (like a tomlkit.items.Array), 
+                # create a fresh Array of Tables (AoT)
+                new_aot = tomlkit.aot()
+                new_aot.append(linked_by_table)
+                target_workspace_toml_doc["linked_by"] = new_aot
+            
+            ## Write
+            with open(target_workspace_toml_filepath, "w") as f:
+                f.write(tomlkit.dumps(target_workspace_toml_doc))
         
 
         
@@ -322,31 +328,142 @@ class MetaWorkspaceService:
                 found_id = True
                 break
         
+        skip_links_to = False
         if found_id:
-            raise ov_err.LinkFoundError(f"Found a links_to entry in '{subject_workspace_toml_filepath}' that matches the workspace information in '{target_workspace_toml_filepath}'")        
+            # Thechnically if we find the id, it is not certain that everything has the information it should, but this can be enhanced later
+            skip_links_to = True      
+            
         # After this check we are assured that the found_by entry is clean from duplicates
 
 
-        # Add links_to to the target
-        links_to = subject_workspace_toml_doc["links_to"]
+        if not skip_links_to:
+            # Add links_to to the target
+            links_to = subject_workspace_toml_doc["links_to"]
 
-        ## If it is an AoT and it already has a value, then append
-        if isinstance(links_to, AoT) and len(links_to) > 0:
-            # Mypy now knows links_to is a Sized AoT
-            links_to.append(links_to_table)
-        else:
-            # If it's missing, empty, or a different type (like a tomlkit.items.Array), 
-            # create a fresh Array of Tables (AoT)
-            new_aot = tomlkit.aot()
-            new_aot.append(links_to_table)
-            subject_workspace_toml_doc["links_to"] = new_aot
+            ## If it is an AoT and it already has a value, then append
+            if isinstance(links_to, AoT) and len(links_to) > 0:
+                # Mypy now knows links_to is a Sized AoT
+                links_to.append(links_to_table)
+            else:
+                # If it's missing, empty, or a different type (like a tomlkit.items.Array), 
+                # create a fresh Array of Tables (AoT)
+                new_aot = tomlkit.aot()
+                new_aot.append(links_to_table)
+                subject_workspace_toml_doc["links_to"] = new_aot
+            
+            ## Write
+            with open(subject_workspace_toml_filepath, "w") as f:
+                f.write(tomlkit.dumps(subject_workspace_toml_doc))
+
+    @classmethod
+    @typechecked
+    def unlink(
+        cls,
+        subject_workspace_toml_filepath:str,
+        target_workspace_toml_filepath:str
+    ) -> None:
+        '''
+        This function unlinks a metaworkspace with another.
+
+        One workspace takes the manager role, able to pass arguments to the 
+        This is reflected in the workspace tom of the manager and the managed being changed.
+
+        '''
+        # Clean the filepaths
+        subject_workspace_toml_filepath = G.get_posix_path(subject_workspace_toml_filepath)
+        target_workspace_toml_filepath = G.get_posix_path(target_workspace_toml_filepath)
+
+        # Both MUST exist
+        G.check_file_exists(subject_workspace_toml_filepath)
+        G.check_file_exists(target_workspace_toml_filepath)
+
+        # Read in the required information for both
+
+        ## The subject should ALWAYS be a meta workspace
+        subject_workspace_toml_doc = G.read_toml_doc(
+            subject_workspace_toml_filepath,
+            ov_ws_types.META_WORKSPACE_TOML_DICT_TYPE
+        )
+        subject_workspace_toml_dict = t.cast(
+            ov_ws_types.META_WORKSPACE_TOML_DICT_TYPE,
+            subject_workspace_toml_doc.unwrap()
+        )
+
+        ## The target can be any ov workspace
+        target_workspace_toml_doc = G.read_toml_doc(
+            target_workspace_toml_filepath,
+            ov_ws_types.GENERIC_WORKSPACE_TOML_DICT_TYPE
+        )
+        target_workspace_toml_dict = t.cast(
+            ov_ws_types.GENERIC_WORKSPACE_TOML_DICT_TYPE,
+            target_workspace_toml_doc.unwrap()
+        )
+
+        # Try to find the exact linked_by entry to remove it      
+        linked_by_dict: ov_ws_types.WORKSPACE_TOML_LINK_DICT_TYPE ={
+            "id": subject_workspace_toml_dict["id"],
+            "name": subject_workspace_toml_dict["name"],
+            "type": subject_workspace_toml_dict["type"],
+            "workspace_tomlpath": os.path.abspath(subject_workspace_toml_filepath)
+        } 
+
+        # Find the linked by and remove it
+        for i, linked_by_item in enumerate(target_workspace_toml_doc["linked_by"].unwrap()):
+            linked_by_item_dict = t.cast(
+                ov_ws_types.WORKSPACE_TOML_LINK_DICT_TYPE,
+                linked_by_item
+            )
+            if linked_by_dict["id"] != linked_by_item_dict["id"]:
+                continue
+            
+            # Remove the current index
+            if isinstance(target_workspace_toml_doc["linked_by"], AoT):
+
+                target_workspace_toml_doc["linked_by"].pop(i)
+                if len(target_workspace_toml_doc["linked_by"]) == 0:
+                    # Set as an empty document array
+                    target_workspace_toml_doc["linked_by"] = tomlkit.array()
+            else:
+                raise NotImplementedError(f"The type '{type(target_workspace_toml_doc['linked_by'])}' is NOT supported!")
+        
+        ## Write
+        with open(target_workspace_toml_filepath, "w") as f:
+            f.write(tomlkit.dumps(target_workspace_toml_doc))        
+
+        # Remove links_to to the target
+        # Extract the links_to info from the dictionary & create doc table      
+        links_to_dict: ov_ws_types.WORKSPACE_TOML_LINK_DICT_TYPE ={
+            "id": target_workspace_toml_dict["id"],
+            "name": target_workspace_toml_dict["name"],
+            "type": target_workspace_toml_dict["type"],
+            "workspace_tomlpath": os.path.abspath(target_workspace_toml_filepath)
+        } 
+        # Find the links to and remove it
+        for i, linked_to_item in enumerate(subject_workspace_toml_doc["links_to"].unwrap()):
+            linked_to_item_dict = t.cast(
+                ov_ws_types.WORKSPACE_TOML_LINK_DICT_TYPE,
+                linked_to_item
+            )
+            if links_to_dict["id"] != linked_to_item_dict["id"]:
+                continue
+            
+            # Remove the current index
+            if isinstance(subject_workspace_toml_doc["links_to"], AoT):
+
+                subject_workspace_toml_doc["links_to"].pop(i)
+                if len(subject_workspace_toml_doc["links_to"]) == 0:
+                    # Set as an empty document array
+                    subject_workspace_toml_doc["links_to"] = tomlkit.array()
+                    
+            else:
+                raise NotImplementedError(f"The type '{type(subject_workspace_toml_doc['links_to'])}' is NOT supported!")
         
         ## Write
         with open(subject_workspace_toml_filepath, "w") as f:
             f.write(tomlkit.dumps(subject_workspace_toml_doc))
 
 
-    
+
 
 class TemplatesWorkspaceService:
     '''
