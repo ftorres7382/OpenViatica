@@ -132,5 +132,11 @@ def test_ovutils_initialize() -> None:
     if not doc["name"] == workspace_name_value:
         pytest.fail(f"The value of the workspace id is '{doc['workspace_name']}'. It SHOULD be '{workspace_name_value}'")
 
+    # Check the links_to value of the doc
+    toml_dict = doc.unwrap()
+    if toml_dict["links_to"][0]["name"] != "ov-templates":
+        pytest.fail("The tempalates workspace has NOT been linked to the meta workspace in the meta workspace toml file!")
+    
+
     # Cleanup
     shutil.rmtree(test_dir)
