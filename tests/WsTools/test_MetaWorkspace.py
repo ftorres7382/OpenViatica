@@ -1,3 +1,4 @@
+from inspect import unwrap
 import typing as t
 import pytest
 import os
@@ -7,7 +8,7 @@ from OpenViatica._general_core import General as G
 from OpenViatica._types import ov_ws_types, meta_workspace_toml_type_value
 from OpenViatica._core_workspaces._core_workspaces_services import \
     MetaWorkspaceService, DEFAULT_WORKSPACE_TOML_FILENAME
-from OpenViatica._core_cli_interface import ovutils_wstools_meta_init
+from OpenViatica._core_cli_interface import ovutils_wstools_meta_init, ovutils_wstools_meta_link
 
 @pytest.mark.dependency()
 def test_MetaWorkspace_import() -> None:
@@ -18,6 +19,7 @@ def test_MetaWorkspace_import() -> None:
     except ImportError:
         pytest.fail("FAILED import of ovutils.WorkspaceTools.MetaWorkspace!")
 
+@pytest.mark.dependency(depends=["test_MetaWorkspace_import"])
 def test_MetaWorkspace_initialize() -> None:
     '''
     Tests that the initialize function in the MetWorkspace tool functions properly
@@ -120,3 +122,157 @@ def test_MetaWorkspace_initialize() -> None:
 
     # Cleanup
     shutil.rmtree(test_dir)
+    os.chdir(og_cwd)
+
+
+@pytest.mark.dependency(depends=["test_MetaWorkspace_initialize"])
+def test_MetaWorkspace_link() -> None:
+    ''' 
+    Initializes two meta workspaces, then tires to link them, them removes it 
+    
+    '''
+
+    test_dir = "tmp/test_MetaWorkspace_link"
+    # Reset dir
+    if os.path.exists(test_dir):
+        shutil.rmtree(test_dir)
+    os.mkdir(test_dir)
+
+    og_cwd = os.getcwd()
+
+    ####################
+    # Test 1
+    ####################
+    os.chdir(test_dir)
+
+    # Create extra dir for other workspace
+    os.mkdir("meta-ws2")
+
+    # Initialize two meta workspace
+    ovutils_wstools_meta_init()
+
+    ovutils_wstools_meta_init(ws_path="meta-ws2")
+
+    # Link them both together
+    ovutils_wstools_meta_link("meta-ws2", "ov-meta")
+
+    # Check that the added entries are exactly the correct format and values
+    expected_workspace_toml_path = ".ov-meta/workspace.toml"
+    expected_workspace_toml_path2 = "meta-ws2/.ov-meta/workspace.toml"
+
+    # Read both of them and validate the format
+    workspace_toml_doc = G.read_toml_doc(
+        toml_filepath=expected_workspace_toml_path,
+        expected_type=ov_ws_types.META_WORKSPACE_TOML_DICT_TYPE
+    )
+    workspace_toml_doc2 = G.read_toml_doc(
+        toml_filepath=expected_workspace_toml_path2,
+        expected_type=ov_ws_types.META_WORKSPACE_TOML_DICT_TYPE
+    )
+
+    # Validate the links_to and linked_by values
+    linked_by_value = workspace_toml_doc2.unwrap()["linked_by"][0]
+    workspace_toml_dict = t.cast(
+        ov_ws_types.META_WORKSPACE_TOML_DICT_TYPE,
+        workspace_toml_doc.unwrap()
+    )
+    expected_linked_by_value: ov_ws_types.WORKSPACE_TOML_LINK_DICT_TYPE = {
+        "id": workspace_toml_dict["id"],
+        "name": workspace_toml_dict["name"],
+        "type": workspace_toml_dict["type"],
+        "workspace_tomlpath": os.path.abspath(expected_workspace_toml_path)
+    } 
+    if linked_by_value != expected_linked_by_value:
+        pytest.fail(f"The expected linked_by value is '{expected_linked_by_value}' but found '{linked_by_value}' instead.") 
+
+    # Validate the links_to and linked_by values
+    links_to_value = workspace_toml_doc.unwrap()["links_to"][0]
+    workspace_toml_dict2 = t.cast(
+        ov_ws_types.META_WORKSPACE_TOML_DICT_TYPE,
+        workspace_toml_doc2.unwrap()
+    )
+    expected_links_to_value: ov_ws_types.WORKSPACE_TOML_LINK_DICT_TYPE = {
+        "id": workspace_toml_dict2["id"],
+        "name": workspace_toml_dict2["name"],
+        "type": workspace_toml_dict2["type"],
+        "workspace_tomlpath": os.path.abspath(expected_workspace_toml_path2)
+    } 
+    if links_to_value != expected_links_to_value:
+        pytest.fail(f"The expected links_to value is '{expected_links_to_value}' but found '{links_to_value}' instead.") 
+
+    # Go back and redo while changing all the user parameters
+    os.chdir(og_cwd)
+    shutil.rmtree(test_dir)
+
+    ####################
+    # Test 2
+    ####################
+    os.mkdir(test_dir)
+
+    # Create extra dir for other workspace
+    ws_path2 = os.path.join(test_dir,"meta-ws2")
+    os.mkdir(ws_path2)
+
+    # Re-initialize defining the values for workspace paths
+    ovutils_wstools_meta_init(ws_path = test_dir)
+
+    ovutils_wstools_meta_init(ws_path = ws_path2)
+
+    # Re-link while defining as many user variables as possible
+    ovutils_wstools_meta_link(
+        subject_ws_path=test_dir,
+        target_ws_path= ws_path2,
+        target_ws_type="ov-meta"
+    )
+    # Again, should probably test with other ws types but levaing it as is for now
+
+    # Validate the results
+    # Check that the added entries are exactly the correct format and values
+    expected_workspace_toml_path = os.path.join(test_dir, ".ov-meta/workspace.toml")
+    expected_workspace_toml_path2 = os.path.join(ws_path2, ".ov-meta/workspace.toml")
+
+    # Read both of them and validate the format
+    workspace_toml_doc = G.read_toml_doc(
+        toml_filepath=expected_workspace_toml_path,
+        expected_type=ov_ws_types.META_WORKSPACE_TOML_DICT_TYPE
+    )
+    workspace_toml_doc2 = G.read_toml_doc(
+        toml_filepath=expected_workspace_toml_path2,
+        expected_type=ov_ws_types.META_WORKSPACE_TOML_DICT_TYPE
+    )
+
+    # Validate the links_to and linked_by values
+    linked_by_value = workspace_toml_doc2.unwrap()["linked_by"][0]
+    workspace_toml_dict = t.cast(
+        ov_ws_types.META_WORKSPACE_TOML_DICT_TYPE,
+        workspace_toml_doc.unwrap()
+    )
+    expected_linked_by_value = {
+        "id": workspace_toml_dict["id"],
+        "name": workspace_toml_dict["name"],
+        "type": workspace_toml_dict["type"],
+        "workspace_tomlpath": os.path.abspath(expected_workspace_toml_path)
+    } 
+    if linked_by_value != expected_linked_by_value:
+        pytest.fail(f"The expected linked_by value is '{expected_linked_by_value}' but found '{linked_by_value}' instead.") 
+
+    # Validate the links_to and linked_by values
+    links_to_value = workspace_toml_doc.unwrap()["links_to"][0]
+    workspace_toml_dict2 = t.cast(
+        ov_ws_types.META_WORKSPACE_TOML_DICT_TYPE,
+        workspace_toml_doc2.unwrap()
+    )
+    expected_links_to_value = {
+        "id": workspace_toml_dict2["id"],
+        "name": workspace_toml_dict2["name"],
+        "type": workspace_toml_dict2["type"],
+        "workspace_tomlpath": os.path.abspath(expected_workspace_toml_path2)
+    } 
+    if links_to_value != expected_links_to_value:
+        pytest.fail(f"The expected links_to value is '{expected_links_to_value}' but found '{links_to_value}' instead.") 
+
+
+
+    # Cleanup
+    shutil.rmtree(test_dir)
+    os.chdir(og_cwd)

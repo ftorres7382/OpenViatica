@@ -16,6 +16,7 @@ def test_TemplatesWorkspace_import() -> None:
     except ImportError:
         pytest.fail("FAILED import of ovutils.WorkspaceTools.TemplatesWorkspace!")
 
+@pytest.mark.dependency(depends=["test_TemplatesWorkspace_import"])
 def test_TemplatesWorkspace_initialize() -> None:
     '''
     Tests that the initialize function in the MetWorkspace tool functions properly
