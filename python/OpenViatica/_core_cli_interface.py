@@ -15,6 +15,7 @@ The main function will be invokeable through the ovutils keyword
 import typer
 from OpenViatica import ovutils
 from OpenViatica._types import ov_ws_type_t
+import typing as t
 
 # Entry point for the application
 app = typer.Typer(
@@ -207,6 +208,83 @@ def ovutils_wstools_meta_unlink(
         except Exception as e:
             print(f"ERROR!: {e}")
             pass   
+
+@ovutils_wsTools_ovMeta_app.command("exec")
+def ovutils_wstools_meta_exec(
+    identifier: str,
+    identifier_type: t.Literal["id", "name"],
+
+    # Class init args
+    ws_path:str = "./",
+    workspace_metadata_path:str | None = None,
+    workspace_toml_filename: str | None = None,
+
+    
+    # Other args
+    debug:bool = False
+) -> None:
+    '''Executes a command to a linked OpenViatica workspace'''
+
+    def run() -> None:
+        meta_ws = ovutils.WorkspaceTools.MetaWorkspace(
+            workspace_path=ws_path,
+            _workspace_metadata_path = workspace_metadata_path,
+            _workspace_toml_filename = workspace_toml_filename
+        )
+
+        # Lets just do a get_linked_workspace_object for now...
+        workspace_object = meta_ws.get_linked_workspace_object(
+            identifier=identifier,
+            identifier_type=identifier_type
+            )
+        
+        breakpoint()
+        None
+        # I like this approach
+        """
+        @ovutils_wsTools_ovMeta_app.command("exec", context_settings={
+            "allow_extra_args": True, 
+            "ignore_unknown_options": True
+        })
+        def ovutils_wstools_meta_exec(
+            ctx: typer.Context, 
+            identifier: str,
+            identifier_type: t.Literal["id", "name"],
+            # ... your standard init args ...
+        ) -> None:
+            '''Executes a command to a linked OpenViatica workspace'''
+
+            # 1. Resolve which workspace we are talking to
+            # (Assuming meta_ws.get_linked_workspace_object logic here)
+            target_ws = meta_ws.get_linked_workspace_object(identifier, identifier_type)
+            
+            # 2. Determine which Typer App handles this workspace type
+            # This is your "Map": Type -> Typer App
+            APP_MAP = {
+                "ov-templates": ovutils_wsTools_ovTemplates_app,
+                "ov-meta": ovutils_wsTools_ovMeta_app,
+            }
+
+            target_app = APP_MAP.get(target_ws.type)
+
+            if target_app:
+                # 3. "The Pipe": Execute the target app using the extra arguments
+                # ctx.args contains everything the user typed after 'exec <id> <type>'
+                # standalone_mode=False prevents the sub-app from exiting the whole process
+                target_app(args=ctx.args, standalone_mode=False)
+            else:
+                print(f"No CLI handler found for workspace type: {target_ws.type}")
+        """
+
+    if debug:
+        run()
+    else:
+        try:
+            run()
+        except Exception as e:
+            print(f"ERROR!: {e}")
+            pass   
+
 
 ## ov-templates  
 @ovutils_wsTools_ovTemplates_app.command("init")   

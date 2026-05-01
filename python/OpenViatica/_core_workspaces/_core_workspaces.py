@@ -6,6 +6,7 @@ from OpenViatica._core_workspaces._core_workspaces_services import \
 from OpenViatica._errors import ov_errors
 from OpenViatica._types import ov_ws_types, ov_ws_type_t
 from OpenViatica._general_core import General as G
+import typing as t
 
 from pathlib import Path
 import os
@@ -81,7 +82,7 @@ class MetaWorkspace:
                 workspace_id=workspace_id
             )
 
-
+        @typechecked
         def link(
             self,
             target_workspace_path:str,
@@ -117,6 +118,7 @@ class MetaWorkspace:
                 target_workspace_toml_filepath=target_workspace_toml_filepath
             )
 
+        @typechecked
         def unlink(
             self,
             target_workspace_path:str,
@@ -152,6 +154,17 @@ class MetaWorkspace:
                 target_workspace_toml_filepath=target_workspace_toml_filepath
             )
 
+        @typechecked
+        def get_linked_workspace_object(
+            self,
+            identifier: str,
+            identifier_type: t.Literal["id", "name"],
+        ) -> None:
+            '''Returns a fully configured workspace object that can be used to run commands on'''
+            breakpoint()
+            None
+
+        @typechecked
         def is_initialized(self) -> bool:
             '''Returns True if the currently defined workspace has been initialized'''
             result = False
@@ -162,7 +175,7 @@ class MetaWorkspace:
                 pass
             return result
 
-
+        @typechecked
         def check_initialized(self) -> None: 
             '''Raises an error if the workspace has not been initialized'''
             
