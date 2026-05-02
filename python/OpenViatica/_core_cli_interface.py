@@ -28,22 +28,26 @@ ovutils_app = app
 
 # Create the ws app and add to the set of commands that can be done
 ovutils_wsTools_app = typer.Typer(
-    help="Tools for creating and managing individual OpenViatica workspaces."
+    help="Tools for creating and managing individual OpenViatica workspaces.",
+    name="ws-tools"
     )
-ovutils_app.add_typer(ovutils_wsTools_app, name="ws-tools")
+ovutils_app.add_typer(ovutils_wsTools_app)
 
 # Create the ws sub apps
 ## ov-meta
 ovutils_wsTools_ovMeta_app = typer.Typer(
-    help="OpenViatica Meta Workspace: For creating and managing a workspace that links other workspaces."
+    help="OpenViatica Meta Workspace: For creating and managing a workspace that links other workspaces.",
+    name="ov-meta"
     )
-ovutils_wsTools_app.add_typer(ovutils_wsTools_ovMeta_app, name="ov-meta")
+ovutils_wsTools_app.add_typer(ovutils_wsTools_ovMeta_app)
 
 ## ov-templates
 ovutils_wsTools_ovTemplates_app = typer.Typer(
-    help="OpenViatica Templates Workspace: For creating and managing template files and folders."
+    help="OpenViatica Templates Workspace: For creating and managing template files and folders.",
+    name="ov-templates"
     )
-ovutils_wsTools_app.add_typer(ovutils_wsTools_ovTemplates_app, name="ov-templates")
+ovutils_wsTools_app.add_typer(ovutils_wsTools_ovTemplates_app)
+
 
 # ovutils Routing
 @ovutils_app.command("init")
@@ -209,8 +213,12 @@ def ovutils_wstools_meta_unlink(
             print(f"ERROR!: {e}")
             pass   
 
-@ovutils_wsTools_ovMeta_app.command("exec")
+@ovutils_wsTools_ovMeta_app.command("exec",context_settings={
+    "allow_extra_args": True, 
+    "ignore_unknown_options": True
+})
 def ovutils_wstools_meta_exec(
+    ctx: typer.Context,
     identifier: str,
     identifier_type: t.Literal["id", "name"],
 
@@ -232,49 +240,48 @@ def ovutils_wstools_meta_exec(
             _workspace_toml_filename = workspace_toml_filename
         )
 
-        # Lets just do a get_linked_workspace_object for now...
+        # Get the workspace object to validate the access
         workspace_object = meta_ws.get_linked_workspace_object(
             identifier=identifier,
-            identifier_type=identifier_type
-            )
+            identifier_type=identifier_type,
+        )
+
+        # Add the base workspace context information to the arguments if the areguments are nor blank at the moment
+        if not isinstance(ovutils_wsTools_app.info.name, str):
+                raise TypeError("ovutils_wsTools_app.info.name is NOT string!")
+        set_args: t.List[str] = [
+            # Extract the command str from the app itself
+            ovutils_wsTools_app.info.name,
+
+            # Add at least the workspace endpoint to start with
+            workspace_object.WORKSPACE_TYPE
+        ]
         
-        breakpoint()
-        None
-        # I like this approach
-        """
-        @ovutils_wsTools_ovMeta_app.command("exec", context_settings={
-            "allow_extra_args": True, 
-            "ignore_unknown_options": True
-        })
-        def ovutils_wstools_meta_exec(
-            ctx: typer.Context, 
-            identifier: str,
-            identifier_type: t.Literal["id", "name"],
-            # ... your standard init args ...
-        ) -> None:
-            '''Executes a command to a linked OpenViatica workspace'''
-
-            # 1. Resolve which workspace we are talking to
-            # (Assuming meta_ws.get_linked_workspace_object logic here)
-            target_ws = meta_ws.get_linked_workspace_object(identifier, identifier_type)
+        # If the original arguments were help arguments, then add the help arg
+        only_help_args = False
+        if len(ctx.args) == 1 and ("-h" in ctx.args or "--help" in ctx.args):
+            set_args += ctx.args
+            only_help_args = True
+        
+        # If the original arguments were both ways of asking for help, pass them on too
+        if len(ctx.args) == 2 and "-h" in ctx.args and "--help" in ctx.args:
+            set_args += ctx.args
+            only_help_args = True
             
-            # 2. Determine which Typer App handles this workspace type
-            # This is your "Map": Type -> Typer App
-            APP_MAP = {
-                "ov-templates": ovutils_wsTools_ovTemplates_app,
-                "ov-meta": ovutils_wsTools_ovMeta_app,
-            }
+        
+        # If there were other arguments already in there (that are not ONLY help arguments), then inject extra ones to make the commands cwd agnostic
+        if len(ctx.args) > 0 and not only_help_args:
+            # Split the first argument which is the function to be run, inject the base context, add the rest
+            set_args += [ctx.args[0]] +[
+                "--ws-path", workspace_object.workspace_path,
+                "--workspace-metadata-path", workspace_object.workspace_metadata_path,
+                "--workspace-toml-filename", workspace_object.workspace_toml_filename
+            ] + ctx.args[1:]
+        ctx.args = set_args            
 
-            target_app = APP_MAP.get(target_ws.type)
 
-            if target_app:
-                # 3. "The Pipe": Execute the target app using the extra arguments
-                # ctx.args contains everything the user typed after 'exec <id> <type>'
-                # standalone_mode=False prevents the sub-app from exiting the whole process
-                target_app(args=ctx.args, standalone_mode=False)
-            else:
-                print(f"No CLI handler found for workspace type: {target_ws.type}")
-        """
+        # Allow piping the command to the other app
+        ovutils_app(args=ctx.args, standalone_mode=False)
 
     if debug:
         run()
@@ -301,7 +308,7 @@ def ovutils_wstools_templates_init(
     # Other args
     debug:bool = False
 ) -> None:
-    '''Initializes a new OpenViatica Meta workspace'''
+    '''Initializes a new OpenViatica Templates workspace'''
 
     def run() -> None:
         templates_ws = ovutils.WorkspaceTools.TemplatesWorkspace(

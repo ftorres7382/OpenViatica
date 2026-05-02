@@ -27,3 +27,11 @@ class ov_errors:
         '''Raised whenever the workspace has already been linked'''
         pass
 
+    class LinkNotFoundError(OpenViaticaError):
+        '''Raised when a link value could not be found'''
+        pass
+
+    class DuplicatedLinksFoundError(OpenViaticaError):
+        '''Raised whenever we find multiple links when we expect only one link result'''
+        pass
+
