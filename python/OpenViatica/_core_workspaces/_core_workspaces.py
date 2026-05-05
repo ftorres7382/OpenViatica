@@ -112,7 +112,7 @@ class MetaWorkspace:
 
             # If the user did not define a workspace relpath, use the program default
             if _workspace_metadata_path is None:
-                workspace_metadata_path = os.path.join(
+                _workspace_metadata_path = os.path.join(
                     workspace_path,
                     MetaWorkspaceService.DEFAULT_METADATA_FOLDERPATH
                 )
@@ -121,7 +121,7 @@ class MetaWorkspace:
                 _workspace_toml_filename = DEFAULT_WORKSPACE_TOML_FILENAME
 
             self.workspace_path = workspace_path
-            self.workspace_metadata_path = workspace_metadata_path
+            self.workspace_metadata_path = _workspace_metadata_path
 
             self.workspace_toml_filename = _workspace_toml_filename
             self._workspace_toml_filepath = os.path.join(self.workspace_metadata_path, self.workspace_toml_filename)

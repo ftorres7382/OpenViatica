@@ -217,9 +217,8 @@ def ovutils_wstools_meta_unlink(
     '''Links a OpenViatica workspace to a Meta workspace'''
     ws_path = ws_path_flag
 
-    # Set a value for ws_path based on priority system
-    if ws_path_flag is not None:
-        ws_path = ws_path_flag
+    # Set ws_path value
+    ws_path = ws_path_flag
 
 
     def run() -> None:
@@ -305,17 +304,31 @@ def ovutils_wstools_meta_exec(
             set_args += ctx.args
             only_help_args = True
         
+        # If there are multiple double slashes, divide between the first segment and the rest
+        try:
+            split_index = ctx.args.index("--")
+        except ValueError:
+            split_index = None
+            pass     
+        
+        
+        if split_index:
+            first_args = ctx.args[:split_index]
+        else:
+            first_args = ctx.args[:]
+
+            
         # If it was not only help arguments, and there was a command there, 
         # we start by adding the command that they want executed
-        if not only_help_args and len(ctx.args) > 0:
+        if not only_help_args and len(first_args) > 0:
             set_args += [ctx.args[0]]
         
             
         # If there are any arguments to be passed
         # and the command is NOT an init command
         # and the command was NOT a help command
-        if len(ctx.args) > 0 \
-            and "init" not in ctx.args\
+        if len(first_args) > 0 \
+            and "init" not in first_args\
             and not only_help_args:
             
             # Then inject extra ones to make the commands cwd agnostic
@@ -326,10 +339,15 @@ def ovutils_wstools_meta_exec(
                 "--ws-toml-filename", workspace_object.workspace_toml_filename
             ]
         # If there was more than one argument, and it was not help, then we pass those at the end
-        if len(ctx.args) > 1 and not only_help_args:
-            set_args += ctx.args[1:]
+        if len(first_args) > 1 and not only_help_args:
+            set_args += first_args[1:]
         
-        ctx.args = set_args       
+        # Add the rest if there was a split
+        if split_index:
+            set_args += ctx.args[split_index:]
+        
+        ctx.args = set_args    
+  
         
 
 
