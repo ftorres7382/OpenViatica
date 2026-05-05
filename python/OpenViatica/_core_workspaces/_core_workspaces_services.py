@@ -44,7 +44,7 @@ class GenericWorkspaceService:
 
         # Check that the folder exists
         if not os.path.exists(folderpath):
-            raise ov_err.FolderNotExistsError(f"The folder '{folderpath}' does NOT exist.")
+            os.mkdir(folderpath)
         
         # The workspace metadata path must NOT exist
         if os.path.exists(workspace_metadata_path):
@@ -488,7 +488,9 @@ class TemplatesWorkspaceService:
         workspace_name: str,
         workspace_id: str,        
         ) -> None:
-        '''Initializes a new Tempaltes workspace'''
+        '''Initializes a new Templates workspace'''
+
+
         
         # Initialize a base workspace
         GenericWorkspaceService.initialize(
