@@ -1,12 +1,22 @@
 # OpenViatica
 
-OpenViatica is an open source CLI, API and code-based data analytics platform builder and maintainer. It comes with tools & examples to handle common data analytics problems with a local first and python centered approach.  
+OpenViatica is a data analytics platform builder and maintainer.
+
+It is designed to be accessed using any of the following:
+
+- Command Line Interface (CLI)
+- Python Code
+- Web based Application Programming Interface (API)
+
+It handles data analytics problems with a local, python and SQL centered approach.
+
+It is also bundled with tools & examples to handle common data analytics problems.
 
 ## Requirements
 
-1. Windows, macOS or Linux for some basic features
+1. Windows, MacOS or Linux for some basic features
     - For a server setup, ONLY Linux is supported
-2. **Python Version:** >=python3.12
+2. **Python Version:** >= python 3.12
 
 # Setup
 
