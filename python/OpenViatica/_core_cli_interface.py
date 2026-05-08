@@ -1,19 +1,21 @@
-'''
-The purpose of the _cli_interface is to map all the functions the user invokes through the CLI 
+"""
+The purpose of the _cli_interface is to map all the functions the user invokes through the CLI
 to the appropriate user facing module and function.
 
-The main function will be invokeable through the ovutils keyword  
-'''
+The main function will be invokeable through the ovutils keyword
+"""
 # TODO:
 
 # README.md not intuitive enough, find another filename that screams click and read me please
-    # SECTION_PURPOSE.md
-    # GETTING_STARTED.md
+# SECTION_PURPOSE.md
+# GETTING_STARTED.md
 # Make the purpose of the Docs folder more apparent
 # Home
 # make purpose of each folder more clear, especially repos
 import typer
 from OpenViatica import ovutils
+
+
 from OpenViatica._types import ov_ws_type_t
 import typing as t
 
@@ -21,31 +23,34 @@ import typing as t
 app = typer.Typer(
     help="OpenVitaca Utilities ('ovutils'): A workspace creation and management engine\n\nGETTING STARTED:\nRun the command inside the quotes: 'ovutils ws init'",
     add_completion=False,
-    context_settings={"help_option_names": ["-h", "--help"]}
-    )
+    context_settings={"help_option_names": ["-h", "--help"]},
+)
 # Creating an alias for better organization
 ovutils_app = app
+
 
 # Create the ws app and add to the set of commands that can be done
 ovutils_wsTools_app = typer.Typer(
     help="Tools for creating and managing individual OpenViatica workspaces.",
-    name="ws-tools"
-    )
+    name="ws-tools",
+)
 ovutils_app.add_typer(ovutils_wsTools_app)
+
 
 # Create the ws sub apps
 ## ov-meta
 ovutils_wsTools_ovMeta_app = typer.Typer(
     help="OpenViatica Meta Workspace: For creating and managing a workspace that links other workspaces.",
-    name="ov-meta"
-    )
+    name="ov-meta",
+)
 ovutils_wsTools_app.add_typer(ovutils_wsTools_ovMeta_app)
+
 
 ## ov-templates
 ovutils_wsTools_ovTemplates_app = typer.Typer(
     help="OpenViatica Templates Workspace: For creating and managing template files and folders.",
-    name="ov-templates"
-    )
+    name="ov-templates",
+)
 ovutils_wsTools_app.add_typer(ovutils_wsTools_ovTemplates_app)
 
 
@@ -53,44 +58,38 @@ ovutils_wsTools_app.add_typer(ovutils_wsTools_ovTemplates_app)
 @ovutils_app.command("init")
 def ovutils_init(
     # Class init args (Standardized in all functions for a reason)
-    ws_path:t.Annotated[str, typer.Argument(help="The path to the workspace")] = "./", # positional arg for terminal
+    ws_path: t.Annotated[
+        str, typer.Argument(help="The path to the workspace")
+    ] = "./",  # positional arg for terminal
     ws_path_flag: t.Annotated[
-        str | None,
-        typer.Option("--ws-path", hidden=True)
+        str | None, typer.Option("--ws-path", hidden=True)
     ] = None,
-    ws_metadata_path: None | str = None,   
-
+    ws_metadata_path: None | str = None,
     ## Meta workspace arguments, they get passed directly to the Meta workspace class
     meta_ws_path: str | None = None,
     meta_ws_metadata_path: str | None = None,
     meta_ws_toml_filename: str | None = None,
-
     # Initialize args
     ws_id: str | None = None,
     ws_name: str | None = None,
-
     # Other args
-    debug:bool = False
+    debug: bool = False,
 ) -> None:
-    '''Initializes a new OpenViatica pre-configured workspace'''
+    """Initializes a new OpenViatica pre-configured workspace"""
 
     # Set a value for ws_path based on priority system
     if ws_path_flag is not None:
         ws_path = ws_path_flag
-    
+
     def run() -> None:
         ov_ws = ovutils(
             workspace_path=ws_path,
-            _workspace_metadata_path = ws_metadata_path,
-            
-            _meta_workspace_path = meta_ws_path,
-            _meta_workspace_metadata_path = meta_ws_metadata_path,
-            _meta_workspace_toml_filename = meta_ws_toml_filename
+            _workspace_metadata_path=ws_metadata_path,
+            _meta_workspace_path=meta_ws_path,
+            _meta_workspace_metadata_path=meta_ws_metadata_path,
+            _meta_workspace_toml_filename=meta_ws_toml_filename,
         )
-        ov_ws.initialize(
-            workspace_id=ws_id,
-            workspace_name=ws_name
-        )
+        ov_ws.initialize(workspace_id=ws_id, workspace_name=ws_name)
 
     if debug:
         run()
@@ -109,20 +108,19 @@ def ovutils_wstools_meta_init(
     # Initialize function args
     ws_id: str | None = None,
     ws_name: str | None = None,
-
     # Class init args (Standardized in all functions for a reason)
-    ws_path:t.Annotated[str, typer.Argument(help="The path to the workspace")] = "./", # positional arg for terminal
+    ws_path: t.Annotated[
+        str, typer.Argument(help="The path to the workspace")
+    ] = "./",  # positional arg for terminal
     ws_path_flag: t.Annotated[
-        str | None,
-        typer.Option("--ws-path", hidden=True)
+        str | None, typer.Option("--ws-path", hidden=True)
     ] = None,
-    ws_metadata_path:str | None = None,
+    ws_metadata_path: str | None = None,
     ws_toml_filename: str | None = None,
-    
     # Other args
-    debug:bool = False
+    debug: bool = False,
 ) -> None:
-    '''Initializes a new OpenViatica Meta workspace'''
+    """Initializes a new OpenViatica Meta workspace"""
 
     # Set a value for ws_path based on priority system
     if ws_path_flag is not None:
@@ -131,13 +129,10 @@ def ovutils_wstools_meta_init(
     def run() -> None:
         meta_ws = ovutils.WorkspaceTools.MetaWorkspace(
             workspace_path=ws_path,
-            _workspace_metadata_path = ws_metadata_path,
-            _workspace_toml_filename = ws_toml_filename
+            _workspace_metadata_path=ws_metadata_path,
+            _workspace_toml_filename=ws_toml_filename,
         )
-        meta_ws.initialize(
-            workspace_id=ws_id,
-            workspace_name=ws_name
-        )
+        meta_ws.initialize(workspace_id=ws_id, workspace_name=ws_name)
 
     if debug:
         run()
@@ -147,42 +142,37 @@ def ovutils_wstools_meta_init(
         except Exception as e:
             print(f"ERROR!: {e}")
             pass
+
 
 @ovutils_wsTools_ovMeta_app.command("link")
 def ovutils_wstools_meta_link(
     # Function args
-    target_ws_path:str,
-    target_ws_type:ov_ws_type_t,
-    target_ws_metadata_path:str | None = None,
+    target_ws_path: str,
+    target_ws_type: ov_ws_type_t,
+    target_ws_metadata_path: str | None = None,
     target_workspace_toml_filename: str | None = None,
-
     # Class init args (Standardized in all functions for a reason)
-    ws_path_flag: t.Annotated[
-        str,
-        typer.Option("--ws-path", hidden=False)
-    ] = "./",
-    ws_metadata_path:str | None = None,
+    ws_path_flag: t.Annotated[str, typer.Option("--ws-path", hidden=False)] = "./",
+    ws_metadata_path: str | None = None,
     ws_toml_filename: str | None = None,
-
-    
     # Other args
-    debug:bool = False
+    debug: bool = False,
 ) -> None:
-    '''Links a OpenViatica workspace to a Meta workspace'''
+    """Links a OpenViatica workspace to a Meta workspace"""
     # Set ws_path value
     ws_path = ws_path_flag
 
     def run() -> None:
         meta_ws = ovutils.WorkspaceTools.MetaWorkspace(
             workspace_path=ws_path,
-            _workspace_metadata_path = ws_metadata_path,
-            _workspace_toml_filename = ws_toml_filename
+            _workspace_metadata_path=ws_metadata_path,
+            _workspace_toml_filename=ws_toml_filename,
         )
         meta_ws.link(
             target_workspace_path=target_ws_path,
             target_workspace_type=target_ws_type,
-            _target_workspace_metadata_path = target_ws_metadata_path,
-            _target_workspace_toml_filename = target_workspace_toml_filename
+            _target_workspace_metadata_path=target_ws_metadata_path,
+            _target_workspace_toml_filename=target_workspace_toml_filename,
         )
 
     if debug:
@@ -194,44 +184,38 @@ def ovutils_wstools_meta_link(
             print(f"ERROR!: {e}")
             pass
 
+
 @ovutils_wsTools_ovMeta_app.command("unlink")
 def ovutils_wstools_meta_unlink(
     # Function args
-    target_ws_path:str,
-    target_ws_type:ov_ws_type_t,
-    target_ws_metadata_path:str | None = None,
+    target_ws_path: str,
+    target_ws_type: ov_ws_type_t,
+    target_ws_metadata_path: str | None = None,
     target_workspace_toml_filename: str | None = None,
-
     # Class init args (Standardized in all functions for a reason)
-    ws_path_flag: t.Annotated[
-        str,
-        typer.Option("--ws-path", hidden=False)
-    ] = "./",
-    ws_metadata_path:str | None = None,
+    ws_path_flag: t.Annotated[str, typer.Option("--ws-path", hidden=False)] = "./",
+    ws_metadata_path: str | None = None,
     ws_toml_filename: str | None = None,
-
-    
     # Other args
-    debug:bool = False
+    debug: bool = False,
 ) -> None:
-    '''Links a OpenViatica workspace to a Meta workspace'''
+    """Links a OpenViatica workspace to a Meta workspace"""
     ws_path = ws_path_flag
 
     # Set ws_path value
     ws_path = ws_path_flag
 
-
     def run() -> None:
         meta_ws = ovutils.WorkspaceTools.MetaWorkspace(
             workspace_path=ws_path,
-            _workspace_metadata_path = ws_metadata_path,
-            _workspace_toml_filename = ws_toml_filename
+            _workspace_metadata_path=ws_metadata_path,
+            _workspace_toml_filename=ws_toml_filename,
         )
         meta_ws.unlink(
             target_workspace_path=target_ws_path,
             target_workspace_type=target_ws_type,
-            _target_workspace_metadata_path = target_ws_metadata_path,
-            _target_workspace_toml_filename = target_workspace_toml_filename
+            _target_workspace_metadata_path=target_ws_metadata_path,
+            _target_workspace_toml_filename=target_workspace_toml_filename,
         )
 
     if debug:
@@ -241,38 +225,32 @@ def ovutils_wstools_meta_unlink(
             run()
         except Exception as e:
             print(f"ERROR!: {e}")
-            pass   
+            pass
 
-@ovutils_wsTools_ovMeta_app.command("exec",context_settings={
-    "allow_extra_args": True, 
-    "ignore_unknown_options": True
-})
+
+@ovutils_wsTools_ovMeta_app.command(
+    "exec", context_settings={"allow_extra_args": True, "ignore_unknown_options": True}
+)
 def ovutils_wstools_meta_exec(
     ctx: typer.Context,
     identifier: str,
     identifier_type: t.Literal["id", "name"],
-
     # Class init args (Standardized in all functions for a reason)
-    ws_path_flag: t.Annotated[
-        str,
-        typer.Option("--ws-path", hidden=False)
-    ] = "./",
-    ws_metadata_path:str | None = None,
+    ws_path_flag: t.Annotated[str, typer.Option("--ws-path", hidden=False)] = "./",
+    ws_metadata_path: str | None = None,
     ws_toml_filename: str | None = None,
-
-    
     # Other args
-    debug:bool = False
+    debug: bool = False,
 ) -> None:
-    '''Executes a command to a linked OpenViatica workspace'''
-    # Set a value for ws_path 
+    """Executes a command to a linked OpenViatica workspace"""
+    # Set a value for ws_path
     ws_path = ws_path_flag
 
     def run() -> None:
         meta_ws = ovutils.WorkspaceTools.MetaWorkspace(
             workspace_path=ws_path,
-            _workspace_metadata_path = ws_metadata_path,
-            _workspace_toml_filename = ws_toml_filename
+            _workspace_metadata_path=ws_metadata_path,
+            _workspace_toml_filename=ws_toml_filename,
         )
 
         # Get the workspace object to validate the access
@@ -283,73 +261,66 @@ def ovutils_wstools_meta_exec(
 
         # Add the base workspace context information to the arguments if the areguments are nor blank at the moment
         if not isinstance(ovutils_wsTools_app.info.name, str):
-                raise TypeError("ovutils_wsTools_app.info.name is NOT string!")
-        
-        # Default value of set_args is the app name and the workspace specifically to start with 
+            raise TypeError("ovutils_wsTools_app.info.name is NOT string!")
+
+        # Default value of set_args is the app name and the workspace specifically to start with
         set_args: t.List[str] = [
             # Extract the command str from the app itself
             ovutils_wsTools_app.info.name,
-
             # Add at least the workspace endpoint to start with
-            workspace_object.WORKSPACE_TYPE
+            workspace_object.WORKSPACE_TYPE,
         ]
-        
+
         # If the arguments to be passed were only help arguments, then add the help arg
         only_help_args = False
-        if (len(ctx.args) == 1)  and ("-h" in ctx.args or "--help" in ctx.args):
+        if (len(ctx.args) == 1) and ("-h" in ctx.args or "--help" in ctx.args):
             set_args += ctx.args
             only_help_args = True
-        
-        if (len(ctx.args) == 2)  and ("-h" in ctx.args and "--help" in ctx.args):
+
+        if (len(ctx.args) == 2) and ("-h" in ctx.args and "--help" in ctx.args):
             set_args += ctx.args
             only_help_args = True
-        
+
         # If there are multiple double slashes, divide between the first segment and the rest
         try:
             split_index = ctx.args.index("--")
         except ValueError:
             split_index = None
-            pass     
-        
-        
+            pass
+
         if split_index:
             first_args = ctx.args[:split_index]
         else:
             first_args = ctx.args[:]
 
-            
-        # If it was not only help arguments, and there was a command there, 
+        # If it was not only help arguments, and there was a command there,
         # we start by adding the command that they want executed
         if not only_help_args and len(first_args) > 0:
             set_args += [ctx.args[0]]
-        
-            
+
         # If there are any arguments to be passed
         # and the command is NOT an init command
         # and the command was NOT a help command
-        if len(first_args) > 0 \
-            and "init" not in first_args\
-            and not only_help_args:
-            
+        if len(first_args) > 0 and "init" not in first_args and not only_help_args:
             # Then inject extra ones to make the commands cwd agnostic
             # Split the first argument which is the function to be run, inject the base context, add the rest
-            set_args +=[
-                "--ws-path", workspace_object.workspace_path,
-                "--ws-metadata-path", workspace_object.workspace_metadata_path,
-                "--ws-toml-filename", workspace_object.workspace_toml_filename
+            set_args += [
+                "--ws-path",
+                workspace_object.workspace_path,
+                "--ws-metadata-path",
+                workspace_object.workspace_metadata_path,
+                "--ws-toml-filename",
+                workspace_object.workspace_toml_filename,
             ]
         # If there was more than one argument, and it was not help, then we pass those at the end
         if len(first_args) > 1 and not only_help_args:
             set_args += first_args[1:]
-        
+
         # Add the rest if there was a split
         if split_index:
             set_args += ctx.args[split_index:]
-        
-        ctx.args = set_args    
-  
-        
 
+        ctx.args = set_args
 
         # Allow piping the command to the other app
         ovutils_app(args=ctx.args, standalone_mode=False)
@@ -361,29 +332,28 @@ def ovutils_wstools_meta_exec(
             run()
         except Exception as e:
             print(f"ERROR!: {e}")
-            pass   
+            pass
 
 
-## ov-templates  
-@ovutils_wsTools_ovTemplates_app.command("init")   
+## ov-templates
+@ovutils_wsTools_ovTemplates_app.command("init")
 def ovutils_wstools_templates_init(
     # Initialize function args
     ws_id: str | None = None,
     ws_name: str | None = None,
-
     # Class init args (Standardized in all functions for a reason)
-    ws_path:t.Annotated[str, typer.Argument(help="The path to the workspace")] = "./", # positional arg for terminal
+    ws_path: t.Annotated[
+        str, typer.Argument(help="The path to the workspace")
+    ] = "./",  # positional arg for terminal
     ws_path_flag: t.Annotated[
-        str | None,
-        typer.Option("--ws-path", hidden=True)
+        str | None, typer.Option("--ws-path", hidden=True)
     ] = None,
-    ws_metadata_path:str | None = None,
+    ws_metadata_path: str | None = None,
     ws_toml_filename: str | None = None,
-    
     # Other args
-    debug:bool = False
+    debug: bool = False,
 ) -> None:
-    '''Initializes a new OpenViatica Templates workspace'''
+    """Initializes a new OpenViatica Templates workspace"""
     # Set a value for ws_path based on priority system
     if ws_path_flag is not None:
         ws_path = ws_path_flag
@@ -391,14 +361,11 @@ def ovutils_wstools_templates_init(
     def run() -> None:
         templates_ws = ovutils.WorkspaceTools.TemplatesWorkspace(
             workspace_path=ws_path,
-            _workspace_metadata_path = ws_metadata_path,
-            _workspace_toml_filename = ws_toml_filename
+            _workspace_metadata_path=ws_metadata_path,
+            _workspace_toml_filename=ws_toml_filename,
         )
 
-        templates_ws.initialize(
-            workspace_id=ws_id,
-            workspace_name=ws_name
-        )
+        templates_ws.initialize(workspace_id=ws_id, workspace_name=ws_name)
 
     if debug:
         run()
@@ -408,6 +375,7 @@ def ovutils_wstools_templates_init(
         except Exception as e:
             print(f"ERROR!: {e}")
             pass
+
 
 # Default callbacks for whenever the tool is called without any arguments
 @ovutils_app.callback(invoke_without_command=True)
@@ -421,6 +389,7 @@ def main(ctx: typer.Context) -> None:
         # This exits the program gracefully
         raise typer.Exit()
 
+
 @ovutils_wsTools_app.callback(invoke_without_command=True)
 def ovutils_wstools_main(ctx: typer.Context) -> None:
     """
@@ -432,6 +401,7 @@ def ovutils_wstools_main(ctx: typer.Context) -> None:
         # This exits the program gracefully
         raise typer.Exit()
 
+
 @ovutils_wsTools_ovMeta_app.callback(invoke_without_command=True)
 def ovutils_wstools_meta_main(ctx: typer.Context) -> None:
     """
@@ -442,20 +412,3 @@ def ovutils_wstools_meta_main(ctx: typer.Context) -> None:
         typer.echo(ctx.get_help())
         # This exits the program gracefully
         raise typer.Exit()
-
-
-
-@ovutils_wsTools_ovTemplates_app.callback(invoke_without_command=True)
-def ovutils_wstools_templates_main(ctx: typer.Context) -> None:
-    """
-    OpenViatica Utilities CLI.
-    """
-    if ctx.invoked_subcommand is None:
-        # This prints the help menu to the console
-        typer.echo(ctx.get_help())
-        # This exits the program gracefully
-        raise typer.Exit()
-
-
-if __name__ == "__main__":
-    app()
