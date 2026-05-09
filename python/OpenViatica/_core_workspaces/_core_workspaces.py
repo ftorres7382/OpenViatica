@@ -145,7 +145,8 @@ class MetaWorkspace:
             workspace_id = str(uuid4())
 
         if workspace_name is None:
-            workspace_name = MetaWorkspaceService.DEFAULT_WORKSPACE_NAME
+            # If the workspace has not been defined, use the foldername as the wrokspace name
+            workspace_name = os.path.basename(self.workspace_path)
 
         # Any necessary checks are done in the service itself
         MetaWorkspaceService.initialize(
@@ -365,12 +366,6 @@ class MetaWorkspace:
 
         # Get the links_to objects
         links_to_values = workspace_toml_dict["links_to"]
-        # The plan to find only with the identifier
-        # Priority system:
-        #   Check if a single result comes up when checking for a name with the identifier
-        #   If not, then check if you can come up with a workspace type
-        #   If not, check for a id with the identifier
-        breakpoint()
 
         # Try to filter
         if identifier_type is not None:
@@ -380,6 +375,9 @@ class MetaWorkspace:
         else:
             # Else we have to see what can find
             # For performance reasons we need to identify the information we need under a single for loop of the data
+            # We will use other parts but ultimately determine the filtered_values that would pass scrutiny
+            # Other parts of the code would be the ones responsible for cleaning it up
+            breakpoint()
             pass
 
         # Check for any potential cases
