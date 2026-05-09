@@ -161,7 +161,7 @@ class MetaWorkspace:
     def link(
         self,
         target_workspace_path: str,
-        target_workspace_type: ov_ws_type_t,
+        target_workspace_type: ov_ws_type_t | None = None,
         _target_workspace_metadata_path: str | None = None,
         _target_workspace_toml_filename: str | None = None,
     ) -> None:
@@ -173,9 +173,20 @@ class MetaWorkspace:
         #   THIS LINKING DOES NOT CHECK FOR THAT, SO MULTPLE WORKSPACE WITH THE SAME ID COULD BE ADDED...
         #   THIS COULD BE MITIGATED BY RAISING AN ERROR OR CREATING A UNIQUE ID ON THE META WORKSPACE SIDE
         #   NOT A PROBLEM FOR ME RIGHT NOW
+        # ---------------------------------------------
+        # Second comment on this improvement, the subject workspace could create a new id in his side,
+        #   so that even if the target ids are repeated, we can use the subject link id as a tie breaker
 
         # Clean paths & set defaults
         target_workspace_path = G.get_posix_path(target_workspace_path)
+
+        # If the workspace path is None, then we need to get what the workspace path should be
+        # We need to take into account that a single workspace_path could contain multiple workspace types inside
+
+        # Make sure the target_workspace_path exists
+        G.check_folder_exists(target_workspace_path)
+        # Check all the workspace types that are where
+        breakpoint()
 
         if _target_workspace_metadata_path is not None:
             _target_workspace_metadata_path = G.get_posix_path(
