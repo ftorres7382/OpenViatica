@@ -14,6 +14,7 @@ from OpenViatica._types import (
 )
 from OpenViatica._general_core import General as G
 import typing as t
+import glob
 
 from pathlib import Path
 import os
@@ -161,7 +162,8 @@ class MetaWorkspace:
     def link(
         self,
         target_workspace_path: str,
-        target_workspace_type: ov_ws_type_t | None = None,
+        target_workspace_type: ov_ws_type_t
+        | None = None,  # NOTE: Defining this parameter probably helps with performance
         _target_workspace_metadata_path: str | None = None,
         _target_workspace_toml_filename: str | None = None,
     ) -> None:
@@ -176,29 +178,87 @@ class MetaWorkspace:
         # ---------------------------------------------
         # Second comment on this improvement, the subject workspace could create a new id in his side,
         #   so that even if the target ids are repeated, we can use the subject link id as a tie breaker
+        # -------------------------------------------------------
+        # Another possible improvement, we could also
+        # give the user the option to use name of ID as a tie breaker,
+        # This would of course make the logic much more complicated,
+        # so future me problem if I need it
+        # --------------------------------------------------------
 
         # Clean paths & set defaults
+        # Clean target workspace path
         target_workspace_path = G.get_posix_path(target_workspace_path)
 
-        # If the workspace path is None, then we need to get what the workspace path should be
-        # We need to take into account that a single workspace_path could contain multiple workspace types inside
+        # Standardize the value of the workspace metadata path if it is defined
+        if _target_workspace_metadata_path is None:
+            # If it was not defined, then we go by the default assumptions
+            # We will try to find one result
+            # Get a list of the immediate folders in the path
+            immediate_foldernames = G.get_immediate_folders(target_workspace_path)
 
-        # Make sure the target_workspace_path exists
-        G.check_folder_exists(target_workspace_path)
-        # Check all the workspace types that are where
-        breakpoint()
+            # Filter by only the possible options
+            #   based on what Services says
+            #   are the default metadata folders
+            possible_metadata_foldernames = [
+                basename
+                for basename in immediate_foldernames
+                if basename in DEFAULT_WORKSPACE_METADATA_INFO.values()
+            ]
 
-        if _target_workspace_metadata_path is not None:
+            if len(possible_metadata_foldernames) == 0:
+                raise ov_errors.WorkspaceMetadataNotFoundError(
+                    f"No workspace metadata folder was found for '{target_workspace_path}'. "
+                    + "Plase check that this path points to a OpenViatica workspace."
+                )
+            # Filter for the workspace type if it was defined.
+            if target_workspace_type is not None:
+                expected_metadata_foldername = DEFAULT_WORKSPACE_METADATA_INFO[
+                    target_workspace_type
+                ]
+                possible_metadata_foldernames = [
+                    name
+                    for name in possible_metadata_foldernames
+                    if name == expected_metadata_foldername
+                ]
+                if len(possible_metadata_foldernames) == 0:
+                    raise ov_errors.WorkspaceMetadataNotFoundError(
+                        f"The expected metadata folder '{expected_metadata_foldername}' "
+                        + f"for the path '{target_workspace_path}' and the type '{target_workspace_type}'"
+                        + "was not found. "
+                        + "Please check that this path "
+                        + "points to an OpenViatica workspace "
+                        + "and that the type of the workspace "
+                        + "is the same as the one referenced."
+                    )
+                # If here, then the workspace type has helped find the workspace metadata folder
+                # It will be reflected as being the only value
+                #   in the possible metadata foldernames variable
+
+            # If multiple workspace metadata folders are still possible,
+            #   then raise an error
+            if len(possible_metadata_foldernames) > 1:
+                raise ov_errors.MultipleWorkspaceMetadataFoundError(
+                    f"Multiple workspace metadata folders '{possible_metadata_foldernames}' found in '{target_workspace_path}'."
+                    + "Please define the workspace type."
+                )
+            # If here, then we are garenteed that we found the metadata folder
+            _target_workspace_metadata_path = os.path.join(
+                target_workspace_path, possible_metadata_foldernames[0]
+            )
+        # If the workspace metadata path WAS defined by the user, clean it
+        else:
             _target_workspace_metadata_path = G.get_posix_path(
                 _target_workspace_metadata_path
             )
-        else:
-            # Else we should be able to define the workspace metadata path based on the type
-            _target_workspace_metadata_path = os.path.join(
-                target_workspace_path,
-                DEFAULT_WORKSPACE_METADATA_INFO[target_workspace_type],
-            )
 
+        # No need to set a default value for workspace type,
+        #   since it is mainly just used as a tie breaker
+        #   to select the correct metadata folderpath anyways
+
+        # Make sure the target_workspace_path exists
+        G.check_folder_exists(target_workspace_path)
+
+        # Set a default value for the workspace toml filename if the user did not define it
         if _target_workspace_toml_filename is None:
             _target_workspace_toml_filename = DEFAULT_WORKSPACE_TOML_FILENAME
 
