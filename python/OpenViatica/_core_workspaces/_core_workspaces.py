@@ -95,7 +95,7 @@ class MetaWorkspace:
 
     """
 
-    WORKSPACE_TYPE = MetaWorkspaceService.WORKSPACE_TYPE
+    WORKSPACE_TYPE: t.Final[t.Literal["ov-meta"]] = MetaWorkspaceService.WORKSPACE_TYPE
 
     @typechecked
     def __init__(
@@ -170,153 +170,42 @@ class MetaWorkspace:
         """
         Links the meta workspace with another workspace
         """
-        #  POSSIBLE IMPROVEMENT!
-        #   WHAT IF THE LINKED WORKSPACE ID IS NOT UNIQUE!?
-        #   THIS LINKING DOES NOT CHECK FOR THAT, SO MULTPLE WORKSPACE WITH THE SAME ID COULD BE ADDED...
-        #   THIS COULD BE MITIGATED BY RAISING AN ERROR OR CREATING A UNIQUE ID ON THE META WORKSPACE SIDE
-        #   NOT A PROBLEM FOR ME RIGHT NOW
-        # ---------------------------------------------
-        # Second comment on this improvement, the subject workspace could create a new id in his side,
-        #   so that even if the target ids are repeated, we can use the subject link id as a tie breaker
-        # -------------------------------------------------------
-        # Another possible improvement, we could also
-        # give the user the option to use name of ID as a tie breaker,
-        # This would of course make the logic much more complicated,
-        # so future me problem if I need it
-        # --------------------------------------------------------
-
-        # Clean paths & set defaults
-        # Clean target workspace path
-        target_workspace_path = G.get_posix_path(target_workspace_path)
-
-        # Standardize the value of the workspace metadata path if it is defined
-        if _target_workspace_metadata_path is None:
-            # If it was not defined, then we go by the default assumptions
-            # We will try to find one result
-            # Get a list of the immediate folders in the path
-            immediate_foldernames = G.get_immediate_folders(target_workspace_path)
-
-            # Filter by only the possible options
-            #   based on what Services says
-            #   are the default metadata folders
-            possible_metadata_foldernames = [
-                basename
-                for basename in immediate_foldernames
-                if basename in DEFAULT_WORKSPACE_METADATA_INFO.values()
-            ]
-
-            if len(possible_metadata_foldernames) == 0:
-                raise ov_errors.WorkspaceMetadataNotFoundError(
-                    f"No workspace metadata folder was found for '{target_workspace_path}'. "
-                    + "Plase check that this path points to a OpenViatica workspace."
-                )
-            # Filter for the workspace type if it was defined.
-            if target_workspace_type is not None:
-                expected_metadata_foldername = DEFAULT_WORKSPACE_METADATA_INFO[
-                    target_workspace_type
-                ]
-                possible_metadata_foldernames = [
-                    name
-                    for name in possible_metadata_foldernames
-                    if name == expected_metadata_foldername
-                ]
-                if len(possible_metadata_foldernames) == 0:
-                    raise ov_errors.WorkspaceMetadataNotFoundError(
-                        f"The expected metadata folder '{expected_metadata_foldername}' "
-                        + f"for the path '{target_workspace_path}' and the type '{target_workspace_type}'"
-                        + "was not found. "
-                        + "Please check that this path "
-                        + "points to an OpenViatica workspace "
-                        + "and that the type of the workspace "
-                        + "is the same as the one referenced."
-                    )
-                # If here, then the workspace type has helped find the workspace metadata folder
-                # It will be reflected as being the only value
-                #   in the possible metadata foldernames variable
-
-            # If multiple workspace metadata folders are still possible,
-            #   then raise an error
-            if len(possible_metadata_foldernames) > 1:
-                raise ov_errors.MultipleWorkspaceMetadataFoundError(
-                    f"Multiple workspace metadata folders '{possible_metadata_foldernames}' found in '{target_workspace_path}'."
-                    + "Please define the workspace type."
-                )
-            # If here, then we are garenteed that we found the metadata folder
-            _target_workspace_metadata_path = os.path.join(
-                target_workspace_path, possible_metadata_foldernames[0]
-            )
-        # If the workspace metadata path WAS defined by the user, clean it
-        else:
-            _target_workspace_metadata_path = G.get_posix_path(
-                _target_workspace_metadata_path
-            )
-
-        # No need to set a default value for workspace type,
-        #   since it is mainly just used as a tie breaker
-        #   to select the correct metadata folderpath anyways
-
-        # Make sure the target_workspace_path exists
-        G.check_folder_exists(target_workspace_path)
-
-        # Set a default value for the workspace toml filename if the user did not define it
-        if _target_workspace_toml_filename is None:
-            _target_workspace_toml_filename = DEFAULT_WORKSPACE_TOML_FILENAME
-
-        # We should be able to define the workspace toml filepath now
-        target_workspace_toml_filepath = os.path.join(
-            _target_workspace_metadata_path, _target_workspace_toml_filename
-        )
-
-        MetaWorkspaceService.link(
-            subject_workspace_toml_filepath=self._workspace_toml_filepath,
-            target_workspace_toml_filepath=target_workspace_toml_filepath,
+        # Run the centralized function
+        self._link_unlink(
+            target_workspace_path=target_workspace_path,
+            link_mode="link",
+            target_workspace_type=target_workspace_type,
+            _target_workspace_metadata_path=_target_workspace_metadata_path,
+            _target_workspace_toml_filename=_target_workspace_toml_filename,
         )
 
     @typechecked
     def unlink(
         self,
         target_workspace_path: str,
-        target_workspace_type: ov_ws_type_t,
+        target_workspace_type: ov_ws_type_t
+        | None = None,  # NOTE: Defining this parameter probably helps with performance
         _target_workspace_metadata_path: str | None = None,
         _target_workspace_toml_filename: str | None = None,
     ) -> None:
         """
-        Links the meta workspace with another workspace
+        Unlinks a meta workspace with another workspace
         """
-
-        # Clean paths & set defaults
-        target_workspace_path = G.get_posix_path(target_workspace_path)
-
-        if _target_workspace_metadata_path is not None:
-            _target_workspace_metadata_path = G.get_posix_path(
-                _target_workspace_metadata_path
-            )
-        else:
-            # Else we should be able to define the workspace metadata path based on the type
-            _target_workspace_metadata_path = os.path.join(
-                target_workspace_path,
-                DEFAULT_WORKSPACE_METADATA_INFO[target_workspace_type],
-            )
-
-        if _target_workspace_toml_filename is None:
-            _target_workspace_toml_filename = DEFAULT_WORKSPACE_TOML_FILENAME
-
-        # We should be able to define the workspace toml filepath now
-        target_workspace_toml_filepath = os.path.join(
-            _target_workspace_metadata_path, _target_workspace_toml_filename
-        )
-
-        MetaWorkspaceService.unlink(
-            subject_workspace_toml_filepath=self._workspace_toml_filepath,
-            target_workspace_toml_filepath=target_workspace_toml_filepath,
+        # Run the centralized function
+        self._link_unlink(
+            target_workspace_path=target_workspace_path,
+            link_mode="unlink",
+            target_workspace_type=target_workspace_type,
+            _target_workspace_metadata_path=_target_workspace_metadata_path,
+            _target_workspace_toml_filename=_target_workspace_toml_filename,
         )
 
     @t.overload
     def get_linked_workspace_object(
         self,
         identifier: str,
-        identifier_type: t.Literal["id", "name"],
         expected_type_name: t.Literal["ov-meta"],
+        identifier_type: t.Literal["id", "name"] | None = None,
     ) -> "MetaWorkspace": ...
 
     # 2. Overload for "remote"
@@ -324,8 +213,8 @@ class MetaWorkspace:
     def get_linked_workspace_object(
         self,
         identifier: str,
-        identifier_type: t.Literal["id", "name"],
         expected_type_name: t.Literal["ov-templates"],
+        identifier_type: t.Literal["id", "name"] | None = None,
     ) -> TemplatesWorkspace: ...
 
     # 3. Overload for None (returns the Base or a Union)
@@ -333,16 +222,16 @@ class MetaWorkspace:
     def get_linked_workspace_object(
         self,
         identifier: str,
-        identifier_type: t.Literal["id", "name"],
         expected_type_name: None = None,
+        identifier_type: t.Literal["id", "name"] | None = None,
     ) -> "MetaWorkspace | TemplatesWorkspace": ...
 
     @typechecked
     def get_linked_workspace_object(
         self,
         identifier: str,
-        identifier_type: t.Literal["id", "name"] | None = None,
         expected_type_name: ov_ws_type_t | None = None,
+        identifier_type: t.Literal["id", "name"] | None = None,
     ) -> "MetaWorkspace | TemplatesWorkspace":
         """Returns a fully configured workspace object that can be used to run commands on"""
 
@@ -440,35 +329,176 @@ class MetaWorkspace:
 
         # Try to filter
         if identifier_type is not None:
+            # If here, then the user defined an id type, so use that assumption
             filtered_values = [
                 item for item in links_to_values if item[identifier_type] == identifier
             ]
+
+            # Check for any potential cases
+            if len(filtered_values) == 0:
+                raise ov_errors.LinkNotFoundError(
+                    f"Found no link with '{identifier_type}' equal to '{identifier}'"
+                )
+            elif len(filtered_values) > 1:
+                raise ov_errors.DuplicatedLinksFoundError(
+                    f"Found multiple links where the '{identifier_type}' equals '{identifier}'"
+                )
+            # If here, we are garenteed that it found only one result
+            result = filtered_values[0]
+
         else:
-            # Else we have to see what can find
+            # Else try to find a single match based on a priority system
+            name_match_index_list: list[int] = []
+            id_match_index_list: list[int] = []
+
+            for i, links_to_dict in enumerate(links_to_values):
+                if links_to_dict["name"] == identifier:
+                    name_match_index_list.append(i)
+
+                if links_to_dict["id"] == identifier:
+                    id_match_index_list.append(i)
+
+            # If here, then we have lists of possible matches only one can be right
+            # Do a priority system:
+            #   name: if a name matched, use that
+            #   id: otherwise, use an id match
+            #   None: raise an error, could not find
+
             # For performance reasons we need to identify the information we need under a single for loop of the data
             # We will use other parts but ultimately determine the filtered_values that would pass scrutiny
             # Other parts of the code would be the ones responsible for cleaning it up
+
             breakpoint()
             pass
-
-        # Check for any potential cases
-        if len(filtered_values) == 0:
-            raise ov_errors.LinkNotFoundError(
-                f"Found no link with '{identifier_type}' equal to '{identifier}'"
-            )
-        elif len(filtered_values) > 1:
-            raise ov_errors.DuplicatedLinksFoundError(
-                f"Found multiple links where the '{identifier_type}' equals '{identifier}'"
-            )
-        result = filtered_values[0]
 
         return result
 
     # Private functions
+    @typechecked
+    def _link_unlink(
+        self,
+        target_workspace_path: str,
+        link_mode: t.Literal["link", "unlink"],
+        target_workspace_type: ov_ws_type_t
+        | None = None,  # NOTE: Defining this parameter probably helps with performance
+        _target_workspace_metadata_path: str | None = None,
+        _target_workspace_toml_filename: str | None = None,
+    ) -> None:
+        """
+        Private function to centralize the logic to link or unlink a workspace
+        Especially because the logic are pretty similar
+        """
+
+        #  POSSIBLE IMPROVEMENT!
+        #   WHAT IF THE LINKED WORKSPACE ID IS NOT UNIQUE!?
+        #   THIS LINKING DOES NOT CHECK FOR THAT, SO MULTPLE WORKSPACE WITH THE SAME ID COULD BE ADDED...
+        #   THIS COULD BE MITIGATED BY RAISING AN ERROR OR CREATING A UNIQUE ID ON THE META WORKSPACE SIDE
+        #   NOT A PROBLEM FOR ME RIGHT NOW
+        # ---------------------------------------------
+        # Second comment on this improvement, the subject workspace could create a new id in his side,
+        #   so that even if the target ids are repeated, we can use the subject link id as a tie breaker
+        # -------------------------------------------------------
+        # Another possible improvement, we could also
+        # give the user the option to use name of ID as a tie breaker,
+        # This would of course make the logic much more complicated,
+        # so future me problem if I need it
+        # --------------------------------------------------------
+
+        # Clean target workspace path
+        target_workspace_path = G.get_posix_path(target_workspace_path)
+
+        # Standardize the value of the workspace metadata path if it is defined
+        if _target_workspace_metadata_path is None:
+            # If it was not defined, then we go by the default assumptions
+            # We will try to find one result
+            # Get a list of the immediate folders in the path
+            immediate_foldernames = G.get_immediate_folders(target_workspace_path)
+
+            # Filter by only the possible options
+            #   based on what Services says
+            #   are the default metadata folders
+            possible_metadata_foldernames = [
+                basename
+                for basename in immediate_foldernames
+                if basename in DEFAULT_WORKSPACE_METADATA_INFO.values()
+            ]
+
+            if len(possible_metadata_foldernames) == 0:
+                raise ov_errors.WorkspaceMetadataNotFoundError(
+                    f"No workspace metadata folder was found for '{target_workspace_path}'. "
+                    + "Plase check that this path points to a OpenViatica workspace."
+                )
+            # Filter for the workspace type if it was defined.
+            if target_workspace_type is not None:
+                expected_metadata_foldername = DEFAULT_WORKSPACE_METADATA_INFO[
+                    target_workspace_type
+                ]
+                possible_metadata_foldernames = [
+                    name
+                    for name in possible_metadata_foldernames
+                    if name == expected_metadata_foldername
+                ]
+                if len(possible_metadata_foldernames) == 0:
+                    raise ov_errors.WorkspaceMetadataNotFoundError(
+                        f"The expected metadata folder '{expected_metadata_foldername}' "
+                        + f"for the path '{target_workspace_path}' and the type '{target_workspace_type}'"
+                        + "was not found. "
+                        + "Please check that this path "
+                        + "points to an OpenViatica workspace "
+                        + "and that the type of the workspace "
+                        + "is the same as the one referenced."
+                    )
+                # If here, then the workspace type has helped find the workspace metadata folder
+                # It will be reflected as being the only value
+                #   in the possible metadata foldernames variable
+
+            # If multiple workspace metadata folders are still possible,
+            #   then raise an error
+            if len(possible_metadata_foldernames) > 1:
+                raise ov_errors.MultipleWorkspaceMetadataFoundError(
+                    f"Multiple workspace metadata folders '{possible_metadata_foldernames}' found in '{target_workspace_path}'."
+                    + "Please define the workspace type."
+                )
+            # If here, then we are garenteed that we found the metadata folder
+            _target_workspace_metadata_path = os.path.join(
+                target_workspace_path, possible_metadata_foldernames[0]
+            )
+        # If the workspace metadata path WAS defined by the user, clean it
+        else:
+            _target_workspace_metadata_path = G.get_posix_path(
+                _target_workspace_metadata_path
+            )
+
+        # No need to set a default value for workspace type,
+        #   since it is mainly just used as a tie breaker
+        #   to select the correct metadata folderpath anyways
+
+        # Make sure the target_workspace_path exists
+        G.check_folder_exists(target_workspace_path)
+
+        # Set a default value for the workspace toml filename if the user did not define it
+        if _target_workspace_toml_filename is None:
+            _target_workspace_toml_filename = DEFAULT_WORKSPACE_TOML_FILENAME
+
+        # We should be able to define the workspace toml filepath now
+        target_workspace_toml_filepath = os.path.join(
+            _target_workspace_metadata_path, _target_workspace_toml_filename
+        )
+
+        if link_mode == "link":
+            MetaWorkspaceService.link(
+                subject_workspace_toml_filepath=self._workspace_toml_filepath,
+                target_workspace_toml_filepath=target_workspace_toml_filepath,
+            )
+        else:
+            MetaWorkspaceService.unlink(
+                subject_workspace_toml_filepath=self._workspace_toml_filepath,
+                target_workspace_toml_filepath=target_workspace_toml_filepath,
+            )
 
 
-WORKSPACE_CLASS_MAPPING_DICT: t.Dict[
-    ov_ws_type_t, t.Type[MetaWorkspace | TemplatesWorkspace]
+WORKSPACE_CLASS_MAPPING_DICT: dict[
+    ov_ws_type_t, type[MetaWorkspace | TemplatesWorkspace]
 ] = {
     meta_workspace_toml_type_value: MetaWorkspace,
     templates_workspace_toml_type_value: TemplatesWorkspace,

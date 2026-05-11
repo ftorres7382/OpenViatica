@@ -180,16 +180,24 @@ def ovutils_wstools_meta_link(
 
     if target_ws_path is None:
         # Scenario: User provided [TARGET] (subject defaults to flag/current dir)
-        # If it is not defined, then the first argument IS the target workspace path
+        # If the second argument is not defined, then the first argument IS the target workspace path
         target_ws_path = target_or_subject_ws_path
 
     else:
         # Scenario: User provided [SUBJECT] [TARGET]
-        # If it has been defined, then the first one is the subject workspace path
+        # If the second argument has been defined, then the first one is the subject workspace path
+
+        # If the workspace path flag was defined AND the workspace path was also defined by the user, raise an error
+        if ws_path_flag_is_user_defined:
+            raise ValueError(
+                "Both 'ws_path_flag' and a positional 'ws-path' cannot be defined in the same command."
+            )
+
         ws_path = target_or_subject_ws_path
 
-    # After this line, the subject workspace path is the ws_path_flag which has a default value if one positiona arg was defined
-    #   The subject workspace path is chenaged to positional arguments if both positional arguments were defined
+    # After this line, by default the subject workspace path is
+    #   the ws_path_flag if one positional arg was defined
+    #   The subject workspace path is changed to positional arguments if both positional arguments were defined
     # Target workspace path is set implicitly for the single arg example, explicitly if two arguments were provided.
     # We are now garenteed a value for the subject and target workspace path after this line
 
@@ -219,22 +227,60 @@ def ovutils_wstools_meta_link(
 @ovutils_wsTools_ovMeta_app.command("unlink")
 def ovutils_wstools_meta_unlink(
     # Function args
-    target_ws_path: str,
-    target_ws_type: ov_ws_type_t,
+    target_or_subject_ws_path: str = typer.Argument(
+        ...,
+        help="- Target workspace path if only one path is provided.\n\
+        - Subject workspace path if two workspace paths are provided.",
+    ),
+    target_ws_path: str | None = typer.Argument(None),
+    target_ws_type: ov_ws_type_t | None = None,
     target_ws_metadata_path: str | None = None,
     target_workspace_toml_filename: str | None = None,
     # Class init args (Standardized in all functions for a reason)
-    ws_path_flag: t.Annotated[str, typer.Option("--ws-path", hidden=False)] = "./",
+    ws_path_flag: t.Annotated[
+        str | None, typer.Option("--ws-path", hidden=True)
+    ] = None,
     ws_metadata_path: str | None = None,
     ws_toml_filename: str | None = None,
     # Other args
     debug: bool = False,
 ) -> None:
     """Links a OpenViatica workspace to a Meta workspace"""
+
+    ws_path_flag_is_user_defined = ws_path_flag is not None
+
+    # Set a default value for the ws_path_flag
+    if ws_path_flag is None:
+        ws_path_flag = "./"
+
+    # Set default value for ws_path value
     ws_path = ws_path_flag
 
-    # Set ws_path value
-    ws_path = ws_path_flag
+    # Based on the definition in the annotations, we are garenteed that the first argument IS defined.
+    # Check only the second argument
+
+    if target_ws_path is None:
+        # Scenario: User provided [TARGET] (subject defaults to flag/current dir)
+        # If the second argument is not defined, then the first argument IS the target workspace path
+        target_ws_path = target_or_subject_ws_path
+
+    else:
+        # Scenario: User provided [SUBJECT] [TARGET]
+        # If the second argument has been defined, then the first one is the subject workspace path
+
+        # If the workspace path flag was defined AND the workspace path was also defined by the user, raise an error
+        if ws_path_flag_is_user_defined:
+            raise ValueError(
+                "Both 'ws_path_flag' and a positional 'ws-path' cannot be defined in the same command."
+            )
+
+        ws_path = target_or_subject_ws_path
+
+    # After this line, by default the subject workspace path is
+    #   the ws_path_flag if one positional arg was defined
+    #   The subject workspace path is changed to positional arguments if both positional arguments were defined
+    # Target workspace path is set implicitly for the single arg example, explicitly if two arguments were provided.
+    # We are now garenteed a value for the subject and target workspace path after this line
 
     def run() -> None:
         meta_ws = ovutils.WorkspaceTools.MetaWorkspace(
@@ -265,7 +311,7 @@ def ovutils_wstools_meta_unlink(
 def ovutils_wstools_meta_exec(
     ctx: typer.Context,
     identifier: str,
-    identifier_type: t.Literal["id", "name"],
+    identifier_type: t.Literal["id", "name"] | None = None,
     # Class init args (Standardized in all functions for a reason)
     ws_path_flag: t.Annotated[str, typer.Option("--ws-path", hidden=False)] = "./",
     ws_metadata_path: str | None = None,
@@ -283,7 +329,6 @@ def ovutils_wstools_meta_exec(
             _workspace_metadata_path=ws_metadata_path,
             _workspace_toml_filename=ws_toml_filename,
         )
-
         # Get the workspace object to validate the access
         workspace_object = meta_ws.get_linked_workspace_object(
             identifier=identifier,
