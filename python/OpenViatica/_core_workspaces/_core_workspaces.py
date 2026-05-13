@@ -138,7 +138,7 @@ class MetaWorkspace:
         self,
         workspace_id: str | None = None,
         workspace_name: str | None = None,
-    ) -> None:
+    ) -> ov_ws_types.META_WORKSPACE_TOML_DICT_TYPE:
         """Initializes a new OpenViatica meta workspace"""
 
         # Set default values
@@ -150,13 +150,14 @@ class MetaWorkspace:
             workspace_name = os.path.basename(self.workspace_path)
 
         # Any necessary checks are done in the service itself
-        MetaWorkspaceService.initialize(
+        workspace_toml_dict = MetaWorkspaceService.initialize(
             folderpath=self.workspace_path,
             workspace_metadata_path=self.workspace_metadata_path,
             workspace_toml_filename=self.workspace_toml_filename,
             workspace_name=workspace_name,
             workspace_id=workspace_id,
         )
+        return workspace_toml_dict
 
     @typechecked
     def link(
@@ -208,7 +209,6 @@ class MetaWorkspace:
         identifier_type: t.Literal["id", "name"] | None = None,
     ) -> "MetaWorkspace": ...
 
-    # 2. Overload for "remote"
     @t.overload
     def get_linked_workspace_object(
         self,
@@ -217,7 +217,6 @@ class MetaWorkspace:
         identifier_type: t.Literal["id", "name"] | None = None,
     ) -> TemplatesWorkspace: ...
 
-    # 3. Overload for None (returns the Base or a Union)
     @t.overload
     def get_linked_workspace_object(
         self,

@@ -89,7 +89,14 @@ def ovutils_init(
             _meta_workspace_metadata_path=meta_ws_metadata_path,
             _meta_workspace_toml_filename=meta_ws_toml_filename,
         )
-        ov_ws.initialize(workspace_id=ws_id, workspace_name=ws_name)
+
+        workspace_toml = ov_ws.initialize(workspace_id=ws_id, workspace_name=ws_name)
+
+        # Since here we can assume we have a fully functioning workspace,
+        #   then we can get the workspace object to print some stats for the workspace
+        print(
+            f"Successfully initialized the workspace '{ws_name}' in '{ov_ws.workspace_path}'"
+        )
 
     if debug:
         run()

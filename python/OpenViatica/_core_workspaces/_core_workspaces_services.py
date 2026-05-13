@@ -34,8 +34,12 @@ class GenericWorkspaceService:
         workspace_id: str,
         workspace_type: ov_ws_types.ws_type_t,
         _replace_toml_template_values: bool = True,
-    ) -> None:
-        """Initializes a new Templates workspace"""
+    ) -> str:
+        """
+        Initializes a new Templates workspace
+
+        Returns the workspace toml filpath
+        """
 
         # Standardize the path values
         folderpath = G.get_posix_path(folderpath)
@@ -55,7 +59,7 @@ class GenericWorkspaceService:
         os.mkdir(workspace_metadata_path)
 
         # Now we can just create the toml file in the workspace folder
-        cls.create_workspace_toml(
+        workspace_toml_filepath = cls.create_workspace_toml(
             folderpath=workspace_metadata_path,
             toml_filename=workspace_toml_filename,
             workspace_name=workspace_name,
@@ -63,6 +67,7 @@ class GenericWorkspaceService:
             workspace_type=workspace_type,
             _replace_template_values=_replace_toml_template_values,
         )
+        return workspace_toml_filepath
 
     @classmethod
     @typechecked
@@ -74,8 +79,12 @@ class GenericWorkspaceService:
         workspace_type: ov_ws_types.ws_type_t,
         workspace_id: str,
         _replace_template_values: bool = True,
-    ) -> None:
-        """Creates the required workspace toml file"""
+    ) -> str:
+        """
+        Creates the required workspace toml file
+
+        Returns the woprkspace toml filepath
+        """
 
         folderpath = G.get_posix_path(folderpath)
 
@@ -126,6 +135,7 @@ class GenericWorkspaceService:
 
         with open(schema_json_filepath, "w") as f:
             json.dump(schema, f, indent=2)
+        return toml_filepath
 
 
 class MetaWorkspaceService:
@@ -157,11 +167,15 @@ class MetaWorkspaceService:
         workspace_toml_filename: str,
         workspace_name: str,
         workspace_id: str,
-    ) -> None:
-        """Initializes a new meta workspace"""
+    ) -> str:
+        """
+        Initializes a new meta workspace
+
+        Returns the wrokspace toml filepath
+        """
 
         # Initialize a base workspace
-        GenericWorkspaceService.initialize(
+        workspace_toml_filepath = GenericWorkspaceService.initialize(
             folderpath=folderpath,
             workspace_metadata_path=workspace_metadata_path,
             workspace_toml_filename=workspace_toml_filename,
@@ -173,6 +187,8 @@ class MetaWorkspaceService:
 
         # Add the meta workspace stuff to the template
         toml_filepath = os.path.join(workspace_metadata_path, workspace_toml_filename)
+
+        # Get the package toml template to fill in
         with G.get_package_path() as pkg_path:
             meta_workspace_toml_template_path = os.path.join(
                 pkg_path, cls.WORKSPACE_TOML_TEMPLATE_RELPATH
@@ -204,6 +220,14 @@ class MetaWorkspaceService:
 
         with open(schema_json_filepath, "w") as f:
             json.dump(schema, f, indent=2)
+        # Re-Read the toml as json
+        return_dict = t.cast(
+            ov_ws_types.META_WORKSPACE_TOML_DICT_TYPE,
+            G.read_toml_dict(
+                toml_filepath, expected_type=ov_ws_types.META_WORKSPACE_TOML_DICT_TYPE
+            ),
+        )
+        return return_dict
 
     @classmethod
     @typechecked

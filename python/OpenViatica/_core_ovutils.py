@@ -31,7 +31,7 @@ class ovutils:
     ) -> None:
 
         # Declaring the self variables of interest
-        self._workspace_path: str
+        self.workspace_path: str
         self._workspace_metadata_path: str
         self._meta_ws: MetaWorkspace
         self._tmpl_ws: TemplatesWorkspace
@@ -54,7 +54,7 @@ class ovutils:
         if _templates_workspace_path is None:
             _templates_workspace_path = _workspace_metadata_path
 
-        self._workspace_path = workspace_path
+        self.workspace_path = workspace_path
 
         self._workspace_metadata_path = _workspace_metadata_path
 
@@ -87,7 +87,7 @@ class ovutils:
             workspace_name = self.DEFAULT_WORKSPACE_NAME
 
         # Check if the workspace folder exists
-        G.check_folder_exists(self._workspace_path)
+        G.check_folder_exists(self.workspace_path)
 
         # Check that the workspace metadata does NOT exist
         G.check_folder_NOT_exists(self._workspace_metadata_path)
