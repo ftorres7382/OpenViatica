@@ -12,6 +12,7 @@ The main function will be invokeable through the ovutils keyword
 # Make the purpose of the Docs folder more apparent
 # Home
 # make purpose of each folder more clear, especially repos
+from multiprocessing import Value
 import typer
 from OpenViatica import ovutils
 
@@ -241,12 +242,29 @@ def ovutils_wstools_meta_link(
             _workspace_metadata_path=ws_metadata_path,
             _workspace_toml_filename=ws_toml_filename,
         )
-        meta_ws.link(
+        linked_target_toml_ws_filepath = meta_ws.link(
             target_workspace_path=target_ws_path,
             target_workspace_type=target_ws_type,
             _target_workspace_metadata_path=target_ws_metadata_path,
             _target_workspace_toml_filename=target_workspace_toml_filename,
         )
+
+        # Read the target workspace toml to get its info
+        linked_target_ws_toml_dict = t.cast(
+            ov_ws_types.META_WORKSPACE_TOML_DICT_TYPE,
+            G.read_toml_dict(
+                linked_target_toml_ws_filepath,
+                ov_ws_types.META_WORKSPACE_TOML_DICT_TYPE,
+            ),
+        )
+
+        if meta_ws.workspace_toml_dict is None:
+            raise ValueError("The workspace toml dict is null!")
+
+        # Get the necessary info ready for the print
+        subject_ws_name = meta_ws.workspace_toml_dict["name"]
+        target_ws_name = linked_target_ws_toml_dict["name"]
+        print(f"Successfully linked '{subject_ws_name}' and '{target_ws_name}'")
 
     if debug:
         run()
@@ -311,9 +329,9 @@ def ovutils_wstools_meta_unlink(
         ws_path = target_or_subject_ws_path
 
     # After this line, by default the subject workspace path is
-    #   the ws_path_flag if one positional arg was defined
-    #   The subject workspace path is changed to positional arguments if both positional arguments were defined
-    # Target workspace path is set implicitly for the single arg example, explicitly if two arguments were provided.
+    #   the ws_path_flag IF one positional arg was defined
+    #   The subject workspace path is changed to positional arguments IF both positional arguments were defined
+    # Target workspace path is set implicitly for the single arg example, explicitly IF two arguments were provided.
     # We are now garenteed a value for the subject and target workspace path after this line
 
     def run() -> None:
@@ -322,12 +340,30 @@ def ovutils_wstools_meta_unlink(
             _workspace_metadata_path=ws_metadata_path,
             _workspace_toml_filename=ws_toml_filename,
         )
-        meta_ws.unlink(
+
+        linked_target_ws_toml_filepath = meta_ws.unlink(
             target_workspace_path=target_ws_path,
             target_workspace_type=target_ws_type,
             _target_workspace_metadata_path=target_ws_metadata_path,
             _target_workspace_toml_filename=target_workspace_toml_filename,
         )
+
+        # Read the target workspace toml to get its info
+        linked_target_ws_toml_dict = t.cast(
+            ov_ws_types.META_WORKSPACE_TOML_DICT_TYPE,
+            G.read_toml_dict(
+                linked_target_ws_toml_filepath,
+                ov_ws_types.META_WORKSPACE_TOML_DICT_TYPE,
+            ),
+        )
+
+        if meta_ws.workspace_toml_dict is None:
+            raise ValueError("The workspace toml dict is null!")
+
+        # Get the necessary info ready for the print
+        subject_ws_name = meta_ws.workspace_toml_dict["name"]
+        target_ws_name = linked_target_ws_toml_dict["name"]
+        print(f"Successfully unlinked '{subject_ws_name}' and '{target_ws_name}'")
 
     if debug:
         run()

@@ -113,6 +113,9 @@ class MetaWorkspace:
         self.workspace_toml_filename: str
         self._workspace_toml_filepath: str
         self._workspace_is_initialized: bool
+        self.workspace_toml_dict: ov_ws_types.META_WORKSPACE_TOML_DICT_TYPE | None = (
+            None
+        )
 
         # Clean workspace path
         workspace_path = Path(workspace_path).as_posix()
@@ -135,6 +138,15 @@ class MetaWorkspace:
         self._workspace_toml_filepath = os.path.join(
             self.workspace_metadata_path, self.workspace_toml_filename
         )
+
+        if os.path.exists(self._workspace_toml_filepath):
+            self.workspace_toml_dict = t.cast(
+                ov_ws_types.META_WORKSPACE_TOML_DICT_TYPE,
+                G.read_toml_dict(
+                    self._workspace_toml_filepath,
+                    ov_ws_types.META_WORKSPACE_TOML_DICT_TYPE,
+                ),
+            )
 
     @typechecked
     def initialize(
@@ -170,18 +182,19 @@ class MetaWorkspace:
         | None = None,  # NOTE: Defining this parameter probably helps with performance
         _target_workspace_metadata_path: str | None = None,
         _target_workspace_toml_filename: str | None = None,
-    ) -> None:
+    ) -> str:
         """
         Links the meta workspace with another workspace
         """
         # Run the centralized function
-        self._link_unlink(
+        target_workspace_toml_filepath = self._link_unlink(
             target_workspace_path=target_workspace_path,
             link_mode="link",
             target_workspace_type=target_workspace_type,
             _target_workspace_metadata_path=_target_workspace_metadata_path,
             _target_workspace_toml_filename=_target_workspace_toml_filename,
         )
+        return target_workspace_toml_filepath
 
     @typechecked
     def unlink(
@@ -191,18 +204,19 @@ class MetaWorkspace:
         | None = None,  # NOTE: Defining this parameter probably helps with performance
         _target_workspace_metadata_path: str | None = None,
         _target_workspace_toml_filename: str | None = None,
-    ) -> None:
+    ) -> str:
         """
         Unlinks a meta workspace with another workspace
         """
         # Run the centralized function
-        self._link_unlink(
+        target_workspace_toml_filepath = self._link_unlink(
             target_workspace_path=target_workspace_path,
             link_mode="unlink",
             target_workspace_type=target_workspace_type,
             _target_workspace_metadata_path=_target_workspace_metadata_path,
             _target_workspace_toml_filename=_target_workspace_toml_filename,
         )
+        return target_workspace_toml_filepath
 
     @t.overload
     def get_linked_workspace_object(
@@ -385,7 +399,7 @@ class MetaWorkspace:
         | None = None,  # NOTE: Defining this parameter probably helps with performance
         _target_workspace_metadata_path: str | None = None,
         _target_workspace_toml_filename: str | None = None,
-    ) -> None:
+    ) -> str:
         """
         Private function to centralize the logic to link or unlink a workspace
         Especially because the logic are pretty similar
@@ -497,6 +511,7 @@ class MetaWorkspace:
                 subject_workspace_toml_filepath=self._workspace_toml_filepath,
                 target_workspace_toml_filepath=target_workspace_toml_filepath,
             )
+        return target_workspace_toml_filepath
 
 
 WORKSPACE_CLASS_MAPPING_DICT: dict[
