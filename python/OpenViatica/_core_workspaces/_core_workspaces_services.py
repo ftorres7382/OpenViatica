@@ -175,7 +175,7 @@ class MetaWorkspaceService:
         """
 
         # Initialize a base workspace
-        workspace_toml_filepath = GenericWorkspaceService.initialize(
+        toml_filepath = GenericWorkspaceService.initialize(
             folderpath=folderpath,
             workspace_metadata_path=workspace_metadata_path,
             workspace_toml_filename=workspace_toml_filename,
@@ -184,9 +184,6 @@ class MetaWorkspaceService:
             workspace_type=cls.WORKSPACE_TYPE,
             _replace_toml_template_values=False,
         )
-
-        # Add the meta workspace stuff to the template
-        toml_filepath = os.path.join(workspace_metadata_path, workspace_toml_filename)
 
         # Get the package toml template to fill in
         with G.get_package_path() as pkg_path:
@@ -211,7 +208,7 @@ class MetaWorkspaceService:
 
         # Create the workspace toml
         with open(toml_filepath, "w") as f:
-            f.write(toml_string)
+            _ = f.write(toml_string)
 
         # Create the sidecar schema json file
         schema_json_filepath = toml_filepath + ".schema.json"
@@ -220,14 +217,8 @@ class MetaWorkspaceService:
 
         with open(schema_json_filepath, "w") as f:
             json.dump(schema, f, indent=2)
-        # Re-Read the toml as json
-        return_dict = t.cast(
-            ov_ws_types.META_WORKSPACE_TOML_DICT_TYPE,
-            G.read_toml_dict(
-                toml_filepath, expected_type=ov_ws_types.META_WORKSPACE_TOML_DICT_TYPE
-            ),
-        )
-        return return_dict
+
+        return toml_filepath
 
     @classmethod
     @typechecked

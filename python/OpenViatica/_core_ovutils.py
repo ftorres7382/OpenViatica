@@ -78,7 +78,7 @@ class ovutils:
         # Workspace specific variables
         templates_workspace_id: str | None = None,
         templates_workspace_name: str | None = None,
-    ) -> None:
+    ) -> str:
         """Initializes a new OpenViatica Preconfigured workspace"""
 
         # A OpenViatica IS an instance of a MetaWorkspace, that just has other workspaces made by default
@@ -97,7 +97,7 @@ class ovutils:
 
         # Initialize the meta workspace
         # It must hace the same workspace id & name since an openviatica workspace IS a meta workspace
-        self._meta_ws.initialize(
+        workspace_toml_filepath = self._meta_ws.initialize(
             workspace_id=workspace_id, workspace_name=workspace_name
         )
 
@@ -111,6 +111,7 @@ class ovutils:
             target_workspace_path=self._tmpl_ws.workspace_path,
             target_workspace_type=self._tmpl_ws.WORKSPACE_TYPE,
         )
+        return workspace_toml_filepath
 
     class WorkspaceTools:
         MetaWorkspace: type["MetaWorkspace"]

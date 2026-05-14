@@ -16,7 +16,8 @@ import typer
 from OpenViatica import ovutils
 
 
-from OpenViatica._types import ov_ws_type_t
+from OpenViatica._types import ov_ws_type_t, ov_ws_types
+from OpenViatica._general_core import General as G
 import typing as t
 
 # Entry point for the application
@@ -90,12 +91,22 @@ def ovutils_init(
             _meta_workspace_toml_filename=meta_ws_toml_filename,
         )
 
-        workspace_toml = ov_ws.initialize(workspace_id=ws_id, workspace_name=ws_name)
+        workspace_toml_filepath = ov_ws.initialize(
+            workspace_id=ws_id, workspace_name=ws_name
+        )
 
+        # Read in the workspace_toml to print info about the workspace
+        workspace_dict = t.cast(
+            ov_ws_types.META_WORKSPACE_TOML_DICT_TYPE,
+            G.read_toml_dict(
+                workspace_toml_filepath,
+                expected_type=ov_ws_types.META_WORKSPACE_TOML_DICT_TYPE,
+            ),
+        )
         # Since here we can assume we have a fully functioning workspace,
         #   then we can get the workspace object to print some stats for the workspace
         print(
-            f"Successfully initialized the workspace '{ws_name}' in '{ov_ws.workspace_path}'"
+            f"Successfully initialized an OpenViatica workspace called '{workspace_dict['name']}' in the folderpath '{ov_ws.workspace_path}'"
         )
 
     if debug:
@@ -139,7 +150,23 @@ def ovutils_wstools_meta_init(
             _workspace_metadata_path=ws_metadata_path,
             _workspace_toml_filename=ws_toml_filename,
         )
-        meta_ws.initialize(workspace_id=ws_id, workspace_name=ws_name)
+        workspace_toml_filepath = meta_ws.initialize(
+            workspace_id=ws_id, workspace_name=ws_name
+        )
+
+        # Read in the workspace_toml to print info about the workspace
+        workspace_dict = t.cast(
+            ov_ws_types.META_WORKSPACE_TOML_DICT_TYPE,
+            G.read_toml_dict(
+                workspace_toml_filepath,
+                expected_type=ov_ws_types.META_WORKSPACE_TOML_DICT_TYPE,
+            ),
+        )
+        # Since here we can assume we have a fully functioning workspace,
+        #   then we can get the workspace object to print some stats for the workspace
+        print(
+            f"Successfully initialized an OpenViatica Meta workspace called '{workspace_dict['name']}' in the folderpath '{meta_ws.workspace_path}'"
+        )
 
     if debug:
         run()

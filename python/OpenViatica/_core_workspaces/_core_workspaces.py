@@ -108,6 +108,7 @@ class MetaWorkspace:
         Initializes a configured transformer for an OpenViatica Workspace
         """
         self.workspace_path: str
+        self.workspace_abspath: str
         self.workspace_metadata_path: str
         self.workspace_toml_filename: str
         self._workspace_toml_filepath: str
@@ -126,6 +127,8 @@ class MetaWorkspace:
             _workspace_toml_filename = DEFAULT_WORKSPACE_TOML_FILENAME
 
         self.workspace_path = workspace_path
+        self.workspace_abspath = os.path.abspath(self.workspace_path)
+
         self.workspace_metadata_path = _workspace_metadata_path
 
         self.workspace_toml_filename = _workspace_toml_filename
@@ -138,7 +141,7 @@ class MetaWorkspace:
         self,
         workspace_id: str | None = None,
         workspace_name: str | None = None,
-    ) -> ov_ws_types.META_WORKSPACE_TOML_DICT_TYPE:
+    ) -> str:
         """Initializes a new OpenViatica meta workspace"""
 
         # Set default values
@@ -146,18 +149,18 @@ class MetaWorkspace:
             workspace_id = str(uuid4())
 
         if workspace_name is None:
-            # If the workspace has not been defined, use the foldername as the wrokspace name
-            workspace_name = os.path.basename(self.workspace_path)
+            # If the workspace has not been defined, use the foldername as the workspace name
+            workspace_name = os.path.basename(self.workspace_abspath)
 
         # Any necessary checks are done in the service itself
-        workspace_toml_dict = MetaWorkspaceService.initialize(
+        workspace_toml_path = MetaWorkspaceService.initialize(
             folderpath=self.workspace_path,
             workspace_metadata_path=self.workspace_metadata_path,
             workspace_toml_filename=self.workspace_toml_filename,
             workspace_name=workspace_name,
             workspace_id=workspace_id,
         )
-        return workspace_toml_dict
+        return workspace_toml_path
 
     @typechecked
     def link(
