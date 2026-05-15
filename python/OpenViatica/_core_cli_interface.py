@@ -12,7 +12,6 @@ The main function will be invokeable through the ovutils keyword
 # Make the purpose of the Docs folder more apparent
 # Home
 # make purpose of each folder more clear, especially repos
-from multiprocessing import Value
 import typer
 from OpenViatica import ovutils
 

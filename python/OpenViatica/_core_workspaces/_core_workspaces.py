@@ -367,6 +367,9 @@ class MetaWorkspace:
             name_match_index_list: list[int] = []
             id_match_index_list: list[int] = []
 
+            # For performance reasons
+            #   we need to identify the information
+            #   under a single for loop of the data
             for i, links_to_dict in enumerate(links_to_values):
                 if links_to_dict["name"] == identifier:
                     name_match_index_list.append(i)
@@ -375,17 +378,41 @@ class MetaWorkspace:
                     id_match_index_list.append(i)
 
             # If here, then we have lists of possible matches only one can be right
-            # Do a priority system:
-            #   name: if a name matched, use that
-            #   id: otherwise, use an id match
-            #   None: raise an error, could not find
+            # Deciding the match automatically can be risky
 
-            # For performance reasons we need to identify the information we need under a single for loop of the data
-            # We will use other parts but ultimately determine the filtered_values that would pass scrutiny
-            # Other parts of the code would be the ones responsible for cleaning it up
+            # If we found that there is
+            #   at least one match in more than one
+            #   of the identifier types,
+            #   we should prompt the user to provide a workspace type
+            # Multiple matches
+            has_name_matches = len(name_match_index_list) > 0
+            has_id_matches = len(id_match_index_list) > 0
+            if has_name_matches & has_id_matches:
+                raise ov_errors.MultipleLinksFoundError(
+                    f"Found multiple link types with the identifier '{identifier}'. Please define an identifier type."
+                )
 
-            breakpoint()
-            pass
+            # If here, then only one
+            #   of the identifier types matched
+            for identifier_type, index_matches_list in (
+                ("name", name_match_index_list),
+                ("id", id_match_index_list),
+            ):
+                if len(index_matches_list) == 0:
+                    continue
+
+                # If here then we have found
+                #   the index matches list that has the actual matches
+                # They could be multiple matches though, so check for that
+                if len(index_matches_list) > 1:
+                    raise ov_errors.MultipleLinksFoundError(
+                        f"Found multiple links for the identifier '{identifier_type}' and identifier_type '{identifier_type}'. "
+                        + "Please use a more specific identifier_type like 'id'."
+                    )
+
+                # If here, then only one value so extract it
+                result = links_to_values[index_matches_list[0]]
+                break
 
         return result
 

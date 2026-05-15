@@ -9,6 +9,11 @@ class ov_errors:
 
         pass
 
+    class WorkspaceNotFoundError(OpenViaticaError):
+        """Raised whenever the workspace was not found"""
+
+        pass
+
     class FolderExistsError(OpenViaticaError):
         """Raised whenever a folder is found"""
 
@@ -51,6 +56,11 @@ class ov_errors:
 
     class DuplicatedLinksFoundError(OpenViaticaError):
         """Raised whenever we find multiple links when we expect only one link result"""
+
+        pass
+
+    class MultipleLinksFoundError(OpenViaticaError):
+        """Raised whenever we find multiple link results when we expect only one to match"""
 
         pass
 
