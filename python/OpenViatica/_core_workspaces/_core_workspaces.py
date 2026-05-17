@@ -41,9 +41,16 @@ class TemplatesWorkspace:
         """
         Initializes a configured transformer for an OpenViatica Workspace
         """
+
         self.workspace_path: str
+        self.workspace_abspath: str
         self.workspace_metadata_path: str
         self.workspace_toml_filename: str
+        self._workspace_toml_filepath: str
+        self._workspace_is_initialized: bool
+        self.workspace_toml_dict: (
+            ov_ws_types.TEMPLATES_WORKSPACE_TOML_DICT_TYPE | None
+        ) = None
 
         # Clean workspace path
         workspace_path = Path(workspace_path).as_posix()
@@ -58,9 +65,23 @@ class TemplatesWorkspace:
             _workspace_toml_filename = DEFAULT_WORKSPACE_TOML_FILENAME
 
         self.workspace_path = workspace_path
+        self.workspace_abspath = os.path.abspath(self.workspace_path)
+
         self.workspace_metadata_path = _workspace_metadata_path
 
         self.workspace_toml_filename = _workspace_toml_filename
+        self._workspace_toml_filepath = os.path.join(
+            self.workspace_metadata_path, self.workspace_toml_filename
+        )
+
+        if os.path.exists(self._workspace_toml_filepath):
+            self.workspace_toml_dict = t.cast(
+                ov_ws_types.TEMPLATES_WORKSPACE_TOML_DICT_TYPE,
+                G.read_toml_dict(
+                    self._workspace_toml_filepath,
+                    ov_ws_types.TEMPLATES_WORKSPACE_TOML_DICT_TYPE,
+                ),
+            )
 
     @typechecked
     def initialize(
@@ -75,7 +96,8 @@ class TemplatesWorkspace:
             workspace_id = str(uuid4())
 
         if workspace_name is None:
-            workspace_name = TemplatesWorkspaceService.DEFAULT_WORKSPACE_NAME
+            # If the workspace has not been defined, use the foldername as the workspace name
+            workspace_name = os.path.basename(self.workspace_abspath)
 
         # Any necessary checks are done in the service itself
         TemplatesWorkspaceService.initialize(
@@ -449,6 +471,9 @@ class MetaWorkspace:
 
         # Clean target workspace path
         target_workspace_path = G.get_posix_path(target_workspace_path)
+
+        # Check that the target workspace exists
+        G.check_folder_exists(target_workspace_path)
 
         # Standardize the value of the workspace metadata path if it is defined
         if _target_workspace_metadata_path is None:

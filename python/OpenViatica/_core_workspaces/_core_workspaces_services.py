@@ -506,7 +506,6 @@ class TemplatesWorkspaceService:
         workspace_id: str,
     ) -> None:
         """Initializes a new Templates workspace"""
-
         # Initialize a base workspace
         GenericWorkspaceService.initialize(
             folderpath=folderpath,

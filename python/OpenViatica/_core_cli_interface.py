@@ -233,7 +233,7 @@ def ovutils_wstools_meta_link(
     #   the ws_path_flag if one positional arg was defined
     #   The subject workspace path is changed to positional arguments if both positional arguments were defined
     # Target workspace path is set implicitly for the single arg example, explicitly if two arguments were provided.
-    # We are now garenteed a value for the subject and target workspace path after this line
+    # We are now garanteed a value for the subject and target workspace path after this line
 
     def run() -> None:
         meta_ws = ovutils.WorkspaceTools.MetaWorkspace(
@@ -248,12 +248,14 @@ def ovutils_wstools_meta_link(
             _target_workspace_toml_filename=target_workspace_toml_filename,
         )
 
+        # Define what
+
         # Read the target workspace toml to get its info
         linked_target_ws_toml_dict = t.cast(
-            ov_ws_types.META_WORKSPACE_TOML_DICT_TYPE,
+            ov_ws_types.GENERIC_WORKSPACE_TOML_DICT_TYPE,
             G.read_toml_dict(
                 linked_target_toml_ws_filepath,
-                ov_ws_types.META_WORKSPACE_TOML_DICT_TYPE,
+                ov_ws_types.GENERIC_WORKSPACE_TOML_DICT_TYPE,
             ),
         )
 
@@ -348,11 +350,12 @@ def ovutils_wstools_meta_unlink(
         )
 
         # Read the target workspace toml to get its info
+
         linked_target_ws_toml_dict = t.cast(
-            ov_ws_types.META_WORKSPACE_TOML_DICT_TYPE,
+            ov_ws_types.GENERIC_WORKSPACE_TOML_DICT_TYPE,
             G.read_toml_dict(
                 linked_target_ws_toml_filepath,
-                ov_ws_types.META_WORKSPACE_TOML_DICT_TYPE,
+                ov_ws_types.GENERIC_WORKSPACE_TOML_DICT_TYPE,
             ),
         )
 
